@@ -229,4 +229,9 @@ return [
 
     ],
 
+    // 微信公众平台
+    'wechat_public_platform' => [
+        'appid' => 'wx4f3677d351aa5750',
+        'secret' => '5c0c2bd5bcb5d2fff085045af86f4d61',
+    ],
 ];
