@@ -2,26 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use EasyWeChat\Factory;
 use Illuminate\Http\Request;
 
 class IndexController extends Controller
 {
     public function index(Request $request)
     {
-        $signature = $request->input('signature');
-        $timestamp = $request->input('timestamp');
-        $nonce = $request->input('nonce');
-        $echostr = $request->input('echostr');
-        $token = 'luoyesheng';
+        $app = Factory::officialAccount(config('wechat.official_account.default'));
+        $response = $app->server->serve();
 
-        $tmpArr = [$nonce, $token, $timestamp];
-        sort($tmpArr);
-
-        $str = implode($tmpArr);
-        $sign = sha1($str);
-
-        if ($sign == $signature) {
-            echo $echostr;
-        }
+        return $response;
     }
 }
