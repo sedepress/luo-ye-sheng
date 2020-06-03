@@ -24,15 +24,7 @@ class IndexController extends Controller
                             官方QQ群：1023380085';
                     break;
                 case 'text':
-                    return '欢迎来到落叶生
-                            输入以下指令编号执行相关操作
-                            0、重置指令
-                            1、打怪
-                            2、锻造
-                            3、挖矿
-                            4、领取疲劳
-                            5、商店|装备|邀请
-                            官方QQ群：1023380085';
+                    return '欢迎来到落叶生\n输入以下指令编号执行相关操作\n0、重置指令\n1、打怪\n2、锻造\n3、挖矿\n4、领取疲劳\n5、商店|装备|邀请\n官方QQ群：1023380085';
                     break;
                 case 'image':
                     return '收到图片消息';
