@@ -35,9 +35,11 @@ class IndexController extends Controller
                     break;
                 case 'file':
                     return '收到文件消息';
+                // ... 其它消息
                 default:
                     return '收到其它消息';
                     break;
+            }
         });
         $response = $app->server->serve();
 
