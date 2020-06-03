@@ -13,10 +13,26 @@ class IndexController extends Controller
         $app->server->push(function ($message) {
             switch ($message['MsgType']) {
                 case 'event':
-                    return '收到事件消息';
+                    return '欢迎来到落叶生
+                            输入以下指令编号执行相关操作
+                            0、重置指令
+                            1、打怪
+                            2、锻造
+                            3、挖矿
+                            4、领取疲劳
+                            5、商店|装备|邀请
+                            官方QQ群：1023380085';
                     break;
                 case 'text':
-                    return '收到文字消息';
+                    return '欢迎来到落叶生
+                            输入以下指令编号执行相关操作
+                            0、重置指令
+                            1、打怪
+                            2、锻造
+                            3、挖矿
+                            4、领取疲劳
+                            5、商店|装备|邀请
+                            官方QQ群：1023380085';
                     break;
                 case 'image':
                     return '收到图片消息';
