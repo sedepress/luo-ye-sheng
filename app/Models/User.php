@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class User extends Model
 {
     protected $fillable = [
-        'external_id',
         'nickname',
+        'openid',
         'character_level',
         'mining_level',
         'forging_level',
