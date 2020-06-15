@@ -28,6 +28,7 @@ class UserService extends Service
     {
         $user = User::query()->create([
             'openid' => $message['FromUserName'],
+            'current_gold' => 100,
         ]);
 
         $user->invitation_code = 'yqm' . str_pad((string) $user->id, 6, '0', STR_PAD_LEFT);

@@ -30,14 +30,6 @@ class CreateUsersTable extends Migration
             $table->integer('inv_num', false, true)->default(0)->comment('邀请人数');
             $table->integer('invite_people', false, true)->default(0)->comment('邀请人');
             $table->boolean('is_used_inv')->default(false)->comment('是否使用邀请码');
-            $table->tinyInteger('force', false, true)->default(5)->comment('武力');
-            $table->tinyInteger('intelligence', false, true)->default(5)->comment('智力');
-            $table->tinyInteger('defence', false, true)->default(1)->comment('防御');
-            $table->tinyInteger('speed', false, true)->default(1)->comment('速度');
-            $table->tinyInteger('force_growth', false, true)->default(5)->comment('武力成长');
-            $table->tinyInteger('intelligence_growth', false, true)->default(5)->comment('智力成长');
-            $table->tinyInteger('defence_growth', false, true)->default(1)->comment('防御成长');
-            $table->tinyInteger('speed_growth', false, true)->default(1)->comment('速度成长');
             $table->timestamps();
         });
     }

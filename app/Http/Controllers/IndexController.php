@@ -18,7 +18,7 @@ class IndexController extends Controller
     }
 
     const SYSTEM_ERROR = '系统异常，请加群联系群主！';
-    const USER_INSTRUCTION = 'user_instruction:';
+    const USER_INSTRUCTION = 'user_info:';
     const IS_FATIGUE = 'is_fatigue:';
     const YES_FATIGUE_MENU = '成功获取 10 点疲劳';
     const NO_FATIGUE_MENU = '你今日已经领取，明天再来领取吧';
@@ -54,36 +54,58 @@ class IndexController extends Controller
                     } else {
                         $menu = self::MENU;
                     }
-                    switch (intval($message['Content'])) {
-                        case 1:
-                            return self::BATTLE_SCENE_MENU;
-                        case 2:
-                            return self::FORGING_FURNACE_MENU;
-                        case 3:
-                            return self::MINING_MENU;
-                        case 4:
-                            if (Redis::setnx(self::IS_FATIGUE . $message['FromUserName'], 1)) {
-                                Redis::expireAt(self::IS_FATIGUE . $message['FromUserName'], Carbon::tomorrow()->timestamp);
-                                if ($this->userService->getFatigue($message['FromUserName'])) {
-                                    return self::YES_FATIGUE_MENU;
-                                }
-                                return self::SYSTEM_ERROR;
-                            }
-                            return self::NO_FATIGUE_MENU;
-                        case 5:
-                            return $menu;
-                        default:
-                            Redis::hSet($key, 'instruction', '');
-                            return $menu;
-                    }
 
-                    if (Redis::hSetnx($key, 'content', $message['Content'])) {
-
+                    $ins = intval($message['Content']);
+                    if ($instruction = Redis::hGet($key, 'instruction')) {
+                        switch (intval($instruction)) {
+                            case 1:
+                                return $this->battle($ins, $key, $menu);
+                                break;
+                            case 2:
+                                return $this->forgin($ins, $key, $menu);
+                                break;
+                            case 3:
+                                return $this->mining($ins, $key, $menu);
+                                break;
+                            default:
+                                Redis::hSet($key, 'instruction', '');
+                                return $menu;
+                        }
                     } else {
+                        if (in_array($ins, [1, 2, 3])) {
+                            Redis::hSet($key, 'instruction', $ins);
+                        }
 
+                        switch ($ins) {
+                            case 1:
+                                return self::BATTLE_SCENE_MENU;
+                                break;
+                            case 2:
+                                return self::FORGING_FURNACE_MENU;
+                                break;
+                            case 3:
+                                return self::MINING_MENU;
+                                break;
+                            case 4:
+                                if (Redis::setnx(self::IS_FATIGUE . $message['FromUserName'], 1)) {
+                                    Redis::expireAt(self::IS_FATIGUE . $message['FromUserName'], Carbon::tomorrow()->timestamp);
+                                    if ($this->userService->getFatigue($message['FromUserName'])) {
+                                        return self::YES_FATIGUE_MENU;
+                                    }
+
+                                    return self::SYSTEM_ERROR;
+                                }
+
+                                return self::NO_FATIGUE_MENU;
+                                break;
+                            case 5:
+                                return '这是一个测试的文本消息<a href="http://120.27.145.17">百度</a>';
+                                break;
+                            default:
+                                Redis::hSet($key, 'instruction', '');
+                                return $menu;
+                        }
                     }
-
-                    return self::MENU;
                     break;
                 default:
                     return '亲，只接受字符回复哦！';
@@ -93,5 +115,49 @@ class IndexController extends Controller
         $response = $app->server->serve();
 
         return $response;
+    }
+
+    protected function battle(int $ins, string $key, string $menu)
+    {
+        if ($this->judgeIns($ins, $key)) {
+            return $menu;
+        }
+
+        return $this->numberToChinese($ins) . "级洞穴\n打怪完毕，以下是你的战况\n\n";
+    }
+
+    protected function forgin(int $ins, string $key, string $menu)
+    {
+        if ($this->judgeIns($ins, $key)) {
+            return $menu;
+        }
+
+        return $this->numberToChinese($ins) . '级锻造';
+    }
+
+    protected function mining(int $ins, string $key, string $menu)
+    {
+        if ($this->judgeIns($ins, $key)) {
+            return $menu;
+        }
+
+        return '挖矿';
+    }
+
+    protected function judgeIns(int $ins, string $key)
+    {
+        if ($ins > 10 || $ins < 1) {
+            Redis::hSet($key, 'instruction', '');
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function numberToChinese(int $ins)
+    {
+        $ch = [1 => '一', 2 => '二', 3 => '三', 4 => '四', 5 => '五', 6 => '六', 7 => '七', 8 => '八', 9 => '九', 10 => '十'];
+
+        return $ch[$ins];
     }
 }
