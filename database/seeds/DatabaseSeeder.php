@@ -11,6 +11,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-         $this->call(BattleSceneSeeder::class);
+        $this->call([
+            BattleSceneSeeder::class,
+            MonsterSeeder::class,
+        ]);
     }
 }

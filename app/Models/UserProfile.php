@@ -9,13 +9,13 @@ class UserProfile extends Model
     protected $fillable = [
         'user_id',
         'hero_id',
-        'force',
-        'intelligence',
-        'defence',
-        'speed',
-        'is_equip_weapon',
-        'is_equip_armor',
-        'is_equip_shoes'
+        'character_level',
+        'mining_level',
+        'forging_level',
+        'invitation_code',
+        'inv_num',
+        'invite_people',
+        'is_used_inv'
     ];
 
     public function user()

@@ -124,7 +124,7 @@ class IndexController extends Controller
         }
         $user = $this->userService->getUserByOpenid($openid);
         $res = $this->numberToChinese($ins) . "级洞穴\n打怪完毕，以下是你的战况\n\n";
-        if ($user->userProfile->is_equip_weapon) {
+        if ($user->is_equip_weapon) {
             $res .= "装备一个武器效果会更好\n";
         }
 
