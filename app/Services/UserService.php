@@ -11,7 +11,7 @@ class UserService extends Service
 
     public function getUserByOpenid($openid)
     {
-        return User::query()->where('openid', $openid)->first();
+        return User::query()->with('userProfile')->where('openid', $openid)->first();
     }
 
     public function getUserById($id)
@@ -93,5 +93,10 @@ class UserService extends Service
             return $user->save();
         }
         return false;
+    }
+
+    public function battleResult(User $user, int $floor)
+    {
+
     }
 }

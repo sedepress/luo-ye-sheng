@@ -59,13 +59,13 @@ class IndexController extends Controller
                     if ($instruction = Redis::hGet($key, 'instruction')) {
                         switch (intval($instruction)) {
                             case 1:
-                                return $this->battle($ins, $key, $menu);
+                                return $this->battle($ins, $key, $menu, $openid);
                                 break;
                             case 2:
-                                return $this->forgin($ins, $key, $menu);
+                                return $this->forgin($ins, $key, $menu, $openid);
                                 break;
                             case 3:
-                                return $this->mining($ins, $key, $menu);
+                                return $this->mining($ins, $key, $menu, $openid);
                                 break;
                             default:
                                 Redis::hSet($key, 'instruction', '');
@@ -117,19 +117,23 @@ class IndexController extends Controller
         return $response;
     }
 
-    protected function battle(int $ins, string $key, string $menu)
+    protected function battle(int $ins, string $key, string $menu, string $openid)
     {
         if ($this->judgeIns($ins, $key)) {
             return $menu;
         }
-
+        $user = $this->userService->getUserByOpenid($openid);
         $res = $this->numberToChinese($ins) . "级洞穴\n打怪完毕，以下是你的战况\n\n";
+        if ($user->userProfile->is_equip_weapon) {
+            $res .= "装备一个武器效果会更好\n";
+        }
 
 
-        return ;
+
+        return $res;
     }
 
-    protected function forgin(int $ins, string $key, string $menu)
+    protected function forgin(int $ins, string $key, string $menu, string $openid)
     {
         if ($this->judgeIns($ins, $key)) {
             return $menu;
@@ -138,7 +142,7 @@ class IndexController extends Controller
         return $this->numberToChinese($ins) . '级锻造';
     }
 
-    protected function mining(int $ins, string $key, string $menu)
+    protected function mining(int $ins, string $key, string $menu, string $openid)
     {
         if ($this->judgeIns($ins, $key)) {
             return $menu;
