@@ -123,7 +123,10 @@ class IndexController extends Controller
             return $menu;
         }
 
-        return $this->numberToChinese($ins) . "级洞穴\n打怪完毕，以下是你的战况\n\n";
+        $res = $this->numberToChinese($ins) . "级洞穴\n打怪完毕，以下是你的战况\n\n";
+
+
+        return ;
     }
 
     protected function forgin(int $ins, string $key, string $menu)

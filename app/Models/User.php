@@ -20,4 +20,9 @@ class User extends Model
         'current_gold',
         'invitation_code'
     ];
+
+    public function userProfile()
+    {
+        return $this->hasOne(UserProfile::class);
+    }
 }

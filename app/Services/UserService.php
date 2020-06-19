@@ -33,6 +33,8 @@ class UserService extends Service
 
         $user->invitation_code = 'yqm' . str_pad((string) $user->id, 6, '0', STR_PAD_LEFT);
         $user->save();
+
+        $user->userProfile()->create([]);
     }
 
     public function setNickname($str, $opeind)
