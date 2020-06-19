@@ -17,19 +17,21 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('nickname')->default('')->comment('昵称');
             $table->string('openid', 50)->unique();
-            $table->tinyInteger('character_level', false, true)->default(1)->comment('人物等级');
-            $table->tinyInteger('mining_level', false, true)->default(1)->comment('挖矿等级');
-            $table->tinyInteger('forging_level', false, true)->default(1)->comment('锻造等级');
             $table->integer('fatigue_value', false, true)->default(20)->comment('疲劳值');
             $table->integer('lucky_value', false, true)->default(0)->comment('幸运值');
             $table->integer('manpower', false, true)->default(0)->comment('人力值');
+            $table->smallInteger('current_blood_volume')->default(20)->comment('当前血量');
+            $table->smallInteger('total_blood_volume')->default(20)->comment('总血量');
             $table->integer('current_exp', false, true)->default(0)->comment('当前经验值');
             $table->integer('history_exp', false, true)->default(0)->comment('历史经验值');
             $table->integer('current_gold', false, true)->default(0)->comment('当前金币');
-            $table->string('invitation_code')->default('')->comment('邀请码');
-            $table->integer('inv_num', false, true)->default(0)->comment('邀请人数');
-            $table->integer('invite_people', false, true)->default(0)->comment('邀请人');
-            $table->boolean('is_used_inv')->default(false)->comment('是否使用邀请码');
+            $table->tinyInteger('force', false, true)->default(5)->comment('武力');
+            $table->tinyInteger('intelligence', false, true)->default(5)->comment('智力');
+            $table->tinyInteger('defence', false, true)->default(1)->comment('防御');
+            $table->tinyInteger('speed', false, true)->default(1)->comment('速度');
+            $table->boolean('is_equip_weapon')->default(0)->comment('是否装备武器');
+            $table->boolean('is_equip_armor')->default(0)->comment('是否装备衣服');
+            $table->boolean('is_equip_shoes')->default(0)->comment('是否装备鞋子');
             $table->timestamps();
         });
     }

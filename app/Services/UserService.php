@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\BattleScene;
 use App\Models\User;
 use Illuminate\Support\Facades\Redis;
 
@@ -97,6 +98,11 @@ class UserService extends Service
 
     public function battleResult(User $user, int $floor)
     {
+        $battleScene = BattleScene::find($floor);
+        if ($user->character_level < $battleScene->minimum_level_limit) {
+            return '你等级还不够哦该层最低需要几级';
+        }
+
 
     }
 }
