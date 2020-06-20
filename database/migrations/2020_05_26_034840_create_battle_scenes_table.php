@@ -17,9 +17,9 @@ class CreateBattleScenesTable extends Migration
             $table->id();
             $table->string('name');
             $table->tinyInteger('minimum_level_limit')->comment('最低等级限制');
-            $table->smallInteger('gold_lower')->comment('掉落金币下限');
-            $table->smallInteger('gold_upper')->comment('掉落金币上限');
-            $table->tinyInteger('probability')->default(0)->comment('掉落概率');
+            $table->smallInteger('gold_lower', false, true)->comment('掉落金币下限');
+            $table->smallInteger('gold_upper', false, true)->comment('掉落金币上限');
+            $table->tinyInteger('probability', false, true)->default(0)->comment('掉落概率');
             $table->timestamps();
         });
     }

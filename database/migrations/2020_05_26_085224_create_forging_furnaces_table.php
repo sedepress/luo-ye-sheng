@@ -16,13 +16,13 @@ class CreateForgingFurnacesTable extends Migration
         Schema::create('forging_furnaces', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->tinyInteger('minimum_level_limit')->comment('最低道具等级限制');
-            $table->tinyInteger('probability')->default(100)->comment('概率');
-            $table->tinyInteger('black_iron')->comment('黑铁矿石');
-            $table->tinyInteger('bronze')->comment('青铜矿石');
-            $table->tinyInteger('iron')->comment('铁矿石');
-            $table->tinyInteger('silver')->comment('银矿石');
-            $table->tinyInteger('gold')->comment('金矿石');
+            $table->tinyInteger('minimum_level_limit', false, true)->comment('最低道具等级限制');
+            $table->tinyInteger('probability', false, true)->default(100)->comment('概率');
+            $table->tinyInteger('black_iron', false, true)->comment('黑铁矿石');
+            $table->tinyInteger('bronze', false, true)->comment('青铜矿石');
+            $table->tinyInteger('iron', false, true)->comment('铁矿石');
+            $table->tinyInteger('silver', false, true)->comment('银矿石');
+            $table->tinyInteger('gold', false, true)->comment('金矿石');
             $table->timestamps();
         });
     }

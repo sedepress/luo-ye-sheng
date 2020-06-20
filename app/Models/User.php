@@ -37,6 +37,18 @@ class User extends Model
     const LEVEL_NIGHT_REQ_EXP = 200000;
     const LEVEL_TEN_REQ_EXP = 500000;
 
+    public static $levelExpMap = [
+        1 => self::LEVEL_TWO_REQ_EXP,
+        2 => self::LEVEL_THREE_REQ_EXP,
+        3 => self::LEVEL_FOUR_REQ_EXP,
+        4 => self::LEVEL_FIVE_REQ_EXP,
+        5 => self::LEVEL_SIX_REQ_EXP,
+        6 => self::LEVEL_SEVEN_REQ_EXP,
+        7 => self::LEVEL_EIGHT_REQ_EXP,
+        8 => self::LEVEL_NIGHT_REQ_EXP,
+        9 => self::LEVEL_TEN_REQ_EXP,
+    ];
+
     public function userProfile()
     {
         return $this->hasOne(UserProfile::class);
