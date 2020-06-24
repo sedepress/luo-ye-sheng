@@ -36,7 +36,7 @@ class UserService extends Service
         ]);
 
         $user->userProfile()->create([
-            'invitation_code' => 'yqm' . str_pad((string)$user->id, 6, '0', STR_PAD_LEFT),
+            'invitation_code' => 'yqm'.str_pad((string) $user->id, 6, '0', STR_PAD_LEFT),
         ]);
     }
 
@@ -55,7 +55,7 @@ class UserService extends Service
         $user           = $this->getUserByOpenid($opeind);
         $user->nickname = $nickname;
         $user->save();
-        Redis::hSet(self::USER_INSTRUCTION . $opeind, 'nickname', $nickname);
+        Redis::hSet(self::USER_INSTRUCTION.$opeind, 'nickname', $nickname);
 
         return '设置成功！';
     }
@@ -74,12 +74,12 @@ class UserService extends Service
                 if ($invUser->openid == $openid) {
                     return '无法与自己绑定！';
                 }
-                $user->userProfile->is_used_inv = true;
+                $user->userProfile->is_used_inv   = true;
                 $user->userProfile->invite_people = $invUser->id;
                 $user->userProfile->save();
                 $invUser->manpower += 1;
                 $invUser->save();
-                $invUser->userProfile->inv_num  += 1;
+                $invUser->userProfile->inv_num += 1;
                 $invUser->userProfile->save();
 
                 return "设置完毕,对方人气值+1,回复0开始去打怪或者挖矿吧\n\n官方QQ群：1023380085";
@@ -105,7 +105,7 @@ class UserService extends Service
     {
         $battleScene = BattleScene::find($floor);
         if ($user->userProfile->character_level < $battleScene->minimum_level_limit) {
-            return ['你等级还不够哦该层最低需要' . $battleScene->minimum_level_limit . '级', 3];
+            return ['你等级还不够哦该层最低需要'.$battleScene->minimum_level_limit.'级', 3, ''];
         }
 
         $monster = Monster::find($floor);
@@ -125,32 +125,33 @@ class UserService extends Service
         }
 
         $battleStr = '';
-        $round = 1;
+        $round     = 1;
         do {
-            $fast_a_res = mt_rand($fast['attack_lower'], $fast['attack_upper']) - $slow['defense'] * 2;
+            $fast_a_res    = mt_rand($fast['attack_lower'], $fast['attack_upper']) - $slow['defense'] * 2;
             $slow['blood'] -= $fast_a_res > 0 ? $fast_a_res : 0;
-            $battleStr .= sprintf("第%d回合,%s对%s造成%d点伤害", $round, $fast['name'], $slow['name'], $fast_a_res);
+            $battleStr     .= sprintf("第%d回合,%s对%s造成%d点伤害", $round, $fast['name'], $slow['name'], $fast_a_res);
             if ($slow['blood'] <= 0) {
                 $slow['blood'] = 0;
-                $battleStr .= sprintf(",%s阵亡了\n", $slow['name']);
-                $resultType = 1;
+                $battleStr     .= sprintf(",%s阵亡了\n", $slow['name']);
+                $resultType    = 1;
                 break;
             }
 
-            $slow_a_res = mt_rand($slow['attack_lower'], $slow['attack_upper']) - $fast['defense'] * 2;
+            $slow_a_res    = mt_rand($slow['attack_lower'], $slow['attack_upper']) - $fast['defense'] * 2;
             $fast['blood'] -= $slow_a_res > 0 ? $slow_a_res : 0;
-            $battleStr .= sprintf(",%s对%s造成%d点伤害", $slow['name'], $fast['name'], $slow_a_res);
+            $battleStr     .= sprintf(",%s对%s造成%d点伤害", $slow['name'], $fast['name'], $slow_a_res);
             if ($fast['blood'] <= 0) {
                 $fast['blood'] = 0;
-                $battleStr .= sprintf(",%s阵亡了\n", $fast['name']);
-                $resultType = 2;
+                $battleStr     .= sprintf(",%s阵亡了\n", $fast['name']);
+                $resultType    = 2;
                 break;
             }
             $battleStr .= "\n";
             $round++;
-        } while(true);
+        } while (true);
 
-        $result = $this->judgeBattleResult($user, $type, $resultType, $fast, $slow, $monster->exp, mt_rand($battleScene->gold_lower, $battleScene->gold_upper));
+        $result    = $this->judgeBattleResult($user, $type, $resultType, $fast, $slow, $monster->exp,
+            mt_rand($battleScene->gold_lower, $battleScene->gold_upper));
         $result[0] .= $battleStr;
 
         return $result;
@@ -161,27 +162,27 @@ class UserService extends Service
         [$fast, $slow] = [[], []];
 
         if ($type == 1) {
-            $fast['blood'] = $monster->blood_volume;
-            $slow['blood'] = $user->current_blood_volume;
+            $fast['blood']        = $monster->blood_volume;
+            $slow['blood']        = $user->current_blood_volume;
             $fast['attack_lower'] = $monster->attack_lower;
             $fast['attack_upper'] = $monster->attack_upper;
             $slow['attack_lower'] = $user->force + $arm_lower;
             $slow['attack_upper'] = $user->force + $arm_upper;
-            $fast['defense'] = $monster->defense;
-            $slow['defense'] = $user->defense;
-            $fast['name'] = $monster->name;
-            $slow['name'] = '你';
+            $fast['defense']      = $monster->defense;
+            $slow['defense']      = $user->defense;
+            $fast['name']         = $monster->name;
+            $slow['name']         = '你';
         } else {
-            $slow['blood'] = $monster->blood_volume;
-            $fast['blood'] = $user->current_blood_volume;
+            $slow['blood']        = $monster->blood_volume;
+            $fast['blood']        = $user->current_blood_volume;
             $slow['attack_lower'] = $monster->attack_lower;
             $slow['attack_upper'] = $monster->attack_upper;
             $fast['attack_lower'] = $user->force + $arm_lower;
             $fast['attack_upper'] = $user->force + $arm_upper;
-            $slow['defense'] = $monster->defense;
-            $fast['defense'] = $user->defense;
-            $fast['name'] = '你';
-            $slow['name'] = $monster->name;
+            $slow['defense']      = $monster->defense;
+            $fast['defense']      = $user->defense;
+            $fast['name']         = '你';
+            $slow['name']         = $monster->name;
         }
 
         return [$fast, $slow];
@@ -196,8 +197,8 @@ class UserService extends Service
             if ($resultType == 1) {
                 $res = [self::BATTLE_FAILURE, 2, ''];
             } else {
-                $user->current_exp += $exp;
-                $user->history_exp += $exp;
+                $user->current_exp  += $exp;
+                $user->history_exp  += $exp;
                 $user->current_gold += $gold;
 
                 if ($this->judgeUpgrade($user->userProfile->character_level, $user->current_exp)) {
@@ -208,13 +209,12 @@ class UserService extends Service
 
                 $res = [self::BATTLE_VICTORY, 1, $str];
             }
-
         } else {
             $user->current_blood_volume = $fast['blood'];
 
             if ($resultType == 1) {
-                $user->current_exp += $exp;
-                $user->history_exp += $exp;
+                $user->current_exp  += $exp;
+                $user->history_exp  += $exp;
                 $user->current_gold += $gold;
 
                 if ($this->judgeUpgrade($user->userProfile->character_level, $user->current_exp)) {
