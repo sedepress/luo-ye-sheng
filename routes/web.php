@@ -14,3 +14,4 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::any('/', 'IndexController@index');
+Route::get('/shop', 'ShopController@index');
