@@ -2137,9 +2137,9 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__
       page: 1,
       total: 0,
       type: 0,
-      value2: 0,
-      value3: 0,
-      option1: [{
+      rating: 0,
+      order: '',
+      typeMap: [{
         text: '全部装备',
         value: 0
       }, {
@@ -2164,7 +2164,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__
         text: '药品',
         value: 7
       }],
-      option2: [{
+      ratingMap: [{
         text: '全部等级',
         value: 0
       }, {
@@ -2198,15 +2198,15 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__
         text: '十级',
         value: 10
       }],
-      option3: [{
+      orderMap: [{
         text: '排序',
-        value: 0
+        value: ''
       }, {
         text: '价格升序',
-        value: 1
+        value: 'price asc'
       }, {
         text: '价格降序',
-        value: 2
+        value: 'price desc'
       }]
     };
   },
@@ -2219,18 +2219,18 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__
 
       // 异步更新数据
       // setTimeout 仅做示例，真实场景中一般为 ajax 请求
-      axios.get('http://luoyesheng.test/shop/list?page=' + this.page).then(function (response) {
+      axios.get('http://luoyesheng.test/shop/list?page=' + this.page + '&type=' + this.type + '&rating=' + this.rating + '&order=' + this.order).then(function (response) {
         if (_this.page == 1) {
           _this.total = response.data.total;
         }
 
-        for (var i = 0; i < 10; i++) {
+        for (var i = 0; i < response.data.data.length; i++) {
           _this.list.push(response.data.data[i]);
         }
 
         _this.page++;
 
-        if (_this.page > _this.total / 10) {
+        if (_this.list.length == _this.total) {
           _this.finished = true;
         }
       })["catch"](function (error) {
@@ -2239,6 +2239,17 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__
       })["finally"](function () {
         return _this.loading = false;
       });
+    },
+    onChange: function onChange() {
+      this.list = [];
+      this.page = 1;
+      this.total = 0; // 清空列表数据
+
+      this.finished = false; // 重新加载数据
+      // 将 loading 设置为 true，表示处于加载状态
+
+      this.loading = true;
+      this.onLoad();
     }
   }
 });
@@ -60828,7 +60839,8 @@ var render = function() {
         "van-dropdown-menu",
         [
           _c("van-dropdown-item", {
-            attrs: { options: _vm.option1 },
+            attrs: { options: _vm.typeMap },
+            on: { change: _vm.onChange },
             model: {
               value: _vm.type,
               callback: function($$v) {
@@ -60839,24 +60851,26 @@ var render = function() {
           }),
           _vm._v(" "),
           _c("van-dropdown-item", {
-            attrs: { options: _vm.option2 },
+            attrs: { options: _vm.ratingMap },
+            on: { change: _vm.onChange },
             model: {
-              value: _vm.value2,
+              value: _vm.rating,
               callback: function($$v) {
-                _vm.value2 = $$v
+                _vm.rating = $$v
               },
-              expression: "value2"
+              expression: "rating"
             }
           }),
           _vm._v(" "),
           _c("van-dropdown-item", {
-            attrs: { options: _vm.option3 },
+            attrs: { options: _vm.orderMap },
+            on: { change: _vm.onChange },
             model: {
-              value: _vm.value3,
+              value: _vm.order,
               callback: function($$v) {
-                _vm.value3 = $$v
+                _vm.order = $$v
               },
-              expression: "value3"
+              expression: "order"
             }
           })
         ],
@@ -60903,7 +60917,7 @@ var render = function() {
         1
       ),
       _vm._v(" "),
-      _c("tabbar")
+      _c("shop-tabbar")
     ],
     1
   )

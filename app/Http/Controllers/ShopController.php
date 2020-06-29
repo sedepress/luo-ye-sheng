@@ -14,12 +14,25 @@ class ShopController extends Controller
 
     public function list(Request $request)
     {
-        $data = $request->all();
+        $data = $request->only(['page', 'type', 'rating', 'order']);
+        $query = (new Shop)->newQuery();
+
+        if ($data['type']) {
+            $query->where('type', $data['type']);
+        }
+
+        if ($data['rating']) {
+            $query->where('rating', $data['rating']);
+        }
+
+        if ($data['order']) {
+            $query->orderByRaw($data['order']);
+        }
 
         $offset = ($data['page'] - 1) * 10;
-        $res    = Shop::query()->offset($offset)->limit(10)->get();
+        $total  = $query->count();
+        $res    = $query->offset($offset)->limit(10)->get();
         $res->each->append('shop_desc');
-        $total  = Shop::query()->count();
 
         return response()->json([
             'code'  => 0,

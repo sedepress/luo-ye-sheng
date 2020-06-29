@@ -1,9 +1,9 @@
 <template>
     <div>
         <van-dropdown-menu>
-            <van-dropdown-item v-model="type" :options="option1"></van-dropdown-item>
-            <van-dropdown-item v-model="value2" :options="option2"></van-dropdown-item>
-            <van-dropdown-item v-model="value3" :options="option3"></van-dropdown-item>
+            <van-dropdown-item v-model="type" :options="typeMap" @change="onChange"></van-dropdown-item>
+            <van-dropdown-item v-model="rating" :options="ratingMap" @change="onChange"></van-dropdown-item>
+            <van-dropdown-item v-model="order" :options="orderMap" @change="onChange"></van-dropdown-item>
         </van-dropdown-menu>
         <van-list
             v-model="loading"
@@ -15,7 +15,7 @@
         >
             <van-cell v-for="item in list" title-class="shop-name" value-class="pay" label-class="shop-price" is-link :label="item.shop_desc" :key="item.id" :title="item.name" value="购买" />
         </van-list>
-        <tabbar />
+        <shop-tabbar />
     </div>
 </template>
 
@@ -43,9 +43,9 @@
                 page: 1,
                 total: 0,
                 type: 0,
-                value2: 0,
-                value3: 0,
-                option1: [
+                rating: 0,
+                order: '',
+                typeMap: [
                     { text: '全部装备', value: 0 },
                     { text: '武器', value: 1 },
                     { text: '护甲', value: 2 },
@@ -55,7 +55,7 @@
                     { text: '矿石', value: 6 },
                     { text: '药品', value: 7 },
                 ],
-                option2: [
+                ratingMap: [
                     { text: '全部等级', value: 0 },
                     { text: '一级', value: 1 },
                     { text: '二级', value: 2 },
@@ -68,10 +68,10 @@
                     { text: '九级', value: 9 },
                     { text: '十级', value: 10 },
                 ],
-                option3: [
-                    { text: '排序', value: 0 },
-                    { text: '价格升序', value: 1 },
-                    { text: '价格降序', value: 2 },
+                orderMap: [
+                    { text: '排序', value: '' },
+                    { text: '价格升序', value: 'price asc' },
+                    { text: '价格降序', value: 'price desc' },
                 ],
             }
         },
@@ -83,17 +83,17 @@
                 // 异步更新数据
                 // setTimeout 仅做示例，真实场景中一般为 ajax 请求
                 axios
-                    .get('http://luoyesheng.test/shop/list?page=' + this.page)
+                    .get('http://luoyesheng.test/shop/list?page=' + this.page + '&type=' + this.type + '&rating=' + this.rating + '&order=' + this.order)
                     .then(response => {
                         if (this.page == 1) {
                             this.total = response.data.total
                         }
-                        for (let i = 0; i < 10; i++) {
+                        for (let i = 0; i < response.data.data.length; i++) {
                             this.list.push(response.data.data[i]);
                         }
                         this.page++;
 
-                        if (this.page > this.total / 10) {
+                        if (this.list.length == this.total) {
                             this.finished = true
                         }
                     })
@@ -103,6 +103,18 @@
                     })
                     .finally(() => this.loading = false)
             },
+            onChange() {
+                this.list = [];
+                this.page = 1;
+                this.total = 0;
+                // 清空列表数据
+                this.finished = false;
+
+                // 重新加载数据
+                // 将 loading 设置为 true，表示处于加载状态
+                this.loading = true;
+                this.onLoad();
+            }
         },
     }
 </script>
