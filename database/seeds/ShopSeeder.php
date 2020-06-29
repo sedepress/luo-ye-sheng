@@ -84,7 +84,7 @@ class ShopSeeder extends Seeder
                 'name'       => $i . '级矿石',
                 'type'       => 6,
                 'rating'     => $i,
-                'price'      => $price[$i],
+                'price'      => $price[$i - 1],
                 'created_at' => date('Y-m-d H:i:s', time()),
                 'updated_at' => date('Y-m-d H:i:s', time()),
             ]);
