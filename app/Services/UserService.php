@@ -111,7 +111,7 @@ class UserService extends Service
         $monster = Monster::find($floor);
         [$arm_lower, $arm_upper] = [0, 0];
 
-        if ($user->is_equip_weapon) {
+        if ($user->equip_weapon_id) {
             // 需要增加武器的攻击上下限
             [$arm_lower, $arm_upper] = [0, 0];
         }

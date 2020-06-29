@@ -21,9 +21,10 @@ class User extends Model
         'intelligence',
         'defence',
         'speed',
-        'is_equip_weapon',
-        'is_equip_armor',
-        'is_equip_shoes'
+        'equip_weapon_id',
+        'equip_armor_id',
+        'equip_shoes_id',
+        'equip_drug_id',
     ];
 
     // 升级需要经验常量

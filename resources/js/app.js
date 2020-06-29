@@ -20,6 +20,8 @@ window.Vue = require('vue');
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('shop', require('./components/Shop.vue').default);
+Vue.component('my-prop', require('./components/MyProp.vue').default);
+Vue.component('user-profile', require('./components/UserProfile.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

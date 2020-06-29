@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEquipmentsTable extends Migration
+class CreateUserPropsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,15 @@ class CreateEquipmentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('equipments', function (Blueprint $table) {
+        Schema::create('user_props', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->smallInteger('lower', false, true)->default(0)->comment('装备属性下限');
             $table->smallInteger('upper', false, true)->default(0)->comment('装备属性上限');
-            $table->tinyInteger('type', false, true)->comment('装备类型(1武器2衣服3鞋子)');
-            $table->integer('price', false, true)->comment('单价');
-            $table->string('price_type')->comment('价格类型');
-            $table->integer('sales_num', false, true)->comment('出售数量');
+            $table->tinyInteger('type', false, true)->comment('1武器2护甲3鞋子4锄头5锻造炉6矿石7药品');
+            $table->boolean('is_equip')->default(false);
+            $table->integer('remaining_usage', false, true)->default(0)->comment('剩余使用量（针对非装备道具）');
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }
@@ -33,6 +33,6 @@ class CreateEquipmentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('equipments');
+        Schema::dropIfExists('user_props');
     }
 }

@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             BattleSceneSeeder::class,
             MonsterSeeder::class,
+            ShopSeeder::class,
         ]);
     }
 }

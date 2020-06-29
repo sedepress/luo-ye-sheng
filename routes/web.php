@@ -15,3 +15,5 @@ use Illuminate\Support\Facades\Route;
 
 Route::any('/', 'IndexController@index');
 Route::get('/shop', 'ShopController@index');
+Route::get('/my_props', 'MyPropController@index');
+Route::get('/user', 'UserController@show');

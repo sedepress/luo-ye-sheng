@@ -1,21 +1,18 @@
 <template>
     <div>
-        <dropdown-menu />
         <list />
         <tabbar />
     </div>
 </template>
 
 <script>
-    import DropdownMenu from "./ShopDropdownMenu";
-    import Tabbar from "./ShopTabbar";
-    import List from "./ShopList";
+    import List from "./MyPropList";
+    import Tabbar from "./MyPropTabbar";
 
     export default {
-        name: "Shop",
+        name: "MyProp",
         components: {
             List,
-            DropdownMenu,
             Tabbar
         }
     }
