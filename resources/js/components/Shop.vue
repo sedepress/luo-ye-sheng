@@ -13,7 +13,7 @@
             finished-text="没有更多了"
             @load="onLoad"
         >
-            <van-cell v-for="item in list" title-class="shop-name" value-class="pay" label-class="shop-price" is-link :label="item.shop_desc" :key="item.id" :title="item.name" value="购买" />
+            <van-cell @click="pay(item.name)" v-for="item in list" title-class="shop-name" value-class="pay" label-class="shop-price" is-link :label="item.shop_desc" :key="item.id" :title="item.name" value="购买" />
         </van-list>
         <shop-tabbar />
     </div>
@@ -21,15 +21,17 @@
 
 <script>
     import Vue from 'vue';
-    import { DropdownMenu, DropdownItem, List } from 'vant';
+    import { DropdownMenu, DropdownItem, List, Dialog } from 'vant';
     import 'vant/lib/dropdown-menu/style';
     import 'vant/lib/dropdown-item/style';
     import 'vant/lib/list/style';
+    import 'vant/lib/dialog/style';
     import ShopTabbar from "./ShopTabbar";
 
     Vue.use(List);
     Vue.use(DropdownMenu);
     Vue.use(DropdownItem);
+    Vue.use(Dialog);
 
 
     export default {
@@ -83,7 +85,7 @@
                 // 异步更新数据
                 // setTimeout 仅做示例，真实场景中一般为 ajax 请求
                 axios
-                    .get('http://luoyesheng.test/shop/list?page=' + this.page + '&type=' + this.type + '&rating=' + this.rating + '&order=' + this.order)
+                    .get('/shop/list?page=' + this.page + '&type=' + this.type + '&rating=' + this.rating + '&order=' + this.order)
                     .then(response => {
                         if (this.page == 1) {
                             this.total = response.data.total
@@ -114,6 +116,37 @@
                 // 将 loading 设置为 true，表示处于加载状态
                 this.loading = true;
                 this.onLoad();
+            },
+            pay(title) {
+                Dialog.confirm({
+                    title: title,
+                    message: '确定要购买此道具吗？',
+                })
+                    .then(() => {
+                        axios
+                            .post('/shop/pay')
+                            .then(response => {
+                                if (this.page == 1) {
+                                    this.total = response.data.total
+                                }
+                                for (let i = 0; i < response.data.data.length; i++) {
+                                    this.list.push(response.data.data[i]);
+                                }
+                                this.page++;
+
+                                if (this.list.length == this.total) {
+                                    this.finished = true
+                                }
+                            })
+                            .catch(error => {
+                                console.log(error)
+                                this.error = true
+                            })
+                            .finally(() => this.loading = false)
+                    })
+                    .catch(() => {
+                        // on cancel
+                    });
             }
         },
     }

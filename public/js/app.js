@@ -2095,7 +2095,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vant_lib_dropdown_item_style__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(vant_lib_dropdown_item_style__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var vant_lib_list_style__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vant/lib/list/style */ "./node_modules/vant/lib/list/style/index.js");
 /* harmony import */ var vant_lib_list_style__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(vant_lib_list_style__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _ShopTabbar__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ShopTabbar */ "./resources/js/components/ShopTabbar.vue");
+/* harmony import */ var vant_lib_dialog_style__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vant/lib/dialog/style */ "./node_modules/vant/lib/dialog/style/index.js");
+/* harmony import */ var vant_lib_dialog_style__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(vant_lib_dialog_style__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _ShopTabbar__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./ShopTabbar */ "./resources/js/components/ShopTabbar.vue");
 //
 //
 //
@@ -2117,6 +2119,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 
 
 
@@ -2126,6 +2129,7 @@ __webpack_require__.r(__webpack_exports__);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__["List"]);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__["DropdownMenu"]);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__["DropdownItem"]);
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__["Dialog"]);
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Shop",
   data: function data() {
@@ -2211,7 +2215,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__
     };
   },
   components: {
-    ShopTabbar: _ShopTabbar__WEBPACK_IMPORTED_MODULE_5__["default"]
+    ShopTabbar: _ShopTabbar__WEBPACK_IMPORTED_MODULE_6__["default"]
   },
   methods: {
     onLoad: function onLoad() {
@@ -2219,7 +2223,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__
 
       // 异步更新数据
       // setTimeout 仅做示例，真实场景中一般为 ajax 请求
-      axios.get('http://luoyesheng.test/shop/list?page=' + this.page + '&type=' + this.type + '&rating=' + this.rating + '&order=' + this.order).then(function (response) {
+      axios.get('/shop/list?page=' + this.page + '&type=' + this.type + '&rating=' + this.rating + '&order=' + this.order).then(function (response) {
         if (_this.page == 1) {
           _this.total = response.data.total;
         }
@@ -2250,6 +2254,36 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__
 
       this.loading = true;
       this.onLoad();
+    },
+    pay: function pay(title) {
+      var _this2 = this;
+
+      vant__WEBPACK_IMPORTED_MODULE_1__["Dialog"].confirm({
+        title: title,
+        message: '确定要购买此道具吗？'
+      }).then(function () {
+        axios.post('/shop/pay').then(function (response) {
+          if (_this2.page == 1) {
+            _this2.total = response.data.total;
+          }
+
+          for (var i = 0; i < response.data.data.length; i++) {
+            _this2.list.push(response.data.data[i]);
+          }
+
+          _this2.page++;
+
+          if (_this2.list.length == _this2.total) {
+            _this2.finished = true;
+          }
+        })["catch"](function (error) {
+          console.log(error);
+          _this2.error = true;
+        })["finally"](function () {
+          return _this2.loading = false;
+        });
+      })["catch"](function () {// on cancel
+      });
     }
   }
 });
@@ -6839,6 +6873,25 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/vant/lib/button/index.css":
+/*!********************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vant/lib/button/index.css ***!
+  \********************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, ".van-button{position:relative;display:inline-block;box-sizing:border-box;height:44px;margin:0;padding:0;font-size:16px;line-height:1.2;text-align:center;border-radius:2px;cursor:pointer;-webkit-transition:opacity .2s;transition:opacity .2s;-webkit-appearance:none}.van-button::before{position:absolute;top:50%;left:50%;width:100%;height:100%;background-color:#000;border:inherit;border-color:#000;border-radius:inherit;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%);opacity:0;content:' '}.van-button:active::before{opacity:.1}.van-button--disabled::before,.van-button--loading::before{display:none}.van-button--default{color:#323233;background-color:#fff;border:1px solid #ebedf0}.van-button--primary{color:#fff;background-color:#07c160;border:1px solid #07c160}.van-button--info{color:#fff;background-color:#1989fa;border:1px solid #1989fa}.van-button--danger{color:#fff;background-color:#ee0a24;border:1px solid #ee0a24}.van-button--warning{color:#fff;background-color:#ff976a;border:1px solid #ff976a}.van-button--plain{background-color:#fff}.van-button--plain.van-button--primary{color:#07c160}.van-button--plain.van-button--info{color:#1989fa}.van-button--plain.van-button--danger{color:#ee0a24}.van-button--plain.van-button--warning{color:#ff976a}.van-button--large{width:100%;height:50px}.van-button--normal{padding:0 15px;font-size:14px}.van-button--small{min-width:60px;height:30px;padding:0 8px;font-size:12px}.van-button__loading{color:inherit;font-size:inherit}.van-button--mini{min-width:50px;height:22px;font-size:10px}.van-button--mini+.van-button--mini{margin-left:4px}.van-button--block{display:block;width:100%}.van-button--disabled{cursor:not-allowed;opacity:.5}.van-button--loading{cursor:default}.van-button--round{border-radius:999px}.van-button--square{border-radius:0}.van-button__content{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-box-align:center;-webkit-align-items:center;align-items:center;-webkit-box-pack:center;-webkit-justify-content:center;justify-content:center;height:100%}.van-button__icon{min-width:1em;font-size:1.2em;line-height:inherit}.van-button__icon+.van-button__text,.van-button__loading+.van-button__text{margin-left:5px}.van-button--hairline{border-width:0}.van-button--hairline::after{border-color:inherit;border-radius:4px}.van-button--hairline.van-button--round::after{border-radius:999px}.van-button--hairline.van-button--square::after{border-radius:0}", ""]);
+
+// exports
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/vant/lib/cell-group/index.css":
 /*!************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader??ref--6-1!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vant/lib/cell-group/index.css ***!
@@ -6871,6 +6924,25 @@ exports = module.exports = __webpack_require__(/*! ../../../css-loader/lib/css-b
 
 // module
 exports.push([module.i, ".van-cell{position:relative;display:-webkit-box;display:-webkit-flex;display:flex;box-sizing:border-box;width:100%;padding:10px 16px;overflow:hidden;color:#323233;font-size:14px;line-height:24px;background-color:#fff}.van-cell::after{position:absolute;box-sizing:border-box;content:' ';pointer-events:none;right:0;bottom:0;left:16px;border-bottom:1px solid #ebedf0;-webkit-transform:scaleY(.5);transform:scaleY(.5)}.van-cell--borderless::after,.van-cell:last-child::after{display:none}.van-cell__label{margin-top:3px;color:#969799;font-size:12px;line-height:18px}.van-cell__title,.van-cell__value{-webkit-box-flex:1;-webkit-flex:1;flex:1}.van-cell__value{position:relative;overflow:hidden;color:#969799;text-align:right;vertical-align:middle;word-wrap:break-word}.van-cell__value--alone{color:#323233;text-align:left}.van-cell__left-icon,.van-cell__right-icon{min-width:1em;height:24px;font-size:16px;line-height:24px}.van-cell__left-icon{margin-right:5px}.van-cell__right-icon{margin-left:5px;color:#969799}.van-cell--clickable{cursor:pointer}.van-cell--clickable:active{background-color:#f2f3f5}.van-cell--required{overflow:visible}.van-cell--required::before{position:absolute;left:8px;color:#ee0a24;font-size:14px;content:'*'}.van-cell--center{-webkit-box-align:center;-webkit-align-items:center;align-items:center}.van-cell--large{padding-top:12px;padding-bottom:12px}.van-cell--large .van-cell__title{font-size:16px}.van-cell--large .van-cell__label{font-size:14px}", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/vant/lib/dialog/index.css":
+/*!********************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vant/lib/dialog/index.css ***!
+  \********************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, ".van-dialog{position:fixed;top:45%;left:50%;width:320px;overflow:hidden;font-size:16px;background-color:#fff;border-radius:16px;-webkit-transform:translate3d(-50%,-50%,0);transform:translate3d(-50%,-50%,0);-webkit-backface-visibility:hidden;backface-visibility:hidden;-webkit-transition:.3s;transition:.3s;-webkit-transition-property:opacity,-webkit-transform;transition-property:opacity,-webkit-transform;transition-property:transform,opacity;transition-property:transform,opacity,-webkit-transform}@media (max-width:321px){.van-dialog{width:90%}}.van-dialog__header{padding-top:24px;font-weight:500;line-height:24px;text-align:center}.van-dialog__header--isolated{padding:24px 0}.van-dialog__message{max-height:60vh;padding:24px;overflow-y:auto;font-size:14px;line-height:20px;white-space:pre-wrap;text-align:center;word-wrap:break-word;-webkit-overflow-scrolling:touch}.van-dialog__message--has-title{padding-top:12px;color:#646566}.van-dialog__message--left{text-align:left}.van-dialog__message--right{text-align:right}.van-dialog__footer{overflow:hidden;-webkit-user-select:none;user-select:none}.van-dialog__footer--buttons{display:-webkit-box;display:-webkit-flex;display:flex}.van-dialog__footer--buttons .van-button{-webkit-box-flex:1;-webkit-flex:1;flex:1}.van-dialog .van-button{border:0}.van-dialog__confirm,.van-dialog__confirm:active{color:#1989fa}.van-dialog-bounce-enter{-webkit-transform:translate3d(-50%,-50%,0) scale(.7);transform:translate3d(-50%,-50%,0) scale(.7);opacity:0}.van-dialog-bounce-leave-active{-webkit-transform:translate3d(-50%,-50%,0) scale(.9);transform:translate3d(-50%,-50%,0) scale(.9);opacity:0}", ""]);
 
 // exports
 
@@ -60181,6 +60253,36 @@ function sortChildren(children, parent) {
 
 /***/ }),
 
+/***/ "./node_modules/vant/lib/button/index.css":
+/*!************************************************!*\
+  !*** ./node_modules/vant/lib/button/index.css ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../css-loader??ref--6-1!../../../postcss-loader/src??ref--6-2!./index.css */ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/vant/lib/button/index.css");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/vant/lib/cell-group/index.css":
 /*!****************************************************!*\
   !*** ./node_modules/vant/lib/cell-group/index.css ***!
@@ -60264,6 +60366,54 @@ __webpack_require__(/*! ../../style/base.css */ "./node_modules/vant/lib/style/b
 __webpack_require__(/*! ../../info/index.css */ "./node_modules/vant/lib/info/index.css");
 __webpack_require__(/*! ../../icon/index.css */ "./node_modules/vant/lib/icon/index.css");
 __webpack_require__(/*! ../index.css */ "./node_modules/vant/lib/cell/index.css");
+
+/***/ }),
+
+/***/ "./node_modules/vant/lib/dialog/index.css":
+/*!************************************************!*\
+  !*** ./node_modules/vant/lib/dialog/index.css ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../css-loader??ref--6-1!../../../postcss-loader/src??ref--6-2!./index.css */ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/vant/lib/dialog/index.css");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/vant/lib/dialog/style/index.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/vant/lib/dialog/style/index.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(/*! ../../style/base.css */ "./node_modules/vant/lib/style/base.css");
+__webpack_require__(/*! ../../overlay/index.css */ "./node_modules/vant/lib/overlay/index.css");
+__webpack_require__(/*! ../../info/index.css */ "./node_modules/vant/lib/info/index.css");
+__webpack_require__(/*! ../../icon/index.css */ "./node_modules/vant/lib/icon/index.css");
+__webpack_require__(/*! ../../popup/index.css */ "./node_modules/vant/lib/popup/index.css");
+__webpack_require__(/*! ../../loading/index.css */ "./node_modules/vant/lib/loading/index.css");
+__webpack_require__(/*! ../../button/index.css */ "./node_modules/vant/lib/button/index.css");
+__webpack_require__(/*! ../index.css */ "./node_modules/vant/lib/dialog/index.css");
 
 /***/ }),
 
@@ -60911,6 +61061,11 @@ var render = function() {
               label: item.shop_desc,
               title: item.name,
               value: "购买"
+            },
+            on: {
+              click: function($event) {
+                return _vm.pay(item.name)
+              }
             }
           })
         }),
@@ -73998,8 +74153,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\PHP\luo-ye-sheng\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\PHP\luo-ye-sheng\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\zs\Code\PHP\luo-ye-sheng\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\zs\Code\PHP\luo-ye-sheng\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

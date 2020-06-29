@@ -14,7 +14,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::any('/', 'IndexController@index');
-Route::get('/shop', 'ShopController@index');
-Route::get('/shop/list', 'ShopController@list')->name('shop.list');
+Route::group(['prefix' => 'shop'], function () {
+    Route::get('/', 'ShopController@index');
+    Route::get('/list', 'ShopController@list')->name('shop.list');
+    Route::post('/pay', 'ShopController@pay')->name('shop.pay');
+});
+
 Route::get('/my_props', 'MyPropController@index');
 Route::get('/user', 'UserController@show');

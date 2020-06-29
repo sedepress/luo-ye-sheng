@@ -41,4 +41,9 @@ class ShopController extends Controller
             'total' => $total
         ]);
     }
+
+    public function pay()
+    {
+        $data = 0;
+    }
 }
