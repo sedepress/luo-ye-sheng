@@ -16,13 +16,14 @@ class ShopSeeder extends Seeder
         $price  = [1, 3, 8, 15, 25, 50, 100, 200, 500, 1000];
         for ($i = 1; $i < 11; $i++) {
             DB::table('shops')->insert([
-                'name'  => $i.'级武器',
-                'type'  => 1,
-                'lower' => $lower1[$i - 1],
-                'upper' => $upper1[$i - 1],
-                'price' => $price[$i - 1],
-                'created_at'   => date('Y-m-d H:i:s', time()),
-                'updated_at'   => date('Y-m-d H:i:s', time()),
+                'name'       => $i.'级武器',
+                'type'       => 1,
+                'lower'      => $lower1[$i - 1],
+                'upper'      => $upper1[$i - 1],
+                'rating'     => $i,
+                'price'      => $price[$i - 1],
+                'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time()),
             ]);
         }
 
@@ -30,13 +31,14 @@ class ShopSeeder extends Seeder
         $upper2 = [1, 3, 5, 8, 10, 15, 20, 30, 40, 50];
         for ($i = 1; $i < 11; $i++) {
             DB::table('shops')->insert([
-                'name'  => $i.'级护甲',
-                'type'  => 2,
-                'lower' => $lower2[$i - 1],
-                'upper' => $upper2[$i - 1],
-                'price' => $price[$i - 1],
-                'created_at'   => date('Y-m-d H:i:s', time()),
-                'updated_at'   => date('Y-m-d H:i:s', time()),
+                'name'       => $i.'级护甲',
+                'type'       => 2,
+                'lower'      => $lower2[$i - 1],
+                'upper'      => $upper2[$i - 1],
+                'rating'     => $i,
+                'price'      => $price[$i - 1],
+                'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time()),
             ]);
         }
 
@@ -44,45 +46,47 @@ class ShopSeeder extends Seeder
         $upper3 = [1, 3, 5, 8, 10, 15, 20, 30, 40, 50];
         for ($i = 1; $i < 11; $i++) {
             DB::table('shops')->insert([
-                'name'  => $i.'级鞋子',
-                'type'  => 3,
-                'lower' => $lower3[$i - 1],
-                'upper' => $upper3[$i - 1],
-                'price' => $price[$i - 1],
-                'created_at'   => date('Y-m-d H:i:s', time()),
-                'updated_at'   => date('Y-m-d H:i:s', time()),
+                'name'       => $i.'级鞋子',
+                'type'       => 3,
+                'lower'      => $lower3[$i - 1],
+                'upper'      => $upper3[$i - 1],
+                'rating'     => $i,
+                'price'      => $price[$i - 1],
+                'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time()),
             ]);
         }
 
         for ($i = 1; $i < 11; $i++) {
             DB::table('shops')->insert([
-                'name'  => $i.'级锄头',
-                'type'  => 4,
-                'price' => $price[$i - 1],
-                'created_at'   => date('Y-m-d H:i:s', time()),
-                'updated_at'   => date('Y-m-d H:i:s', time()),
+                'name'       => $i.'级锄头',
+                'type'       => 4,
+                'rating'     => $i,
+                'price'      => $price[$i - 1],
+                'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time()),
             ]);
         }
 
         for ($i = 1; $i < 11; $i++) {
             DB::table('shops')->insert([
-                'name'  => $i.'级锻造炉',
-                'type'  => 5,
-                'price' => $price[$i - 1],
-                'created_at'   => date('Y-m-d H:i:s', time()),
-                'updated_at'   => date('Y-m-d H:i:s', time()),
+                'name'       => $i.'级锻造炉',
+                'type'       => 5,
+                'rating'     => $i,
+                'price'      => $price[$i - 1],
+                'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time()),
             ]);
         }
 
-        $name   = ['黑铁', '青铜', '铁', '银', '金'];
-        $price6 = [1, 8, 25, 100, 500];
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 1; $i < 11; $i++) {
             DB::table('shops')->insert([
-                'name'  => $name[$i].'级矿石',
-                'type'  => 6,
-                'price' => $price6[$i],
-                'created_at'   => date('Y-m-d H:i:s', time()),
-                'updated_at'   => date('Y-m-d H:i:s', time()),
+                'name'       => $i . '级矿石',
+                'type'       => 6,
+                'rating'     => $i,
+                'price'      => $price[$i],
+                'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time()),
             ]);
         }
 
@@ -95,9 +99,10 @@ class ShopSeeder extends Seeder
                 'lower'      => $lower7[$i - 1],
                 'upper'      => $lower7[$i - 1],
                 'price_type' => 2,
+                'rating'     => $i,
                 'price'      => $price7[$i - 1],
-                'created_at'   => date('Y-m-d H:i:s', time()),
-                'updated_at'   => date('Y-m-d H:i:s', time()),
+                'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time()),
             ]);
         }
 
@@ -110,9 +115,10 @@ class ShopSeeder extends Seeder
                 'lower'      => $lower7[$i - 6],
                 'upper'      => $lower7[$i - 6],
                 'price_type' => 2,
+                'rating'     => $i,
                 'price'      => $price7[$i - 6],
-                'created_at'   => date('Y-m-d H:i:s', time()),
-                'updated_at'   => date('Y-m-d H:i:s', time()),
+                'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time()),
             ]);
         }
     }

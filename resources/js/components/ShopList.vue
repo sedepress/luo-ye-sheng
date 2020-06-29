@@ -7,7 +7,7 @@
         finished-text="没有更多了"
         @load="onLoad"
     >
-        <van-cell v-for="item in list" title-class="shop-name" value-class="pay" label-class="shop-price" is-link label="价格: 1人力值" :key="item" :title="item" value="购买" />
+        <van-cell v-for="item in list" title-class="shop-name" value-class="pay" label-class="shop-price" is-link :label="item.shop_desc" :key="item.id" :title="item.name" value="购买" />
     </van-list>
 </template>
 
@@ -27,25 +27,33 @@
                 error: false,
                 finished: false,
                 page: 1,
+                total: 0,
             };
         },
         methods: {
             onLoad() {
                 // 异步更新数据
                 // setTimeout 仅做示例，真实场景中一般为 ajax 请求
-                setTimeout(() => {
-                    for (let i = 0; i < 10; i++) {
-                        this.list.push(this.list.length + 1 + '锄头');
-                    }
+                axios
+                    .get('http://luoyesheng.test/shop/list?page=' + this.page)
+                    .then(response => {
+                        if (this.page == 1) {
+                            this.total = response.data.total
+                        }
+                        for (let i = 0; i < 10; i++) {
+                            this.list.push(response.data.data[i]);
+                        }
+                        this.page++;
 
-                    // 加载状态结束
-                    this.loading = false;
-
-                    // 数据全部加载完成
-                    if (this.list.length >= 40) {
-                        this.finished = true;
-                    }
-                }, 1000);
+                        if (this.page > this.total / 10) {
+                            this.finished = true
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        this.error = true
+                    })
+                    .finally(() => this.loading = false)
             },
         },
     }

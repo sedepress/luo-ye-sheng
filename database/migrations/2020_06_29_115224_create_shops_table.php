@@ -22,6 +22,7 @@ class CreateShopsTable extends Migration
             $table->integer('upper', false, true)->default(0)->comment('装备属性上限');
             $table->tinyInteger('price_type', false, true)->default(1)->comment('1人力值 2金币');
             $table->boolean('on_sale')->default(true);
+            $table->tinyInteger('rating', false, true);
             $table->integer('price', false, true);
             $table->integer('stock', false, true)->default(0);
             $table->integer('sales_num', false, true)->default(0);
