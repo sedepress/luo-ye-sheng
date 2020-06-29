@@ -21,6 +21,8 @@ class ShopSeeder extends Seeder
                 'lower' => $lower1[$i - 1],
                 'upper' => $upper1[$i - 1],
                 'price' => $price[$i - 1],
+                'created_at'   => date('Y-m-d H:i:s', time()),
+                'updated_at'   => date('Y-m-d H:i:s', time()),
             ]);
         }
 
@@ -33,6 +35,8 @@ class ShopSeeder extends Seeder
                 'lower' => $lower2[$i - 1],
                 'upper' => $upper2[$i - 1],
                 'price' => $price[$i - 1],
+                'created_at'   => date('Y-m-d H:i:s', time()),
+                'updated_at'   => date('Y-m-d H:i:s', time()),
             ]);
         }
 
@@ -45,6 +49,8 @@ class ShopSeeder extends Seeder
                 'lower' => $lower3[$i - 1],
                 'upper' => $upper3[$i - 1],
                 'price' => $price[$i - 1],
+                'created_at'   => date('Y-m-d H:i:s', time()),
+                'updated_at'   => date('Y-m-d H:i:s', time()),
             ]);
         }
 
@@ -53,6 +59,8 @@ class ShopSeeder extends Seeder
                 'name'  => $i.'级锄头',
                 'type'  => 4,
                 'price' => $price[$i - 1],
+                'created_at'   => date('Y-m-d H:i:s', time()),
+                'updated_at'   => date('Y-m-d H:i:s', time()),
             ]);
         }
 
@@ -61,6 +69,8 @@ class ShopSeeder extends Seeder
                 'name'  => $i.'级锻造炉',
                 'type'  => 5,
                 'price' => $price[$i - 1],
+                'created_at'   => date('Y-m-d H:i:s', time()),
+                'updated_at'   => date('Y-m-d H:i:s', time()),
             ]);
         }
 
@@ -71,6 +81,8 @@ class ShopSeeder extends Seeder
                 'name'  => $name[$i].'级矿石',
                 'type'  => 6,
                 'price' => $price6[$i],
+                'created_at'   => date('Y-m-d H:i:s', time()),
+                'updated_at'   => date('Y-m-d H:i:s', time()),
             ]);
         }
 
@@ -84,6 +96,8 @@ class ShopSeeder extends Seeder
                 'upper'      => $lower7[$i - 1],
                 'price_type' => 2,
                 'price'      => $price7[$i - 1],
+                'created_at'   => date('Y-m-d H:i:s', time()),
+                'updated_at'   => date('Y-m-d H:i:s', time()),
             ]);
         }
 
@@ -97,6 +111,8 @@ class ShopSeeder extends Seeder
                 'upper'      => $lower7[$i - 6],
                 'price_type' => 2,
                 'price'      => $price7[$i - 6],
+                'created_at'   => date('Y-m-d H:i:s', time()),
+                'updated_at'   => date('Y-m-d H:i:s', time()),
             ]);
         }
     }
