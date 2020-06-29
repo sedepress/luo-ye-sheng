@@ -93,10 +93,10 @@ class ShopSeeder extends Seeder
             DB::table('shops')->insert([
                 'name'       => $i.'级红罗羹',
                 'type'       => 7,
-                'lower'      => $lower7[$i - 1],
-                'upper'      => $lower7[$i - 1],
+                'lower'      => $lower7[$i - 6],
+                'upper'      => $lower7[$i - 6],
                 'price_type' => 2,
-                'price'      => $price7[$i - 1],
+                'price'      => $price7[$i - 6],
             ]);
         }
     }

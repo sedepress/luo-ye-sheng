@@ -26,6 +26,7 @@
                 loading: false,
                 error: false,
                 finished: false,
+                page: 1,
             };
         },
         methods: {

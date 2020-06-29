@@ -2251,7 +2251,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__
       list: [],
       loading: false,
       error: false,
-      finished: false
+      finished: false,
+      page: 1
     };
   },
   methods: {
