@@ -1,16 +1,17 @@
 <template>
     <div>
-        <user-cell />
+        <router-view />
+        <tabbar />
     </div>
 </template>
 
 <script>
-    import UserCell from "./UserCell";
+    import Tabbar from './components/Tabbar.vue';
 
     export default {
-        name: "UserProfile",
+        name: "App",
         components: {
-            UserCell,
+            Tabbar
         }
     }
 </script>

@@ -1,9 +1,11 @@
 <template>
-    <van-tabbar v-model="active">
-        <van-tabbar-item icon="shopping-cart-o">购买装备</van-tabbar-item>
-        <van-tabbar-item icon="gem-o" url="/my_props">我的装备</van-tabbar-item>
-        <van-tabbar-item icon="user-o" url="/user">个人信息</van-tabbar-item>
-    </van-tabbar>
+    <div>
+        <van-tabbar v-model="active" route>
+            <van-tabbar-item replace icon="shopping-cart-o" to="/shop">购买装备</van-tabbar-item>
+            <van-tabbar-item replace icon="gem-o" to="/my_props">我的装备</van-tabbar-item>
+            <van-tabbar-item replace icon="user-o" to="/user">个人信息</van-tabbar-item>
+        </van-tabbar>
+    </div>
 </template>
 
 <script>

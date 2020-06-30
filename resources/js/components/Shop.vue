@@ -15,7 +15,6 @@
         >
             <van-cell @click="pay(item.name)" v-for="item in list" title-class="shop-name" value-class="pay" label-class="shop-price" is-link :label="item.shop_desc" :key="item.id" :title="item.name" value="购买" />
         </van-list>
-        <shop-tabbar />
     </div>
 </template>
 
@@ -26,7 +25,6 @@
     import 'vant/lib/dropdown-item/style';
     import 'vant/lib/list/style';
     import 'vant/lib/dialog/style';
-    import ShopTabbar from "./ShopTabbar";
 
     Vue.use(List);
     Vue.use(DropdownMenu);
@@ -77,13 +75,8 @@
                 ],
             }
         },
-        components: {
-            ShopTabbar
-        },
         methods: {
             onLoad() {
-                // 异步更新数据
-                // setTimeout 仅做示例，真实场景中一般为 ajax 请求
                 axios
                     .get('/shop/list?page=' + this.page + '&type=' + this.type + '&rating=' + this.rating + '&order=' + this.order)
                     .then(response => {
