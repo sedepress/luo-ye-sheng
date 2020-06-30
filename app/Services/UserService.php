@@ -247,7 +247,13 @@ class UserService extends Service
     public function getUserProps(User $user, $page)
     {
         $offset = ($page - 1) * self::LIMIT;
+        $total = 0;
+        if ($page == 1) {
+            $total = $user->props()->count();
+        }
+        $data = $user->props()->offset($offset)->limit(self::LIMIT)->orderBy('rating', 'desc')->get();
+        $data->each->append('prop_desc');
 
-        return $user->props()->offset($offset)->limit(self::LIMIT)->orderBy('rating', 'desc')->get()->toArray();
+        return [$data->toArray(), $total];
     }
 }

@@ -33,12 +33,13 @@ class UserController extends Controller
             abort(403);
         }
 
-        $res = $this->userService->getUserProps($user, $data['page']);
+        list($res, $total) = $this->userService->getUserProps($user, $data['page']);
 
         return response()->json([
-            'code' => 0,
-            'data' => $res,
-            'msg'  => 'ok',
+            'code'  => 0,
+            'data'  => $res,
+            'msg'   => 'ok',
+            'total' => $total
         ]);
     }
 }
