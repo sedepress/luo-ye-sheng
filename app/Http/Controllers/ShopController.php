@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Shop;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class ShopController extends Controller
 {
@@ -26,12 +27,15 @@ class ShopController extends Controller
         }
 
         if ($data['order']) {
-            $query->orderByRaw($data['order']);
+            $query->orderByRaw($data['order'] . ',id');
         }
 
         $offset = ($data['page'] - 1) * 10;
-        $total  = $query->count();
-        $res    = $query->offset($offset)->limit(10)->get();
+        $total = 0;
+        if ($data['page'] == 1) {
+            $total  = $query->count();
+        }
+        $res    = $query->select(['id', 'name', 'price', 'type', 'price_type', 'lower', 'upper'])->offset($offset)->limit(10)->get();
         $res->each->append('shop_desc');
 
         return response()->json([

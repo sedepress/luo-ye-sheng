@@ -29,10 +29,10 @@ class CreateUsersTable extends Migration
             $table->tinyInteger('intelligence', false, true)->default(5)->comment('智力');
             $table->tinyInteger('defence', false, true)->default(1)->comment('防御');
             $table->tinyInteger('speed', false, true)->default(1)->comment('速度');
-            $table->boolean('equip_weapon_id')->default(0)->comment('是否装备武器');
-            $table->boolean('equip_armor_id')->default(0)->comment('是否装备衣服');
-            $table->boolean('equip_shoes_id')->default(0)->comment('是否装备鞋子');
-            $table->boolean('equip_drup_id')->default(0)->comment('是否装备药品');
+            $table->tinyInteger('equip_weapon_id')->default(0)->comment('是否装备武器');
+            $table->tinyInteger('equip_armor_id')->default(0)->comment('是否装备衣服');
+            $table->tinyInteger('equip_shoes_id')->default(0)->comment('是否装备鞋子');
+            $table->tinyInteger('equip_drup_id')->default(0)->comment('是否装备药品');
             $table->timestamps();
         });
     }

@@ -99,7 +99,7 @@ class IndexController extends Controller
                                 return self::NO_FATIGUE_MENU;
                                 break;
                             case 5:
-                                return '这是一个测试的文本消息<a href="http://120.27.145.17">百度</a>';
+                                return '<a href="' . config('app.url') . '/shop?token=' . encrypt($message['FromUserName']) . '">点击进入商店</a>';
                                 break;
                             default:
                                 Redis::hSet($key, 'instruction', '');
