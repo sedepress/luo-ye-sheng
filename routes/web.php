@@ -21,6 +21,7 @@ Route::group(['prefix' => 'shop'], function() {
 });
 
 Route::group(['prefix' => 'user'], function() {
-    Route::get('/props', 'UserController@props');
+    Route::get('/prop', 'UserController@props');
+    Route::post('/prop_list', 'UserController@propList');
     Route::get('/', 'UserController@show');
 });

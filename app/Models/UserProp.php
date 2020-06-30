@@ -8,6 +8,7 @@ class UserProp extends Model
 {
     protected $fillable = [
         'name',
+        'user_id',
         'lower',
         'upper',
         'type',
@@ -20,5 +21,10 @@ class UserProp extends Model
     public function shop()
     {
         return $this->belongsTo(Shop::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

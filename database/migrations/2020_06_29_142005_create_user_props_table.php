@@ -16,8 +16,10 @@ class CreateUserPropsTable extends Migration
         Schema::create('user_props', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->integer('user_id', false, true);
             $table->smallInteger('lower', false, true)->default(0)->comment('装备属性下限');
             $table->smallInteger('upper', false, true)->default(0)->comment('装备属性上限');
+            $table->tinyInteger('rating', false, true);
             $table->tinyInteger('type', false, true)->comment('1武器2护甲3鞋子4锄头5锻造炉6矿石7药品');
             $table->integer('shop_id', false, true)->default(0);
             $table->boolean('is_equip')->default(false);

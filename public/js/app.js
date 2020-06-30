@@ -2033,14 +2033,19 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__
       list: [],
       loading: false,
       error: false,
-      finished: false
+      finished: false,
+      page: 1,
+      total: 0
     };
   },
   methods: {
     onLoad: function onLoad() {
       var _this = this;
 
-      axios.get('/user/list?page=' + this.page).then(function (response) {
+      axios.post('/user/prop_list', {
+        page: this.page,
+        token: this.$root.token
+      }).then(function (response) {
         if (_this.page == 1) {
           _this.total = response.data.total;
         }
@@ -61096,7 +61101,7 @@ var render = function() {
           _vm._v(" "),
           _c(
             "van-tabbar-item",
-            { attrs: { replace: "", icon: "gem-o", to: "/my_props" } },
+            { attrs: { replace: "", icon: "gem-o", to: "/user/prop" } },
             [_vm._v("我的装备")]
           ),
           _vm._v(" "),
@@ -76539,7 +76544,7 @@ var routes = [{
   path: '/shop',
   component: _components_Shop__WEBPACK_IMPORTED_MODULE_0__["default"]
 }, {
-  path: '/user/props',
+  path: '/user/prop',
   component: _components_MyProp__WEBPACK_IMPORTED_MODULE_1__["default"]
 }, {
   path: '/user',
@@ -77094,8 +77099,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\PHP\luo-ye-sheng\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\PHP\luo-ye-sheng\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\zs\Code\PHP\luo-ye-sheng\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\zs\Code\PHP\luo-ye-sheng\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

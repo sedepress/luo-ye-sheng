@@ -26,9 +26,10 @@ class ShopService extends Service
                         'manpower' => $money - $shop->price,
                     ]);
 
-                    $this->syncUserProp($shop);
+                    $this->syncUserProp($user->id, $shop);
 
                     DB::commit();
+
                     return true;
                 }
             } else {
@@ -38,9 +39,10 @@ class ShopService extends Service
                         'current_gold' => $money - $shop->price,
                     ]);
 
-                    $this->syncUserProp($shop);
+                    $this->syncUserProp($user->id, $shop);
 
                     DB::commit();
+
                     return true;
                 }
             }
@@ -49,17 +51,20 @@ class ShopService extends Service
         } catch (\Exception $exception) {
             DB::rollBack();
             logger()->error("用户id：{$user->id} 购买商品异常：" . $exception->getMessage());
+
             return false;
         }
     }
 
-    public function syncUserProp(Shop $shop)
+    public function syncUserProp($userId, Shop $shop)
     {
         UserProp::query()->create([
-            'name' => $shop->name,
-            'lower' => $shop->lower,
-            'upper' => $shop->upper,
-            'type' => $shop->type,
+            'name'    => $shop->name,
+            'user_id' => $userId,
+            'lower'   => $shop->lower,
+            'upper'   => $shop->upper,
+            'rating'  => $shop->rating,
+            'type'    => $shop->type,
             'shop_id' => $shop->id,
         ]);
     }

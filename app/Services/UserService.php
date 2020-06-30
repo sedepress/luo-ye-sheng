@@ -12,6 +12,7 @@ class UserService extends Service
     const USER_INSTRUCTION = 'user_instruction:';
     const BATTLE_VICTORY = "您胜利了,佩戴装备或提升等级能更轻松\n";
     const BATTLE_FAILURE = "您战败了,佩戴装备或提升等级再来挑战吧\n";
+    const LIMIT = 10;
 
     public function getUserByOpenid($openid)
     {
@@ -241,5 +242,12 @@ class UserService extends Service
         }
 
         return false;
+    }
+
+    public function getUserProps(User $user, $page)
+    {
+        $offset = ($page - 1) * self::LIMIT;
+
+        return $user->props()->offset($offset)->limit(self::LIMIT)->orderBy('rating', 'desc')->get()->toArray();
     }
 }

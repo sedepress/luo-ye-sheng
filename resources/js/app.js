@@ -32,7 +32,7 @@ Vue.component('my-app', require('./App.vue').default);
 
 const routes = [
     { path: '/shop', component: Shop },
-    { path: '/user/props', component: MyProp },
+    { path: '/user/prop', component: MyProp },
     { path: '/user', component: UserProfile }
 ];
 

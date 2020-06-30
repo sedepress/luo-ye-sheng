@@ -19,14 +19,26 @@ class UserController extends Controller
         return view('user.show');
     }
 
-    public function props(Request $request)
+    public function prop()
     {
-        $openid = decrypt($request->input(['token']));
+        return view('user.prop');
+    }
+
+    public function propList(Request $request)
+    {
+        $data = $request->only(['token', 'page']);
+        $openid = decrypt($data['token']);
         $user = $this->userService->getUserByOpenid($openid);
         if (!$user) {
-
+            abort(403);
         }
 
-        return view('user.prop');
+        $res = $this->userService->getUserProps($user, $data['page']);
+
+        return response()->json([
+            'code' => 0,
+            'data' => $res,
+            'msg'  => 'ok',
+        ]);
     }
 }

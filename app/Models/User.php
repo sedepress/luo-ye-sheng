@@ -54,4 +54,9 @@ class User extends Model
     {
         return $this->hasOne(UserProfile::class);
     }
+
+    public function props()
+    {
+        return $this->hasMany(UserProp::class);
+    }
 }

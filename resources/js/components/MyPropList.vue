@@ -26,12 +26,17 @@
                 loading: false,
                 error: false,
                 finished: false,
+                page: 1,
+                total: 0,
             };
         },
         methods: {
             onLoad() {
                 axios
-                    .get('/user/list?page=' + this.page)
+                    .post('/user/prop_list', {
+                        page: this.page,
+                        token: this.$root.token,
+                    })
                     .then(response => {
                         if (this.page == 1) {
                             this.total = response.data.total
