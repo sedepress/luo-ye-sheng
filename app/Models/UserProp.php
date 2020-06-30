@@ -11,6 +11,7 @@ class UserProp extends Model
         'user_id',
         'lower',
         'upper',
+        'rating',
         'type',
         'shop_id',
         'is_equip',
