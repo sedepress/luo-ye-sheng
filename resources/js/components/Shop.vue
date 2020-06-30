@@ -13,23 +13,25 @@
             finished-text="没有更多了"
             @load="onLoad"
         >
-            <van-cell @click="pay(item.name)" v-for="item in list" title-class="shop-name" value-class="pay" label-class="shop-price" is-link :label="item.shop_desc" :key="item.id" :title="item.name" value="购买" />
+            <van-cell @click="pay(item)" v-for="item in list" title-class="shop-name" value-class="pay" label-class="shop-price" is-link :label="item.shop_desc" :key="item.id" :title="item.name" value="购买" />
         </van-list>
     </div>
 </template>
 
 <script>
     import Vue from 'vue';
-    import { DropdownMenu, DropdownItem, List, Dialog } from 'vant';
+    import { DropdownMenu, DropdownItem, List, Dialog, Toast } from 'vant';
     import 'vant/lib/dropdown-menu/style';
     import 'vant/lib/dropdown-item/style';
     import 'vant/lib/list/style';
     import 'vant/lib/dialog/style';
+    import 'vant/lib/toast/style';
 
     Vue.use(List);
     Vue.use(DropdownMenu);
     Vue.use(DropdownItem);
     Vue.use(Dialog);
+    Vue.use(Toast);
 
 
     export default {
@@ -94,7 +96,7 @@
                     })
                     .catch(error => {
                         console.log(error)
-                        this.error = true
+                        this.error = true;
                     })
                     .finally(() => this.loading = false)
             },
@@ -110,29 +112,22 @@
                 this.loading = true;
                 this.onLoad();
             },
-            pay(title) {
+            pay(shop) {
                 Dialog.confirm({
-                    title: title,
+                    title: shop.name,
                     message: '确定要购买此道具吗？',
                 })
                     .then(() => {
                         axios
-                            .post('/shop/pay')
+                            .post('/shop/pay', {
+                                token: this.$root.token,
+                                shop_id: shop.id,
+                            })
                             .then(response => {
-                                if (this.page == 1) {
-                                    this.total = response.data.total
-                                }
-                                for (let i = 0; i < response.data.data.length; i++) {
-                                    this.list.push(response.data.data[i]);
-                                }
-                                this.page++;
-
-                                if (this.list.length == this.total) {
-                                    this.finished = true
-                                }
+                                Toast(response.data.msg);
                             })
                             .catch(error => {
-                                console.log(error)
+                                Toast.fail('系统错误，请重新点击商店链接');
                                 this.error = true
                             })
                             .finally(() => this.loading = false)

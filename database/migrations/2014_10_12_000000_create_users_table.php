@@ -15,7 +15,7 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('nickname')->default('')->comment('昵称');
+            $table->string('nickname')->unique()->nullable()->comment('昵称');
             $table->string('openid', 50)->unique();
             $table->integer('fatigue_value', false, true)->default(20)->comment('疲劳值');
             $table->integer('lucky_value', false, true)->default(0)->comment('幸运值');

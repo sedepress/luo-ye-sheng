@@ -234,4 +234,6 @@ return [
         'appid' => 'wx4f3677d351aa5750',
         'secret' => '5c0c2bd5bcb5d2fff085045af86f4d61',
     ],
+
+    '404' => 'https://www.qq.com/404/',
 ];

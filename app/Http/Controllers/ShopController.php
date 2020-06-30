@@ -3,11 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\Shop;
+use App\Services\ShopService;
+use App\Services\UserService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class ShopController extends Controller
 {
+    protected $userService;
+    protected $shopService;
+
+    public function __construct()
+    {
+        $this->userService = new UserService();
+        $this->shopService = new ShopService();
+    }
+
     public function index()
     {
         return view('shop.index');
@@ -46,8 +56,33 @@ class ShopController extends Controller
         ]);
     }
 
-    public function pay()
+    public function pay(Request $request)
     {
-        $data = 0;
+        $data = $request->only(['token', 'shop_id']);
+        try {
+            $openid = decrypt($data['token']);
+        } catch (\Exception $exception) {
+            abort(403);
+        }
+
+        $user = $this->userService->getUserByOpenid($openid);
+        if (!$user) {
+            abort(403);
+        }
+
+        $result = $this->shopService->buyShopResult($user, $data['shop_id']);
+        if ($result) {
+            return response()->json([
+                'code'  => 0,
+                'data'  => [],
+                'msg'   => '购买成功',
+            ]);
+        }
+
+        return response()->json([
+            'code'  => 0,
+            'data'  => [],
+            'msg'   => '您的余额不足',
+        ]);
     }
 }

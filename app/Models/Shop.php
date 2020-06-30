@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Shop extends Model
 {
+    public function userProps()
+    {
+        return $this->hasMany(UserProp::class);
+    }
+
     public function getShopDescAttribute()
     {
         $arr = [1, 2, 3];

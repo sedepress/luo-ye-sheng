@@ -2040,20 +2040,26 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__
     onLoad: function onLoad() {
       var _this = this;
 
-      // 异步更新数据
-      // setTimeout 仅做示例，真实场景中一般为 ajax 请求
-      setTimeout(function () {
-        for (var i = 0; i < 10; i++) {
-          _this.list.push('武器' + _this.list.length + 1);
-        } // 加载状态结束
+      axios.get('/user/list?page=' + this.page).then(function (response) {
+        if (_this.page == 1) {
+          _this.total = response.data.total;
+        }
 
+        for (var i = 0; i < response.data.data.length; i++) {
+          _this.list.push(response.data.data[i]);
+        }
 
-        _this.loading = false; // 数据全部加载完成
+        _this.page++;
 
-        if (_this.list.length >= 40) {
+        if (_this.list.length == _this.total) {
           _this.finished = true;
         }
-      }, 1000);
+      })["catch"](function (error) {
+        console.log(error);
+        _this.error = true;
+      })["finally"](function () {
+        return _this.loading = false;
+      });
     }
   }
 });
@@ -2080,6 +2086,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vant_lib_list_style__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(vant_lib_list_style__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var vant_lib_dialog_style__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vant/lib/dialog/style */ "./node_modules/vant/lib/dialog/style/index.js");
 /* harmony import */ var vant_lib_dialog_style__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(vant_lib_dialog_style__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var vant_lib_toast_style__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! vant/lib/toast/style */ "./node_modules/vant/lib/toast/style/index.js");
+/* harmony import */ var vant_lib_toast_style__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(vant_lib_toast_style__WEBPACK_IMPORTED_MODULE_6__);
 //
 //
 //
@@ -2100,6 +2108,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 
 
 
@@ -2110,6 +2119,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__["DropdownMenu"]);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__["DropdownItem"]);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__["Dialog"]);
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__["Toast"]);
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Shop",
   data: function data() {
@@ -2230,29 +2240,20 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__
       this.loading = true;
       this.onLoad();
     },
-    pay: function pay(title) {
+    pay: function pay(shop) {
       var _this2 = this;
 
       vant__WEBPACK_IMPORTED_MODULE_1__["Dialog"].confirm({
-        title: title,
+        title: shop.name,
         message: '确定要购买此道具吗？'
       }).then(function () {
-        axios.post('/shop/pay').then(function (response) {
-          if (_this2.page == 1) {
-            _this2.total = response.data.total;
-          }
-
-          for (var i = 0; i < response.data.data.length; i++) {
-            _this2.list.push(response.data.data[i]);
-          }
-
-          _this2.page++;
-
-          if (_this2.list.length == _this2.total) {
-            _this2.finished = true;
-          }
+        axios.post('/shop/pay', {
+          token: _this2.$root.token,
+          shop_id: shop.id
+        }).then(function (response) {
+          Object(vant__WEBPACK_IMPORTED_MODULE_1__["Toast"])(response.data.msg);
         })["catch"](function (error) {
-          console.log(error);
+          vant__WEBPACK_IMPORTED_MODULE_1__["Toast"].fail('系统错误，请重新点击商店链接');
           _this2.error = true;
         })["finally"](function () {
           return _this2.loading = false;
@@ -7085,6 +7086,25 @@ exports = module.exports = __webpack_require__(/*! ../../../css-loader/lib/css-b
 
 // module
 exports.push([module.i, ".van-tabbar{z-index:1;display:-webkit-box;display:-webkit-flex;display:flex;box-sizing:content-box;width:100%;height:50px;padding-bottom:constant(safe-area-inset-bottom);padding-bottom:env(safe-area-inset-bottom);background-color:#fff}.van-tabbar--fixed{position:fixed;bottom:0;left:0}.van-tabbar--unfit{padding-bottom:0}", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/vant/lib/toast/index.css":
+/*!*******************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vant/lib/toast/index.css ***!
+  \*******************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, ".van-toast{position:fixed;top:50%;left:50%;display:-webkit-box;display:-webkit-flex;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-webkit-flex-direction:column;flex-direction:column;-webkit-box-align:center;-webkit-align-items:center;align-items:center;-webkit-box-pack:center;-webkit-justify-content:center;justify-content:center;box-sizing:content-box;width:88px;max-width:70%;min-height:88px;padding:16px;color:#fff;font-size:14px;line-height:20px;white-space:pre-wrap;text-align:center;word-wrap:break-word;background-color:rgba(50,50,51,.88);border-radius:8px;-webkit-transform:translate3d(-50%,-50%,0);transform:translate3d(-50%,-50%,0)}.van-toast--unclickable{overflow:hidden}.van-toast--unclickable *{pointer-events:none}.van-toast--html,.van-toast--text{width:-webkit-fit-content;width:fit-content;min-width:96px;min-height:0;padding:8px 12px}.van-toast--html .van-toast__text,.van-toast--text .van-toast__text{margin-top:0}.van-toast--top{top:50px}.van-toast--bottom{top:auto;bottom:50px}.van-toast__icon{font-size:40px}.van-toast__loading{padding:4px;color:#fff}.van-toast__text{margin-top:8px}", ""]);
 
 // exports
 
@@ -60748,6 +60768,53 @@ __webpack_require__(/*! ../index.css */ "./node_modules/vant/lib/tabbar/index.cs
 
 /***/ }),
 
+/***/ "./node_modules/vant/lib/toast/index.css":
+/*!***********************************************!*\
+  !*** ./node_modules/vant/lib/toast/index.css ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../css-loader??ref--6-1!../../../postcss-loader/src??ref--6-2!./index.css */ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/vant/lib/toast/index.css");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/vant/lib/toast/style/index.js":
+/*!****************************************************!*\
+  !*** ./node_modules/vant/lib/toast/style/index.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(/*! ../../style/base.css */ "./node_modules/vant/lib/style/base.css");
+__webpack_require__(/*! ../../overlay/index.css */ "./node_modules/vant/lib/overlay/index.css");
+__webpack_require__(/*! ../../info/index.css */ "./node_modules/vant/lib/info/index.css");
+__webpack_require__(/*! ../../icon/index.css */ "./node_modules/vant/lib/icon/index.css");
+__webpack_require__(/*! ../../popup/index.css */ "./node_modules/vant/lib/popup/index.css");
+__webpack_require__(/*! ../../loading/index.css */ "./node_modules/vant/lib/loading/index.css");
+__webpack_require__(/*! ../index.css */ "./node_modules/vant/lib/toast/index.css");
+
+/***/ }),
+
 /***/ "./node_modules/vue-lazyload/vue-lazyload.js":
 /*!***************************************************!*\
   !*** ./node_modules/vue-lazyload/vue-lazyload.js ***!
@@ -60972,7 +61039,7 @@ var render = function() {
             },
             on: {
               click: function($event) {
-                return _vm.pay(item.name)
+                return _vm.pay(item)
               }
             }
           })
@@ -76472,7 +76539,7 @@ var routes = [{
   path: '/shop',
   component: _components_Shop__WEBPACK_IMPORTED_MODULE_0__["default"]
 }, {
-  path: '/my_props',
+  path: '/user/props',
   component: _components_MyProp__WEBPACK_IMPORTED_MODULE_1__["default"]
 }, {
   path: '/user',
