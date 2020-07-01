@@ -24,7 +24,17 @@ class User extends Model
         'equip_weapon_id',
         'equip_armor_id',
         'equip_shoes_id',
+        'equip_hoe_id',
+        'equip_forging_id',
         'equip_drug_id',
+        'hero_id',
+        'character_level',
+        'mining_level',
+        'forging_level',
+        'invitation_code',
+        'inv_num',
+        'invite_people',
+        'is_used_inv'
     ];
 
     // 升级需要经验常量
@@ -49,11 +59,6 @@ class User extends Model
         8 => self::LEVEL_NIGHT_REQ_EXP,
         9 => self::LEVEL_TEN_REQ_EXP,
     ];
-
-    public function userProfile()
-    {
-        return $this->hasOne(UserProfile::class);
-    }
 
     public function props()
     {

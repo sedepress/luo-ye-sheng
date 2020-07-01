@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Libs\Constant;
 use App\Models\BattleScene;
 use App\Models\Monster;
 use App\Models\User;
+use App\Models\UserProp;
 use Illuminate\Support\Facades\Redis;
 
 class UserService extends Service
@@ -35,10 +37,9 @@ class UserService extends Service
             'openid'       => $message['FromUserName'],
             'current_gold' => 100,
         ]);
-
-        $user->userProfile()->create([
-            'invitation_code' => 'yqm'.str_pad((string) $user->id, 6, '0', STR_PAD_LEFT),
-        ]);
+        $user->invitation_code = 'yqm' . str_pad((string) $user->id, 6, '0', STR_PAD_LEFT);
+        $user->nickname = '编号' . (string) (100000 + $user->id);
+        $user->save();
     }
 
     public function setNickname($str, $opeind)
@@ -56,7 +57,7 @@ class UserService extends Service
         $user           = $this->getUserByOpenid($opeind);
         $user->nickname = $nickname;
         $user->save();
-        Redis::hSet(self::USER_INSTRUCTION.$opeind, 'nickname', $nickname);
+        Redis::hSet(self::USER_INSTRUCTION . $opeind, 'nickname', $nickname);
 
         return '设置成功！';
     }
@@ -65,7 +66,7 @@ class UserService extends Service
     {
         $user = $this->getUserByOpenid($openid);
         if ($user) {
-            if ($user->userProfile->is_used_inv) {
+            if ($user->is_used_inv) {
                 return '您已绑定过邀请码,请勿重复绑定！';
             }
 
@@ -75,13 +76,12 @@ class UserService extends Service
                 if ($invUser->openid == $openid) {
                     return '无法与自己绑定！';
                 }
-                $user->userProfile->is_used_inv   = true;
-                $user->userProfile->invite_people = $invUser->id;
-                $user->userProfile->save();
+                $user->is_used_inv   = true;
+                $user->invite_people = $invUser->id;
+                $user->save();
                 $invUser->manpower += 1;
+                $invUser->inv_num += 1;
                 $invUser->save();
-                $invUser->userProfile->inv_num += 1;
-                $invUser->userProfile->save();
 
                 return "设置完毕,对方人气值+1,回复0开始去打怪或者挖矿吧\n\n官方QQ群：1023380085";
             }
@@ -105,16 +105,16 @@ class UserService extends Service
     public function battleResult(User $user, int $floor)
     {
         $battleScene = BattleScene::find($floor);
-        if ($user->userProfile->character_level < $battleScene->minimum_level_limit) {
-            return ['你等级还不够哦该层最低需要'.$battleScene->minimum_level_limit.'级', 3, ''];
+        if ($user->character_level < $battleScene->minimum_level_limit) {
+            return ['你等级还不够哦该层最低需要' . $battleScene->minimum_level_limit . '级', 3, ''];
         }
 
         $monster = Monster::find($floor);
-        [$arm_lower, $arm_upper] = [0, 0];
+        list($arm_lower, $arm_upper) = [0, 0];
 
         if ($user->equip_weapon_id) {
             // 需要增加武器的攻击上下限
-            [$arm_lower, $arm_upper] = [0, 0];
+            list($arm_lower, $arm_upper) = [0, 0];
         }
 
         if ($monster->speed > $user->speed) {
@@ -160,7 +160,7 @@ class UserService extends Service
 
     public function getFastOrSlow(User $user, Monster $monster, int $type, int $arm_lower, int $arm_upper)
     {
-        [$fast, $slow] = [[], []];
+        list($fast, $slow) = [[], []];
 
         if ($type == 1) {
             $fast['blood']        = $monster->blood_volume;
@@ -202,7 +202,7 @@ class UserService extends Service
                 $user->history_exp  += $exp;
                 $user->current_gold += $gold;
 
-                if ($this->judgeUpgrade($user->userProfile->character_level, $user->current_exp)) {
+                if ($this->judgeUpgrade($user->character_level, $user->current_exp)) {
                     $str .= ',可以升级了,去提升等级';
                 }
                 $str .= sprintf("\n金币增加了%d\n", $gold);
@@ -218,7 +218,7 @@ class UserService extends Service
                 $user->history_exp  += $exp;
                 $user->current_gold += $gold;
 
-                if ($this->judgeUpgrade($user->userProfile->character_level, $user->current_exp)) {
+                if ($this->judgeUpgrade($user->character_level, $user->current_exp)) {
                     $str .= ',可以升级了,去提升等级';
                 }
                 $str .= sprintf("\n金币增加了%d\n", $gold);
@@ -247,7 +247,7 @@ class UserService extends Service
     public function getUserProps(User $user, $page)
     {
         $offset = ($page - 1) * self::LIMIT;
-        $total = 0;
+        $total  = 0;
         if ($page == 1) {
             $total = $user->props()->count();
         }
@@ -255,5 +255,39 @@ class UserService extends Service
         $data->each->append('prop_desc');
 
         return [$data->toArray(), $total];
+    }
+
+    public function equip(User $user, $equipId)
+    {
+        $equip = UserProp::query()->find($equipId);
+        if ($equip) {
+            switch ($equip->type) {
+                case Constant::EQUIP_TYPE_WEAPON:
+                    $user->equip_weapon_id = $equip->id;
+                    break;
+                case Constant::EQUIP_TYPE_ARMOR:
+                    $user->equip_armor_id = $equip->id;
+                    break;
+                case Constant::EQUIP_TYPE_SHOES:
+                    $user->equip_shoes_id = $equip->id;
+                    break;
+                case Constant::EQUIP_TYPE_HOE:
+                    $user->equip_hoe_id = $equip->id;
+                    break;
+                case Constant::EQUIP_TYPE_FORGING:
+                    $user->equip_forging_id = $equip->id;
+                    break;
+                case Constant::EQUIP_TYPE_DRUP:
+                    $user->equip_weapon_id = $equip->id;
+                    break;
+                default:
+                    break;
+            }
+            $user->save();
+
+            return true;
+        }
+
+        return false;
     }
 }

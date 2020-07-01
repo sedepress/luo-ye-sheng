@@ -80,7 +80,13 @@
         methods: {
             onLoad() {
                 axios
-                    .get('/shop/list?page=' + this.page + '&type=' + this.type + '&rating=' + this.rating + '&order=' + this.order)
+                    .get('/shop/list', {
+                        page: this.page,
+                        type: this.type,
+                        rating: this.rating,
+                        order: this.order,
+                        token: this.$root.token,
+                    })
                     .then(response => {
                         if (this.page == 1) {
                             this.total = response.data.total
@@ -95,6 +101,7 @@
                         }
                     })
                     .catch(error => {
+                        Toast.fail('系统错误，请重新点击商店链接');
                         console.log(error)
                         this.error = true;
                     })

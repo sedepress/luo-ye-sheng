@@ -25,8 +25,13 @@ class ShopController extends Controller
 
     public function list(Request $request)
     {
-        $data = $request->only(['page', 'type', 'rating', 'order']);
+        $data = $request->only(['page', 'type', 'rating', 'order', 'token']);
         $query = (new Shop)->newQuery();
+        try {
+            decrypt($data['token']);
+        } catch (\Exception $exception) {
+            abort(403);
+        }
 
         if ($data['type']) {
             $query->where('type', $data['type']);

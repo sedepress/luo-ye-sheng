@@ -61,6 +61,8 @@ class ShopSeeder extends Seeder
             DB::table('shops')->insert([
                 'name'       => $i.'级锄头',
                 'type'       => 4,
+                'lower'      => 10,
+                'upper'      => 10,
                 'rating'     => $i,
                 'price'      => $price[$i - 1],
                 'created_at' => date('Y-m-d H:i:s', time()),
@@ -72,6 +74,8 @@ class ShopSeeder extends Seeder
             DB::table('shops')->insert([
                 'name'       => $i.'级锻造炉',
                 'type'       => 5,
+                'lower'      => 10,
+                'upper'      => 10,
                 'rating'     => $i,
                 'price'      => $price[$i - 1],
                 'created_at' => date('Y-m-d H:i:s', time()),

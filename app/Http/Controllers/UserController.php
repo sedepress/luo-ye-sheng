@@ -27,7 +27,12 @@ class UserController extends Controller
     public function propList(Request $request)
     {
         $data = $request->only(['token', 'page']);
-        $openid = decrypt($data['token']);
+        try {
+            $openid = decrypt($data['token']);
+        } catch (\Exception $exception) {
+            abort(403);
+        }
+
         $user = $this->userService->getUserByOpenid($openid);
         if (!$user) {
             abort(403);
@@ -41,5 +46,44 @@ class UserController extends Controller
             'msg'   => 'ok',
             'total' => $total
         ]);
+    }
+
+    public function equip(Request $request)
+    {
+        $data = $request->only(['token', 'equip_id']);
+        try {
+            $openid = decrypt($data['token']);
+        } catch (\Exception $exception) {
+            abort(403);
+        }
+
+        $user = $this->userService->getUserByOpenid($openid);
+        if (!$user) {
+            abort(403);
+        }
+
+        $result = $this->userService->equip($user, $data['equip_id']);
+        if ($result) {
+            return self::success();
+        }
+
+        return abort(500);
+    }
+
+    public function detail(Request $request)
+    {
+        $data = $request->only(['token']);
+        try {
+            $openid = decrypt($data['token']);
+        } catch (\Exception $exception) {
+            abort(403);
+        }
+
+        $user = $this->userService->getUserByOpenid($openid);
+        if (!$user) {
+            abort(500);
+        }
+
+        return self::success($user->toArray());
     }
 }
