@@ -95,11 +95,12 @@ class UserController extends Controller
         $miningNeed          = $this->userService->judgeUpgrade($user->mining_level, $user->current_mining_exp);
         $forgingNeed         = $this->userService->judgeUpgrade($user->forging_level, $user->current_forging_exp);
         $res                 = [
+            'yqm'   => ['title' => '邀请码', 'value' => $user->invitation_code, 'desc' => "点击复制邀请内容，粘贴给你的朋友"],
             'basic' => [
-                ['title' => '邀请码', 'value' => $user->invitation_code, 'desc' => "点击复制邀请内容，粘贴给你的朋友"],
                 [
                     'title'          => '打怪等级', 'value' => $user->character_level,
-                    'desc'           => $characterNeed >= 0 ? '可以提升等级，点击提升' : sprintf("再需要%d经验可升级", abs($characterNeed)),
+                    'desc'           => $characterNeed >= 0 ? '可以提升等级，点击提升' : sprintf("再需要%d经验可升级",
+                        abs($characterNeed)),
                     'is_need_render' => $characterNeed >= 0 ? true : false
                 ],
                 [
@@ -129,5 +130,22 @@ class UserController extends Controller
         ];
 
         return self::success($res);
+    }
+
+    public function upgrade(Request $request)
+    {
+        $data = $request->only(['token', 'level_type']);
+        try {
+            $openid = decrypt($data['token']);
+        } catch (\Exception $exception) {
+            abort(403);
+        }
+
+        $user = $this->userService->getUserByOpenid($openid);
+        if (!$user) {
+            abort(500);
+        }
+
+
     }
 }

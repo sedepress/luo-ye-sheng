@@ -2364,13 +2364,16 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var vant__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vant */ "./node_modules/vant/es/index.js");
-/* harmony import */ var vant_lib_cell_style__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vant/lib/cell/style */ "./node_modules/vant/lib/cell/style/index.js");
-/* harmony import */ var vant_lib_cell_style__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vant_lib_cell_style__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var vant_lib_cell_group_style__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vant/lib/cell-group/style */ "./node_modules/vant/lib/cell-group/style/index.js");
-/* harmony import */ var vant_lib_cell_group_style__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(vant_lib_cell_group_style__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var vant_lib_toast_style__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vant/lib/toast/style */ "./node_modules/vant/lib/toast/style/index.js");
-/* harmony import */ var vant_lib_toast_style__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(vant_lib_toast_style__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var vue_clipboard2__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-clipboard2 */ "./node_modules/vue-clipboard2/vue-clipboard.js");
+/* harmony import */ var vue_clipboard2__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue_clipboard2__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var vant__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vant */ "./node_modules/vant/es/index.js");
+/* harmony import */ var vant_lib_cell_style__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vant/lib/cell/style */ "./node_modules/vant/lib/cell/style/index.js");
+/* harmony import */ var vant_lib_cell_style__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(vant_lib_cell_style__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var vant_lib_cell_group_style__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vant/lib/cell-group/style */ "./node_modules/vant/lib/cell-group/style/index.js");
+/* harmony import */ var vant_lib_cell_group_style__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(vant_lib_cell_group_style__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var vant_lib_toast_style__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vant/lib/toast/style */ "./node_modules/vant/lib/toast/style/index.js");
+/* harmony import */ var vant_lib_toast_style__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(vant_lib_toast_style__WEBPACK_IMPORTED_MODULE_5__);
+//
 //
 //
 //
@@ -2387,14 +2390,21 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__["Cell"]);
-vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__["CellGroup"]);
-vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__["Toast"]);
+
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_2__["Cell"]);
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_2__["CellGroup"]);
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_2__["Toast"]);
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_clipboard2__WEBPACK_IMPORTED_MODULE_1___default.a);
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "UserProfile",
   data: function data() {
     return {
-      userProfile: []
+      yqm: [],
+      basic: [],
+      attr: [],
+      invContent: '',
+      level: ['打怪等级', '挖矿等级', '锻造等级'],
+      price: [1, 2, 3, 4, 5, 6, 7, 8, 9]
     };
   },
   created: function created() {
@@ -2407,11 +2417,42 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__
       axios.post('/user/detail', {
         token: this.$root.token
       }).then(function (response) {
-        _this.userProfile = response.data.data;
+        _this.yqm = response.data.data.yqm;
+        _this.basic = response.data.data.basic;
+        _this.attr = response.data.data.attr;
+        _this.invContent = "大家关注公众号【落叶生】回复 " + response.data.data.yqm.value + " 绑定邀请人，体验随时随地随机能玩的指令游戏！";
       })["catch"](function (error) {
         console.log(error);
-        vant__WEBPACK_IMPORTED_MODULE_1__["Toast"].fail('系统错误，请重新点击商店链接');
+        vant__WEBPACK_IMPORTED_MODULE_2__["Toast"].fail('系统错误，请重新点击商店链接');
       });
+    },
+    handleClick: function handleClick(v) {
+      var _this2 = this;
+
+      var index = this.level.indexOf(v.title);
+      var price = this.price[v.value - 1];
+
+      if (index !== -1 && v.is_need_render) {
+        vant__WEBPACK_IMPORTED_MODULE_2__["Dialog"].confirm({
+          title: '提升' + this.level[index],
+          message: '升级需要消耗' + price + '点人力值'
+        }).then(function () {
+          axios.post('/user/upgrade', {
+            token: _this2.$root.token,
+            level_type: index
+          }).then(function (response) {})["catch"](function (error) {
+            console.log(error);
+            vant__WEBPACK_IMPORTED_MODULE_2__["Toast"].fail('系统错误，请重新点击商店链接');
+          });
+        })["catch"](function () {// on cancel
+        });
+      }
+    },
+    copy: function copy() {
+      Object(vant__WEBPACK_IMPORTED_MODULE_2__["Toast"])('复制成功！');
+    },
+    onError: function onError() {
+      Object(vant__WEBPACK_IMPORTED_MODULE_2__["Toast"])('复制失败！');
     }
   }
 });
@@ -6845,6 +6886,23 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__
 })));
 //# sourceMappingURL=bootstrap.js.map
 
+
+/***/ }),
+
+/***/ "./node_modules/clipboard/dist/clipboard.min.js":
+/*!******************************************************!*\
+  !*** ./node_modules/clipboard/dist/clipboard.min.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*!
+ * clipboard.js v2.0.6
+ * https://clipboardjs.com/
+ * 
+ * Licensed MIT © Zeno Rocha
+ */
+!function(t,e){ true?module.exports=e():undefined}(this,function(){return o={},r.m=n=[function(t,e){t.exports=function(t){var e;if("SELECT"===t.nodeName)t.focus(),e=t.value;else if("INPUT"===t.nodeName||"TEXTAREA"===t.nodeName){var n=t.hasAttribute("readonly");n||t.setAttribute("readonly",""),t.select(),t.setSelectionRange(0,t.value.length),n||t.removeAttribute("readonly"),e=t.value}else{t.hasAttribute("contenteditable")&&t.focus();var o=window.getSelection(),r=document.createRange();r.selectNodeContents(t),o.removeAllRanges(),o.addRange(r),e=o.toString()}return e}},function(t,e){function n(){}n.prototype={on:function(t,e,n){var o=this.e||(this.e={});return(o[t]||(o[t]=[])).push({fn:e,ctx:n}),this},once:function(t,e,n){var o=this;function r(){o.off(t,r),e.apply(n,arguments)}return r._=e,this.on(t,r,n)},emit:function(t){for(var e=[].slice.call(arguments,1),n=((this.e||(this.e={}))[t]||[]).slice(),o=0,r=n.length;o<r;o++)n[o].fn.apply(n[o].ctx,e);return this},off:function(t,e){var n=this.e||(this.e={}),o=n[t],r=[];if(o&&e)for(var i=0,a=o.length;i<a;i++)o[i].fn!==e&&o[i].fn._!==e&&r.push(o[i]);return r.length?n[t]=r:delete n[t],this}},t.exports=n,t.exports.TinyEmitter=n},function(t,e,n){var d=n(3),h=n(4);t.exports=function(t,e,n){if(!t&&!e&&!n)throw new Error("Missing required arguments");if(!d.string(e))throw new TypeError("Second argument must be a String");if(!d.fn(n))throw new TypeError("Third argument must be a Function");if(d.node(t))return s=e,f=n,(u=t).addEventListener(s,f),{destroy:function(){u.removeEventListener(s,f)}};if(d.nodeList(t))return a=t,c=e,l=n,Array.prototype.forEach.call(a,function(t){t.addEventListener(c,l)}),{destroy:function(){Array.prototype.forEach.call(a,function(t){t.removeEventListener(c,l)})}};if(d.string(t))return o=t,r=e,i=n,h(document.body,o,r,i);throw new TypeError("First argument must be a String, HTMLElement, HTMLCollection, or NodeList");var o,r,i,a,c,l,u,s,f}},function(t,n){n.node=function(t){return void 0!==t&&t instanceof HTMLElement&&1===t.nodeType},n.nodeList=function(t){var e=Object.prototype.toString.call(t);return void 0!==t&&("[object NodeList]"===e||"[object HTMLCollection]"===e)&&"length"in t&&(0===t.length||n.node(t[0]))},n.string=function(t){return"string"==typeof t||t instanceof String},n.fn=function(t){return"[object Function]"===Object.prototype.toString.call(t)}},function(t,e,n){var a=n(5);function i(t,e,n,o,r){var i=function(e,n,t,o){return function(t){t.delegateTarget=a(t.target,n),t.delegateTarget&&o.call(e,t)}}.apply(this,arguments);return t.addEventListener(n,i,r),{destroy:function(){t.removeEventListener(n,i,r)}}}t.exports=function(t,e,n,o,r){return"function"==typeof t.addEventListener?i.apply(null,arguments):"function"==typeof n?i.bind(null,document).apply(null,arguments):("string"==typeof t&&(t=document.querySelectorAll(t)),Array.prototype.map.call(t,function(t){return i(t,e,n,o,r)}))}},function(t,e){if("undefined"!=typeof Element&&!Element.prototype.matches){var n=Element.prototype;n.matches=n.matchesSelector||n.mozMatchesSelector||n.msMatchesSelector||n.oMatchesSelector||n.webkitMatchesSelector}t.exports=function(t,e){for(;t&&9!==t.nodeType;){if("function"==typeof t.matches&&t.matches(e))return t;t=t.parentNode}}},function(t,e,n){"use strict";n.r(e);var o=n(0),r=n.n(o),i="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t};function a(t,e){for(var n=0;n<e.length;n++){var o=e[n];o.enumerable=o.enumerable||!1,o.configurable=!0,"value"in o&&(o.writable=!0),Object.defineProperty(t,o.key,o)}}function c(t){!function(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}(this,c),this.resolveOptions(t),this.initSelection()}var l=(function(t,e,n){return e&&a(t.prototype,e),n&&a(t,n),t}(c,[{key:"resolveOptions",value:function(t){var e=0<arguments.length&&void 0!==t?t:{};this.action=e.action,this.container=e.container,this.emitter=e.emitter,this.target=e.target,this.text=e.text,this.trigger=e.trigger,this.selectedText=""}},{key:"initSelection",value:function(){this.text?this.selectFake():this.target&&this.selectTarget()}},{key:"selectFake",value:function(){var t=this,e="rtl"==document.documentElement.getAttribute("dir");this.removeFake(),this.fakeHandlerCallback=function(){return t.removeFake()},this.fakeHandler=this.container.addEventListener("click",this.fakeHandlerCallback)||!0,this.fakeElem=document.createElement("textarea"),this.fakeElem.style.fontSize="12pt",this.fakeElem.style.border="0",this.fakeElem.style.padding="0",this.fakeElem.style.margin="0",this.fakeElem.style.position="absolute",this.fakeElem.style[e?"right":"left"]="-9999px";var n=window.pageYOffset||document.documentElement.scrollTop;this.fakeElem.style.top=n+"px",this.fakeElem.setAttribute("readonly",""),this.fakeElem.value=this.text,this.container.appendChild(this.fakeElem),this.selectedText=r()(this.fakeElem),this.copyText()}},{key:"removeFake",value:function(){this.fakeHandler&&(this.container.removeEventListener("click",this.fakeHandlerCallback),this.fakeHandler=null,this.fakeHandlerCallback=null),this.fakeElem&&(this.container.removeChild(this.fakeElem),this.fakeElem=null)}},{key:"selectTarget",value:function(){this.selectedText=r()(this.target),this.copyText()}},{key:"copyText",value:function(){var e=void 0;try{e=document.execCommand(this.action)}catch(t){e=!1}this.handleResult(e)}},{key:"handleResult",value:function(t){this.emitter.emit(t?"success":"error",{action:this.action,text:this.selectedText,trigger:this.trigger,clearSelection:this.clearSelection.bind(this)})}},{key:"clearSelection",value:function(){this.trigger&&this.trigger.focus(),document.activeElement.blur(),window.getSelection().removeAllRanges()}},{key:"destroy",value:function(){this.removeFake()}},{key:"action",set:function(t){var e=0<arguments.length&&void 0!==t?t:"copy";if(this._action=e,"copy"!==this._action&&"cut"!==this._action)throw new Error('Invalid "action" value, use either "copy" or "cut"')},get:function(){return this._action}},{key:"target",set:function(t){if(void 0!==t){if(!t||"object"!==(void 0===t?"undefined":i(t))||1!==t.nodeType)throw new Error('Invalid "target" value, use a valid Element');if("copy"===this.action&&t.hasAttribute("disabled"))throw new Error('Invalid "target" attribute. Please use "readonly" instead of "disabled" attribute');if("cut"===this.action&&(t.hasAttribute("readonly")||t.hasAttribute("disabled")))throw new Error('Invalid "target" attribute. You can\'t cut text from elements with "readonly" or "disabled" attributes');this._target=t}},get:function(){return this._target}}]),c),u=n(1),s=n.n(u),f=n(2),d=n.n(f),h="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t},p=function(t,e,n){return e&&y(t.prototype,e),n&&y(t,n),t};function y(t,e){for(var n=0;n<e.length;n++){var o=e[n];o.enumerable=o.enumerable||!1,o.configurable=!0,"value"in o&&(o.writable=!0),Object.defineProperty(t,o.key,o)}}var m=(function(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function, not "+typeof e);t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,enumerable:!1,writable:!0,configurable:!0}}),e&&(Object.setPrototypeOf?Object.setPrototypeOf(t,e):t.__proto__=e)}(v,s.a),p(v,[{key:"resolveOptions",value:function(t){var e=0<arguments.length&&void 0!==t?t:{};this.action="function"==typeof e.action?e.action:this.defaultAction,this.target="function"==typeof e.target?e.target:this.defaultTarget,this.text="function"==typeof e.text?e.text:this.defaultText,this.container="object"===h(e.container)?e.container:document.body}},{key:"listenClick",value:function(t){var e=this;this.listener=d()(t,"click",function(t){return e.onClick(t)})}},{key:"onClick",value:function(t){var e=t.delegateTarget||t.currentTarget;this.clipboardAction&&(this.clipboardAction=null),this.clipboardAction=new l({action:this.action(e),target:this.target(e),text:this.text(e),container:this.container,trigger:e,emitter:this})}},{key:"defaultAction",value:function(t){return b("action",t)}},{key:"defaultTarget",value:function(t){var e=b("target",t);if(e)return document.querySelector(e)}},{key:"defaultText",value:function(t){return b("text",t)}},{key:"destroy",value:function(){this.listener.destroy(),this.clipboardAction&&(this.clipboardAction.destroy(),this.clipboardAction=null)}}],[{key:"isSupported",value:function(t){var e=0<arguments.length&&void 0!==t?t:["copy","cut"],n="string"==typeof e?[e]:e,o=!!document.queryCommandSupported;return n.forEach(function(t){o=o&&!!document.queryCommandSupported(t)}),o}}]),v);function v(t,e){!function(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}(this,v);var n=function(t,e){if(!t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!e||"object"!=typeof e&&"function"!=typeof e?t:e}(this,(v.__proto__||Object.getPrototypeOf(v)).call(this));return n.resolveOptions(e),n.listenClick(t),n}function b(t,e){var n="data-clipboard-"+t;if(e.hasAttribute(n))return e.getAttribute(n)}e.default=m}],r.c=o,r.d=function(t,e,n){r.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:n})},r.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},r.t=function(e,t){if(1&t&&(e=r(e)),8&t)return e;if(4&t&&"object"==typeof e&&e&&e.__esModule)return e;var n=Object.create(null);if(r.r(n),Object.defineProperty(n,"default",{enumerable:!0,value:e}),2&t&&"string"!=typeof e)for(var o in e)r.d(n,o,function(t){return e[t]}.bind(null,o));return n},r.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return r.d(e,"a",e),e},r.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},r.p="",r(r.s=6).default;function r(t){if(o[t])return o[t].exports;var e=o[t]={i:t,l:!1,exports:{}};return n[t].call(e.exports,e,e.exports,r),e.l=!0,e.exports}var n,o});
 
 /***/ }),
 
@@ -60905,6 +60963,100 @@ __webpack_require__(/*! ../index.css */ "./node_modules/vant/lib/toast/index.css
 
 /***/ }),
 
+/***/ "./node_modules/vue-clipboard2/vue-clipboard.js":
+/*!******************************************************!*\
+  !*** ./node_modules/vue-clipboard2/vue-clipboard.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Clipboard = __webpack_require__(/*! clipboard/dist/clipboard.min.js */ "./node_modules/clipboard/dist/clipboard.min.js") // FIXME: workaround for browserify
+
+var VueClipboardConfig = {
+  autoSetContainer: false,
+  appendToBody: true // This fixes IE, see #50
+}
+
+var VueClipboard = {
+  install: function (Vue) {
+    Vue.prototype.$clipboardConfig = VueClipboardConfig
+    Vue.prototype.$copyText = function (text, container) {
+      return new Promise(function (resolve, reject) {
+        var fakeElement = document.createElement('button')
+        var clipboard = new Clipboard(fakeElement, {
+          text: function () { return text },
+          action: function () { return 'copy' },
+          container: typeof container === 'object' ? container : document.body
+        })
+        clipboard.on('success', function (e) {
+          clipboard.destroy()
+          resolve(e)
+        })
+        clipboard.on('error', function (e) {
+          clipboard.destroy()
+          reject(e)
+        })
+        if (VueClipboardConfig.appendToBody) document.body.appendChild(fakeElement)
+        fakeElement.click()
+        if (VueClipboardConfig.appendToBody) document.body.removeChild(fakeElement)
+      })
+    }
+
+    Vue.directive('clipboard', {
+      bind: function (el, binding, vnode) {
+        if (binding.arg === 'success') {
+          el._vClipboard_success = binding.value
+        } else if (binding.arg === 'error') {
+          el._vClipboard_error = binding.value
+        } else {
+          var clipboard = new Clipboard(el, {
+            text: function () { return binding.value },
+            action: function () { return binding.arg === 'cut' ? 'cut' : 'copy' },
+            container: VueClipboardConfig.autoSetContainer ? el : undefined
+          })
+          clipboard.on('success', function (e) {
+            var callback = el._vClipboard_success
+            callback && callback(e)
+          })
+          clipboard.on('error', function (e) {
+            var callback = el._vClipboard_error
+            callback && callback(e)
+          })
+          el._vClipboard = clipboard
+        }
+      },
+      update: function (el, binding) {
+        if (binding.arg === 'success') {
+          el._vClipboard_success = binding.value
+        } else if (binding.arg === 'error') {
+          el._vClipboard_error = binding.value
+        } else {
+          el._vClipboard.text = function () { return binding.value }
+          el._vClipboard.action = function () { return binding.arg === 'cut' ? 'cut' : 'copy' }
+        }
+      },
+      unbind: function (el, binding) {
+        if (binding.arg === 'success') {
+          delete el._vClipboard_success
+        } else if (binding.arg === 'error') {
+          delete el._vClipboard_error
+        } else {
+          el._vClipboard.destroy()
+          delete el._vClipboard
+        }
+      }
+    })
+  },
+  config: VueClipboardConfig
+}
+
+if (true) {
+  module.exports = VueClipboard
+} else {}
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-lazyload/vue-lazyload.js":
 /*!***************************************************!*\
   !*** ./node_modules/vue-lazyload/vue-lazyload.js ***!
@@ -61211,25 +61363,67 @@ var render = function() {
       _c(
         "van-cell-group",
         { attrs: { title: "用户基本信息" } },
-        _vm._l(_vm.userProfile.basic, function(item) {
-          return _c("van-cell", {
+        [
+          _c("van-cell", {
+            directives: [
+              {
+                name: "clipboard",
+                rawName: "v-clipboard:copy",
+                value: _vm.invContent,
+                expression: "invContent",
+                arg: "copy"
+              },
+              {
+                name: "clipboard",
+                rawName: "v-clipboard:success",
+                value: _vm.copy,
+                expression: "copy",
+                arg: "success"
+              },
+              {
+                name: "clipboard",
+                rawName: "v-clipboard:error",
+                value: _vm.onError,
+                expression: "onError",
+                arg: "error"
+              }
+            ],
             attrs: {
-              title: item.title,
+              title: _vm.yqm.title,
               "is-link": "",
-              value: item.value,
-              label: item.desc,
-              "label-class": item.is_need_render ? "desc-color" : ""
+              value: _vm.yqm.value,
+              "label-class": "yqm-click",
+              label: _vm.yqm.desc
             }
+          }),
+          _vm._v(" "),
+          _vm._l(_vm.basic, function(item, index) {
+            return _c("van-cell", {
+              key: index,
+              attrs: {
+                title: item.title,
+                "is-link": "",
+                value: item.value,
+                label: item.desc,
+                "label-class": item.is_need_render ? "desc-color" : ""
+              },
+              on: {
+                click: function($event) {
+                  return _vm.handleClick(item)
+                }
+              }
+            })
           })
-        }),
-        1
+        ],
+        2
       ),
       _vm._v(" "),
       _c(
         "van-cell-group",
         { attrs: { title: "人物属性值" } },
-        _vm._l(_vm.userProfile.attr, function(item) {
+        _vm._l(_vm.attr, function(item, index) {
           return _c("van-cell", {
+            key: index,
             attrs: {
               title: item.title,
               "is-link": "",
