@@ -29,7 +29,7 @@ class UserProp extends Model
                 $str .= sprintf(" 攻击范围%d ~ %d", $this->lower, $this->upper);
                 break;
             case Constant::EQUIP_TYPE_ARMOR:
-                $str .= sprintf(" %d点护甲", $this->lower);
+                $str .= sprintf(" %d点防御", $this->lower);
                 break;
             case Constant::EQUIP_TYPE_SHOES:
                 $str .= sprintf(" %d点速度", $this->lower);

@@ -81,11 +81,13 @@
             onLoad() {
                 axios
                     .get('/shop/list', {
-                        page: this.page,
-                        type: this.type,
-                        rating: this.rating,
-                        order: this.order,
-                        token: this.$root.token,
+                        params: {
+                            page: this.page,
+                            type: this.type,
+                            rating: this.rating,
+                            order: this.order,
+                            token: this.$root.token,
+                        }
                     })
                     .then(response => {
                         if (this.page == 1) {

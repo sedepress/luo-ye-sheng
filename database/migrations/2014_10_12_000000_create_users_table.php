@@ -22,8 +22,12 @@ class CreateUsersTable extends Migration
             $table->integer('manpower', false, true)->default(0)->comment('人力值');
             $table->smallInteger('current_blood_volume')->default(20)->comment('当前血量');
             $table->smallInteger('total_blood_volume')->default(20)->comment('总血量');
-            $table->integer('current_exp', false, true)->default(0)->comment('当前经验值');
-            $table->integer('history_exp', false, true)->default(0)->comment('历史经验值');
+            $table->integer('current_character_exp', false, true)->default(0)->comment('当前人物等级经验值');
+            $table->integer('history_character_exp', false, true)->default(0)->comment('历史人物等级经验值');
+            $table->integer('current_mining_exp', false, true)->default(0)->comment('当前挖矿等级经验值');
+            $table->integer('history_mining_exp', false, true)->default(0)->comment('历史挖矿等级经验值');
+            $table->integer('current_forging_exp', false, true)->default(0)->comment('当前锻造等级经验值');
+            $table->integer('history_forging_exp', false, true)->default(0)->comment('历史锻造等级经验值');
             $table->integer('current_gold', false, true)->default(0)->comment('当前金币');
             $table->tinyInteger('force', false, true)->default(5)->comment('武力');
             $table->tinyInteger('intelligence', false, true)->default(5)->comment('智力');

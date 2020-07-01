@@ -198,11 +198,11 @@ class UserService extends Service
             if ($resultType == 1) {
                 $res = [self::BATTLE_FAILURE, 2, ''];
             } else {
-                $user->current_exp  += $exp;
-                $user->history_exp  += $exp;
+                $user->current_character_exp  += $exp;
+                $user->history_character_exp  += $exp;
                 $user->current_gold += $gold;
 
-                if ($this->judgeUpgrade($user->character_level, $user->current_exp)) {
+                if ($this->judgeUpgrade($user->character_level, $user->current_character_exp) >= 0) {
                     $str .= ',可以升级了,去提升等级';
                 }
                 $str .= sprintf("\n金币增加了%d\n", $gold);
@@ -214,11 +214,11 @@ class UserService extends Service
             $user->current_blood_volume = $fast['blood'];
 
             if ($resultType == 1) {
-                $user->current_exp  += $exp;
-                $user->history_exp  += $exp;
+                $user->current_character_exp  += $exp;
+                $user->history_character_exp  += $exp;
                 $user->current_gold += $gold;
 
-                if ($this->judgeUpgrade($user->character_level, $user->current_exp)) {
+                if ($this->judgeUpgrade($user->character_level, $user->current_character_exp >= 0)) {
                     $str .= ',可以升级了,去提升等级';
                 }
                 $str .= sprintf("\n金币增加了%d\n", $gold);
@@ -237,11 +237,7 @@ class UserService extends Service
 
     public function judgeUpgrade($currentLevel, $currentExp)
     {
-        if ($currentExp >= User::$levelExpMap[$currentLevel]) {
-            return true;
-        }
-
-        return false;
+        return $currentExp - User::$levelExpMap[$currentLevel];
     }
 
     public function getUserProps(User $user, $page)
@@ -257,35 +253,45 @@ class UserService extends Service
         return [$data->toArray(), $total];
     }
 
-    public function equip(User $user, $equipId)
+    public function equip(User $user, $equipId, $isEquip)
     {
         $equip = UserProp::query()->find($equipId);
         if ($equip) {
+            $equip_weapon_id = $isEquip ? $equip->id : 0;
             switch ($equip->type) {
                 case Constant::EQUIP_TYPE_WEAPON:
-                    $user->equip_weapon_id = $equip->id;
+                    $user->equip_weapon_id = $equip_weapon_id;
                     break;
                 case Constant::EQUIP_TYPE_ARMOR:
-                    $user->equip_armor_id = $equip->id;
+                    $user->equip_armor_id = $equip_weapon_id;
                     break;
                 case Constant::EQUIP_TYPE_SHOES:
-                    $user->equip_shoes_id = $equip->id;
+                    $user->equip_shoes_id = $equip_weapon_id;
                     break;
                 case Constant::EQUIP_TYPE_HOE:
-                    $user->equip_hoe_id = $equip->id;
+                    $user->equip_hoe_id = $equip_weapon_id;
                     break;
                 case Constant::EQUIP_TYPE_FORGING:
-                    $user->equip_forging_id = $equip->id;
+                    $user->equip_forging_id = $equip_weapon_id;
                     break;
                 case Constant::EQUIP_TYPE_DRUP:
-                    $user->equip_weapon_id = $equip->id;
+                    $user->equip_weapon_id = $equip_weapon_id;
                     break;
                 default:
                     break;
             }
             $user->save();
 
-            return true;
+            return [
+                'equiped_ids' => [
+                    'equip_weapon_id' => $user->equip_weapon_id,
+                    'equip_armor_id' => $user->equip_armor_id,
+                    'equip_shoes_id' => $user->equip_shoes_id,
+                    'equip_hoe_id' => $user->equip_hoe_id,
+                    'equip_forging_id' => $user->equip_forging_id,
+                    'equip_drup_id' => $user->equip_drup_id,
+                ]
+            ];
         }
 
         return false;
