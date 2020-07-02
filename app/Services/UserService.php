@@ -281,6 +281,7 @@ class UserService extends Service
     {
         $equip = UserProp::query()->find($equipId);
         if ($equip) {
+            list($oriLower, $oriUpper) = [0, 0];
             if (in_array($equip->type, Constant::$equipGroup)) {
                 $isEquiped = UserProp::query()->where('user_id', $user->id)->where('status', true)
                     ->where('is_equip', true)->where('type', $equip->type)->first();
