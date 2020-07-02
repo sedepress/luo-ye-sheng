@@ -440,14 +440,14 @@ class UserService extends Service
 
         $hoe = UserProp::query()->where('id', $user->equip_hoe_id)->first();
         if (!$hoe->status) {
-            return '所装备的锄头已经耗尽';
+            return '所装备的锄头已经耗尽，请更换新锄头';
         }
 
         if ($hoe->rating < $ins) {
             return '所装备的锄头等级不足，该层需要至少' . $ins . '级锄头';
         }
 
-        if ($hoe->remaining_usage < 1) {
+        if ($hoe->lower < 1) {
             return '所装备的锄头次数已经用尽，请更换新锄头';
         }
 
@@ -463,8 +463,8 @@ class UserService extends Service
                     'rating'=> $ins,
                     'type' => Constant::EQUIP_TYPE_ORE,
                 ]);
-                $hoe->remaining_usage -= 1;
-                if ($hoe->remaining_usage == 0) {
+                $hoe->lower -= 1;
+                if ($hoe->lower == 0) {
                     $hoe->status = false;
                 }
                 $hoe->save();

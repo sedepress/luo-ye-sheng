@@ -16,7 +16,6 @@ class UserProp extends Model
         'type',
         'shop_id',
         'is_equip',
-        'remaining_usage',
         'status',
     ];
 

@@ -23,7 +23,6 @@ class CreateUserPropsTable extends Migration
             $table->tinyInteger('type', false, true)->comment('1武器2护甲3鞋子4锄头5锻造炉6矿石7药品');
             $table->integer('shop_id', false, true)->default(0);
             $table->boolean('is_equip')->default(false);
-            $table->integer('remaining_usage', false, true)->default(0)->comment('剩余使用量（针对非装备道具）');
             $table->boolean('status')->default(true);
             $table->timestamps();
         });
