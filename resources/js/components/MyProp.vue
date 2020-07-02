@@ -2,7 +2,7 @@
     <van-list
         v-model="loading"
         :error.sync="error"
-        error-text="请求失败，点击重新加载"
+        error-text="请求失败,点击重新加载"
         :finished="finished"
         finished-text="没有更多了"
         @load="onLoad"
@@ -71,7 +71,7 @@
                         }
                     })
                     .catch(error => {
-                        Toast.fail('系统错误，请重新点击商店链接');
+                        Toast.fail('系统错误,请重新点击商店链接');
                         console.log(error)
                         this.error = true;
                     })

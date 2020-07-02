@@ -235,6 +235,24 @@ class UserService extends Service
                 $res = [self::BATTLE_FAILURE, 2, ''];
             }
         }
+
+        if ($user->equip_drup_id) {
+            $drup = UserProp::query()->find($user->equip_drup_id);
+            $supNum = $user->total_blood_volume - $user->current_blood_volume;
+            if ($drup->lower < $supNum) {
+                $user->current_blood_volume += $drup->lower;
+                $user->equip_drup_id = 0;
+
+                $drup->status = false;
+                $drup->lower = 0;
+            } else {
+                $user->current_blood_volume += $supNum;
+
+                $drup->lower -= $supNum;
+            }
+            $drup->save();
+        }
+
         $user->fatigue_value -= 1;
         $user->save();
 
@@ -329,7 +347,7 @@ class UserService extends Service
                 [$level, $field, $expField] = [$user->forging_level, User::$levelFieldMap[User::LEVEL_TYPE_FORGING], 'current_forging_exp'];
                 break;
             default:
-                logger()->error("升级异常：用户ID：{$user->id}，升级类型：{$type}");
+                logger()->error("升级异常：用户ID：{$user->id},升级类型：{$type}");
         }
 
         $exp = $this->judgeUpgrade($level, $user->current_character_exp);
@@ -378,27 +396,27 @@ class UserService extends Service
         $miningNeed = $this->judgeUpgrade($user->mining_level, $user->current_mining_exp);
         $forgingNeed = $this->judgeUpgrade($user->forging_level, $user->current_forging_exp);
         $res = [
-            'yqm'   => ['title' => '邀请码', 'value' => $user->invitation_code, 'desc' => "点击复制邀请内容，粘贴给你的朋友"],
+            'yqm'   => ['title' => '邀请码', 'value' => $user->invitation_code, 'desc' => "点击复制邀请内容,粘贴给你的朋友"],
             'basic' => [
                 [
                     'title'          => '打怪等级', 'value' => $user->character_level,
-                    'desc'           => $characterNeed >= 0 ? '可以提升等级，点击提升' : sprintf("再需要%d经验可升级",
+                    'desc'           => $characterNeed >= 0 ? '可以提升等级,点击提升' : sprintf("再需要%d经验可升级",
                         abs($characterNeed)),
                     'is_need_render' => $characterNeed >= 0 ? true : false
                 ],
                 [
                     'title'          => '挖矿等级', 'value' => $user->mining_level,
-                    'desc'           => $miningNeed >= 0 ? '可以提升等级，点击提升' : sprintf("再需要%d经验可升级", abs($miningNeed)),
+                    'desc'           => $miningNeed >= 0 ? '可以提升等级,点击提升' : sprintf("再需要%d经验可升级", abs($miningNeed)),
                     'is_need_render' => $miningNeed >= 0 ? true : false
                 ],
                 [
                     'title'          => '锻造等级', 'value' => $user->forging_level,
-                    'desc'           => $forgingNeed >= 0 ? '可以提升等级，点击提升' : sprintf("再需要%d经验可升级", abs($forgingNeed)),
+                    'desc'           => $forgingNeed >= 0 ? '可以提升等级,点击提升' : sprintf("再需要%d经验可升级", abs($forgingNeed)),
                     'is_need_render' => $forgingNeed >= 0 ? true : false
                 ],
                 ['title' => '疲劳值', 'value' => $user->fatigue_value, 'desc' => '点击增加疲劳值'],
-                ['title' => '人力值', 'value' => $user->manpower, 'desc' => '每邀请一人，增加1点人力值，等他升到3级再奖励3点人力值，再升到5级再奖励6点人力值'],
-                ['title' => '金币数', 'value' => $user->current_gold, 'desc' => '金币通过打怪获得，层数越高金币掉落越高'],
+                ['title' => '人力值', 'value' => $user->manpower, 'desc' => '每邀请一人,增加1点人力值,等他升到3级再奖励3点人力值,再升到5级再奖励6点人力值'],
+                ['title' => '金币数', 'value' => $user->current_gold, 'desc' => '金币通过打怪获得,层数越高金币掉落越高'],
                 ['title' => '邀请人', 'value' => $user->inv_user_name, 'desc' => '邀请你的人'],
                 ['title' => '邀请人数', 'value' => $user->inv_num, 'desc' => '你邀请的人数'],
             ],
@@ -449,15 +467,15 @@ class UserService extends Service
 
         $hoe = UserProp::query()->where('id', $user->equip_hoe_id)->first();
         if (!$hoe->status) {
-            return '所装备的锄头已经耗尽，请更换新锄头';
+            return '所装备的锄头已经耗尽,请更换新锄头';
         }
 
         if ($hoe->rating < $ins) {
-            return '所装备的锄头等级不足，该层需要至少' . $ins . '级锄头';
+            return '所装备的锄头等级不足,该层需要至少' . $ins . '级锄头';
         }
 
         if ($hoe->lower < 1) {
-            return '所装备的锄头次数已经用尽，请更换新锄头';
+            return '所装备的锄头次数已经用尽,请更换新锄头';
         }
 
         $randnum = mt_rand(0, 100);
@@ -478,14 +496,14 @@ class UserService extends Service
                 DB::rollBack();
                 logger()->error('挖矿异常：用户id = ' . $user->id);
 
-                return '系统异常，请重试';
+                return '系统异常,请重试';
             }
 
-            return "真幸运，挖到了{$name}" . $str;
+            return "真幸运,挖到了{$name}" . $str;
         }
         $str = $this->decHoeTimes($hoe, $user);
 
-        return "糟糕，什么也没挖到，再试试吧不要灰心" . $str;
+        return "糟糕,什么也没挖到,再试试吧不要灰心" . $str;
     }
 
     public function decHoeTimes(UserProp $userProp, User $user)
@@ -496,7 +514,7 @@ class UserService extends Service
             $user->equip_hoe_id = 0;
             $user->save();
             $userProp->status = false;
-            $str .= '，锄头次数已耗尽，快更换一个锄头吧';
+            $str .= ',锄头次数已耗尽,快更换一个锄头吧';
         }
         $userProp->save();
 
@@ -512,15 +530,15 @@ class UserService extends Service
 
         $forging = UserProp::query()->where('id', $user->equip_forging_id)->first();
         if (!$forging->status) {
-            return '所装备的锻造炉已经耗尽，请更换新锻造炉';
+            return '所装备的锻造炉已经耗尽,请更换新锻造炉';
         }
 
         if ($forging->rating < $ins) {
-            return '所装备的锻造炉等级不足，该炉需要至少' . $ins . '级锻造炉';
+            return '所装备的锻造炉等级不足,该炉需要至少' . $ins . '级锻造炉';
         }
 
         if ($forging->lower < 1) {
-            return '所装备的锻造炉次数已经用尽，请更换新锻造炉';
+            return '所装备的锻造炉次数已经用尽,请更换新锻造炉';
         }
 
         $ore = UserProp::query()->where('user_id', $user->id)->where('type', Constant::EQUIP_TYPE_ORE)
@@ -584,7 +602,7 @@ class UserService extends Service
                 DB::rollBack();
                 logger()->error('锻造装备异常：用户id = ' . $user->id);
 
-                return '系统异常，请重试';
+                return '系统异常,请重试';
             }
 
             if ($randEquipType == 1) {
@@ -597,7 +615,7 @@ class UserService extends Service
         }
         $str = $this->decForgingTimes($forging, $user);
 
-        return "糟糕，锻造失败了，再试试吧不要灰心" . $str;
+        return "糟糕,锻造失败了,再试试吧不要灰心" . $str;
     }
 
     public function decForgingTimes(UserProp $userProp, User $user)
@@ -608,7 +626,7 @@ class UserService extends Service
             $user->equip_forging_id = 0;
             $user->save();
             $userProp->status = false;
-            $str .= '，锻造炉次数已耗尽，快更换一个锻造炉吧';
+            $str .= ',锻造炉次数已耗尽,快更换一个锻造炉吧';
         }
         $userProp->save();
 

@@ -2057,7 +2057,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__
           _this.finished = true;
         }
       })["catch"](function (error) {
-        vant__WEBPACK_IMPORTED_MODULE_1__["Toast"].fail('系统错误，请重新点击商店链接');
+        vant__WEBPACK_IMPORTED_MODULE_1__["Toast"].fail('系统错误,请重新点击商店链接');
         console.log(error);
         _this.error = true;
       })["finally"](function () {
@@ -61157,7 +61157,7 @@ var render = function() {
     {
       attrs: {
         error: _vm.error,
-        "error-text": "请求失败，点击重新加载",
+        "error-text": "请求失败,点击重新加载",
         finished: _vm.finished,
         "finished-text": "没有更多了"
       },
