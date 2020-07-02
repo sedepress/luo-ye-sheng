@@ -72,6 +72,9 @@
                                 })
                                 .then(response => {
                                     Toast(response.data.msg);
+                                    if (response.data.code == 0) {
+                                        this.getUserInfo();
+                                    }
                                 })
                                 .catch(error => {
                                     console.log(error);

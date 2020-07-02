@@ -322,7 +322,7 @@ class UserService extends Service
     public function upgrade(User $user, $type)
     {
         if (!$this->judgeEnoughManpower($user, $type)) {
-            return '人力值不足';
+            return [false, '人力值不足'];
         }
 
         switch ($type) {
@@ -341,7 +341,7 @@ class UserService extends Service
 
         $exp = $this->judgeUpgrade($level, $user->current_character_exp);
         if ($exp < 0) {
-            return '经验不足';
+            return [false, '经验不足'];
         }
 
         $manpower = $user->manpower;
@@ -375,7 +375,7 @@ class UserService extends Service
             $invPeople->save();
         }
 
-        return '升级成功';
+        return [true, '升级成功'];
     }
 
     public function constructUserInfo(User $user)

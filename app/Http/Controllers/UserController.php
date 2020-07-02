@@ -102,9 +102,12 @@ class UserController extends Controller
             abort(500);
         }
 
-        $msg = $this->userService->upgrade($user, $data['level_type']);
+        list($result, $msg) = $this->userService->upgrade($user, $data['level_type']);
+        if ($result) {
+            return self::success([], 0, $msg);
+        }
 
-        return self::success([], 0, $msg);
+        return self::error(40000, $msg);
     }
 
     public function fatigue(Request $request)
