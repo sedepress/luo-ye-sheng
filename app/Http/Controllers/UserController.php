@@ -42,15 +42,7 @@ class UserController extends Controller
         $res = [
             'list'        => $props,
             'total'       => $total,
-            'equiped_ids' => [
-                'equip_weapon_id'  => $user->equip_weapon_id,
-                'equip_armor_id'   => $user->equip_armor_id,
-                'equip_shoes_id'   => $user->equip_shoes_id,
-                'equip_belt_id'    => $user->equip_belt_id,
-                'equip_hoe_id'     => $user->equip_hoe_id,
-                'equip_forging_id' => $user->equip_forging_id,
-                'equip_drup_id'    => $user->equip_drup_id,
-            ]
+            'equiped_ids' => $this->userService->constructEquipedArr($user),
         ];
 
         return self::success($res);
