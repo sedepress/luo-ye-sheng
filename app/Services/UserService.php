@@ -224,7 +224,7 @@ class UserService extends Service
                 $user->history_character_exp += $exp;
                 $user->current_gold += $gold;
 
-                if ($this->judgeUpgrade($user->character_level, $user->current_character_exp >= 0)) {
+                if ($this->judgeUpgrade($user->character_level, $user->current_character_exp) >= 0) {
                     $str .= ',可以升级了,去提升等级';
                 }
                 $str .= sprintf("\n金币增加了%d\n", $gold);
