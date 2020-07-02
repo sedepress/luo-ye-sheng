@@ -238,7 +238,7 @@ class UserService extends Service
 
         if ($user->equip_drup_id) {
             $drup = UserProp::query()->find($user->equip_drup_id);
-            $supNum = $user->total_blood_volume - $user->current_blood_volume;
+            $supNum = $user->total_blood_volume + $user->extra_blood - $user->current_blood_volume;
             if ($drup->lower < $supNum) {
                 $user->current_blood_volume += $drup->lower;
                 $user->equip_drup_id = 0;
