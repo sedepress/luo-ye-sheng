@@ -166,7 +166,7 @@ class IndexController extends Controller
             return $menu;
         }
 
-        return '挖矿';
+        return $this->userService->miningResult($ins, $openid);
     }
 
     protected function judgeIns(int $ins, string $key)

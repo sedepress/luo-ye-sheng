@@ -448,9 +448,17 @@ class UserService extends Service
 
         $randnum = mt_rand(0, 100);
         $need = 100 - 5 * $ins + ($hoe->rating - $ins) * 5;
-        if ($randnum > $need) {
+        if ($randnum < $need) {
+            $name = $ins . '级矿石';
+            $user->props()->create([
+                'name' => $name,
+                'rating'=> $ins,
+                'type' => Constant::EQUIP_TYPE_ORE,
+            ]);
 
+            return "真幸运，挖到了{$name}";
         }
-        $minungResult = mt_rand(0, 100);
+
+        return "糟糕，什么也没挖到，再试试吧不要灰心";
     }
 }
