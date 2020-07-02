@@ -51,7 +51,7 @@ class IndexController extends Controller
 //                    }
                     break;
                 case 'text':
-                    logger()->info(json_encode($message));
+                    logger()->info($message);
                     if (Str::startsWith(strtolower($message['Content']), 'nc')) {
                         return $this->userService->setNickname($message['Content'], $message['FromUserName']);
                     }
