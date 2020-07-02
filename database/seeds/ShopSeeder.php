@@ -28,13 +28,12 @@ class ShopSeeder extends Seeder
         }
 
         $lower2 = [1, 3, 5, 8, 10, 15, 20, 30, 40, 50];
-        $upper2 = [1, 3, 5, 8, 10, 15, 20, 30, 40, 50];
         for ($i = 1; $i < 11; $i++) {
             DB::table('shops')->insert([
                 'name'       => $i.'级护甲',
                 'type'       => 2,
                 'lower'      => $lower2[$i - 1],
-                'upper'      => $upper2[$i - 1],
+                'upper'      => $lower2[$i - 1],
                 'rating'     => $i,
                 'price'      => $price[$i - 1],
                 'created_at' => date('Y-m-d H:i:s', time()),
@@ -43,13 +42,26 @@ class ShopSeeder extends Seeder
         }
 
         $lower3 = [1, 3, 5, 8, 10, 15, 20, 30, 40, 50];
-        $upper3 = [1, 3, 5, 8, 10, 15, 20, 30, 40, 50];
         for ($i = 1; $i < 11; $i++) {
             DB::table('shops')->insert([
                 'name'       => $i.'级鞋子',
                 'type'       => 3,
                 'lower'      => $lower3[$i - 1],
-                'upper'      => $upper3[$i - 1],
+                'upper'      => $lower3[$i - 1],
+                'rating'     => $i,
+                'price'      => $price[$i - 1],
+                'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time()),
+            ]);
+        }
+
+        $lower4 = [10, 20, 30, 40, 60, 80, 100, 150, 200, 300];
+        for ($i = 1; $i < 11; $i++) {
+            DB::table('shops')->insert([
+                'name'       => $i.'级腰带',
+                'type'       => 4,
+                'lower'      => $lower4[$i - 1],
+                'upper'      => $lower4[$i - 1],
                 'rating'     => $i,
                 'price'      => $price[$i - 1],
                 'created_at' => date('Y-m-d H:i:s', time()),
@@ -60,19 +72,6 @@ class ShopSeeder extends Seeder
         for ($i = 1; $i < 11; $i++) {
             DB::table('shops')->insert([
                 'name'       => $i.'级锄头',
-                'type'       => 4,
-                'lower'      => 10,
-                'upper'      => 10,
-                'rating'     => $i,
-                'price'      => $price[$i - 1],
-                'created_at' => date('Y-m-d H:i:s', time()),
-                'updated_at' => date('Y-m-d H:i:s', time()),
-            ]);
-        }
-
-        for ($i = 1; $i < 11; $i++) {
-            DB::table('shops')->insert([
-                'name'       => $i.'级锻造炉',
                 'type'       => 5,
                 'lower'      => 10,
                 'upper'      => 10,
@@ -85,8 +84,21 @@ class ShopSeeder extends Seeder
 
         for ($i = 1; $i < 11; $i++) {
             DB::table('shops')->insert([
-                'name'       => $i . '级矿石',
+                'name'       => $i.'级锻造炉',
                 'type'       => 6,
+                'lower'      => 10,
+                'upper'      => 10,
+                'rating'     => $i,
+                'price'      => $price[$i - 1],
+                'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time()),
+            ]);
+        }
+
+        for ($i = 1; $i < 11; $i++) {
+            DB::table('shops')->insert([
+                'name'       => $i . '级矿石',
+                'type'       => 7,
                 'rating'     => $i,
                 'price'      => $price[$i - 1],
                 'created_at' => date('Y-m-d H:i:s', time()),
@@ -99,7 +111,7 @@ class ShopSeeder extends Seeder
         for ($i = 1; $i < 6; $i++) {
             DB::table('shops')->insert([
                 'name'       => $i.'级红罗羹',
-                'type'       => 7,
+                'type'       => 8,
                 'lower'      => $lower7[$i - 1],
                 'upper'      => $lower7[$i - 1],
                 'price_type' => 2,
@@ -115,7 +127,7 @@ class ShopSeeder extends Seeder
         for ($i = 6; $i < 11; $i++) {
             DB::table('shops')->insert([
                 'name'       => $i.'级红罗羹',
-                'type'       => 7,
+                'type'       => 8,
                 'lower'      => $lower7[$i - 6],
                 'upper'      => $lower7[$i - 6],
                 'price_type' => 2,

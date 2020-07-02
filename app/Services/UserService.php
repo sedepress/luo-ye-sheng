@@ -6,6 +6,7 @@ use App\Libs\Constant;
 use App\Models\BattleScene;
 use App\Models\Hero;
 use App\Models\Monster;
+use App\Models\Shop;
 use App\Models\User;
 use App\Models\UserProp;
 use Illuminate\Support\Facades\DB;
@@ -46,8 +47,8 @@ class UserService extends Service
             'openid'       => $openid,
             'current_gold' => 100,
         ]);
-        $user->invitation_code = 'yqm' . str_pad((string) $user->id, 6, '0', STR_PAD_LEFT);
-        $user->nickname = '编号' . (string) (100000 + $user->id);
+        $user->invitation_code = 'yqm' . str_pad((string)$user->id, 6, '0', STR_PAD_LEFT);
+        $user->nickname = '编号' . (string)(100000 + $user->id);
         $user->save();
     }
 
@@ -277,6 +278,9 @@ class UserService extends Service
                 case Constant::EQUIP_TYPE_SHOES:
                     $user->equip_shoes_id = $equip_weapon_id;
                     break;
+                case Constant::EQUIP_TYPE_BELT:
+                    $user->equip_belt_id = $equip_weapon_id;
+                    break;
                 case Constant::EQUIP_TYPE_HOE:
                     $user->equip_hoe_id = $equip_weapon_id;
                     break;
@@ -296,6 +300,7 @@ class UserService extends Service
                     'equip_weapon_id'  => $user->equip_weapon_id,
                     'equip_armor_id'   => $user->equip_armor_id,
                     'equip_shoes_id'   => $user->equip_shoes_id,
+                    'equip_belt_id'    => $user->equip_belt_id,
                     'equip_hoe_id'     => $user->equip_hoe_id,
                     'equip_forging_id' => $user->equip_forging_id,
                     'equip_drup_id'    => $user->equip_drup_id,
@@ -336,20 +341,20 @@ class UserService extends Service
         if ($field == User::$levelFieldMap[User::LEVEL_TYPE_CHARACTER]) {
             $hero = Hero::query()->find($user->hero_id);
             User::query()->where('id', $user->id)->where('manpower', $manpower)->update([
-                $field => $level + 1,
-                $expField => $exp,
-                'manpower' => $manpower - User::$levelNeedManpowerMap[$level],
-                'force' => $user->force + $hero->force_growth,
-                'intelligence' => $user->intelligence + $hero->intelligence_growth,
-                'defence' => $user->defence + $hero->defence_growth,
-                'speed' => $user->speed + $hero->speed_growth,
+                $field                 => $level + 1,
+                $expField              => $exp,
+                'manpower'             => $manpower - User::$levelNeedManpowerMap[$level],
+                'force'                => $user->force + $hero->force_growth,
+                'intelligence'         => $user->intelligence + $hero->intelligence_growth,
+                'defence'              => $user->defence + $hero->defence_growth,
+                'speed'                => $user->speed + $hero->speed_growth,
                 'current_blood_volume' => $user->current_blood_volume + $hero->blood_growth,
-                'total_blood_volume' => $user->total_blood_volume + $hero->blood_growth,
+                'total_blood_volume'   => $user->total_blood_volume + $hero->blood_growth,
             ]);
         } else {
             User::query()->where('id', $user->id)->where('manpower', $manpower)->update([
-                $field => $level + 1,
-                $expField => $exp,
+                $field     => $level + 1,
+                $expField  => $exp,
                 'manpower' => $manpower - User::$levelNeedManpowerMap[$level],
             ]);
         }
@@ -411,6 +416,7 @@ class UserService extends Service
     public function judgeEnoughManpower(User $user, $type)
     {
         $field = User::$levelFieldMap[$type];
+
         return $user->manpower - User::$levelNeedManpowerMap[$user->$field] >= 0 ? true : false;
     }
 
@@ -424,8 +430,8 @@ class UserService extends Service
 
         $fatigue = $user->fatigue_value + User::BUY_FATIGUE;
         User::query()->where('id', $user->id)->where('manpower', $manpower)->update([
-            'manpower' => $manpower - 1,
-            'fatigue_value'  => $fatigue,
+            'manpower'      => $manpower - 1,
+            'fatigue_value' => $fatigue,
         ]);
 
         return true;
@@ -459,15 +465,16 @@ class UserService extends Service
             DB::beginTransaction();
             try {
                 $user->props()->create([
-                    'name' => $name,
-                    'rating'=> $ins,
-                    'type' => Constant::EQUIP_TYPE_ORE,
+                    'name'   => $name,
+                    'rating' => $ins,
+                    'type'   => Constant::EQUIP_TYPE_ORE,
                 ]);
                 $str = $this->decHoeTimes($hoe, $user);
                 DB::commit();
             } catch (\PDOException $exception) {
                 DB::rollBack();
                 logger()->error('挖矿异常：用户id = ' . $user->id);
+
                 return '系统异常，请重试';
             }
 
@@ -487,6 +494,87 @@ class UserService extends Service
             $user->save();
             $userProp->status = false;
             $str .= '，锄头次数已耗尽，快更换一个锄头吧';
+        }
+        $userProp->save();
+
+        return $str;
+    }
+
+    public function forgingResult($ins, $openid)
+    {
+        $user = $this->getUserByOpenid($openid);
+        if (!$user->equip_forging_id) {
+            return '请先装备至少' . $ins . '级锻造炉';
+        }
+
+        $forging = UserProp::query()->where('id', $user->equip_forging_id)->first();
+        if (!$forging->status) {
+            return '所装备的锻造炉已经耗尽，请更换新锻造炉';
+        }
+
+        if ($forging->rating < $ins) {
+            return '所装备的锻造炉等级不足，该炉需要至少' . $ins . '级锻造炉';
+        }
+
+        if ($forging->lower < 1) {
+            return '所装备的锻造炉次数已经用尽，请更换新锻造炉';
+        }
+
+        $randnum = mt_rand(0, 100);
+        $need = 100 - 5 * $ins + ($forging->rating - $ins) * 5;
+        if ($randnum < $need) {
+            $randEquipType = mt_rand(1, 4);
+            switch ($randEquipType) {
+                case Constant::EQUIP_TYPE_WEAPON:
+                    $name = '强化武器';
+                    break;
+                case Constant::EQUIP_TYPE_ARMOR:
+                    $name = '强化护甲';
+                    break;
+                case Constant::EQUIP_TYPE_SHOES:
+                    $name = '强化鞋子';
+                    break;
+                case Constant::EQUIP_TYPE_HOE:
+                    $name = '强化武器';
+                    break;
+            }
+            $name = $ins . '级强化武器';
+            $equip = Shop::query()->where('rating', $ins)->where('type', $randEquipType)->first();
+
+            DB::beginTransaction();
+            try {
+                $user->props()->create([
+                    'name'   => $name,
+                    'lower'  => 1,
+                    'upper'  => 1,
+                    'rating' => $ins,
+                    'type'   => Constant::EQUIP_TYPE_ORE,
+                ]);
+                $str = $this->decForgingTimes($forging, $user);
+                DB::commit();
+            } catch (\PDOException $exception) {
+                DB::rollBack();
+                logger()->error('挖矿异常：用户id = ' . $user->id);
+
+                return '系统异常，请重试';
+            }
+
+            return "真幸运，挖到了{$name}" . $str;
+        }
+        $str = $this->decForgingTimes($forging, $user);
+
+        return "糟糕，什么也没挖到，再试试吧不要灰心" . $str;
+    }
+
+    public function decForgingTimes(UserProp $userProp, User $user)
+    {
+        $str = '';
+        $userProp->lower -= 1;
+        if ($userProp->lower == 0) {
+            $user->equip_forging_id = 0;
+            $user->save();
+            $userProp->status = false;
+            $str .= '，锻造炉次数已耗尽，快更换一个锻造炉吧';
         }
         $userProp->save();
 

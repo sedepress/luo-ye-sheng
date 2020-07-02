@@ -17,7 +17,7 @@ class CreateShopsTable extends Migration
             $table->id();
             $table->string('name');
             $table->tinyInteger('shop_type', false, true)->default(1)->comment('商品类型1系统商品2玩家出售');
-            $table->tinyInteger('type', false, true)->comment('1武器2护甲3鞋子4锄头5锻造炉6矿石7药品');
+            $table->tinyInteger('type', false, true)->comment('1武器2护甲3鞋子4腰带5锄头6锻造炉7矿石8药品');
             $table->integer('lower', false, true)->default(0)->comment('装备属性下限');
             $table->integer('upper', false, true)->default(0)->comment('装备属性上限');
             $table->tinyInteger('price_type', false, true)->default(1)->comment('1人力值 2金币');

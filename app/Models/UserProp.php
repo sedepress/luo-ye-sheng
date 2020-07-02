@@ -33,6 +33,9 @@ class UserProp extends Model
             case Constant::EQUIP_TYPE_SHOES:
                 $str .= sprintf(" %d点速度", $this->lower);
                 break;
+            case Constant::EQUIP_TYPE_BELT:
+                $str .= sprintf(" %d点血量", $this->lower);
+                break;
             case Constant::EQUIP_TYPE_HOE:
                 $str .= sprintf(" %d次剩余次数", $this->lower);
                 break;

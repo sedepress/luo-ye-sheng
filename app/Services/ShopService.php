@@ -26,6 +26,9 @@ class ShopService extends Service
                         'manpower' => $money - $shop->price,
                     ]);
 
+                    $shop->sales_num += 1;
+                    $shop->save();
+
                     $this->syncUserProp($user->id, $shop);
 
                     DB::commit();
@@ -38,6 +41,9 @@ class ShopService extends Service
                     User::query()->where('id', $user->id)->where('current_gold', $money)->update([
                         'current_gold' => $money - $shop->price,
                     ]);
+
+                    $shop->sales_num += 1;
+                    $shop->save();
 
                     $this->syncUserProp($user->id, $shop);
 

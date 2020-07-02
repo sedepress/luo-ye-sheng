@@ -28,6 +28,7 @@ class User extends Model
         'equip_weapon_id',
         'equip_armor_id',
         'equip_shoes_id',
+        'equip_belt_id',
         'equip_hoe_id',
         'equip_forging_id',
         'equip_drug_id',

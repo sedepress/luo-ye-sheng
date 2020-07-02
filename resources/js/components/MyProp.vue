@@ -7,7 +7,7 @@
         finished-text="没有更多了"
         @load="onLoad"
     >
-        <van-cell @click="equip(item)" v-for="item in list" :is-link="item.type != 6 ? true : false " :label="item.prop_desc" title-class="equip-name" value-class="equip" label-class="equip-range" :value="displayEquip(item)" :key="item.id" :title="item.name" />
+        <van-cell @click="equip(item)" v-for="item in list" :is-link="item.type != 7 ? true : false " :label="item.prop_desc" title-class="equip-name" value-class="equip" label-class="equip-range" :value="displayEquip(item)" :key="item.id" :title="item.name" />
     </van-list>
 </template>
 
@@ -37,7 +37,7 @@
         computed: {
             displayEquip() {
                 return function(val) {
-                    if (val.type != 6) {
+                    if (val.type != 7) {
                         if (Object.values(this.equipIds).indexOf(val.id) !== -1) {
                             return '卸下';
                         } else {
@@ -80,7 +80,7 @@
             equip(v) {
                 let m = '装备';
                 let r = true;
-                if (v.type != 6) {
+                if (v.type != 7) {
                     if (Object.values(this.equipIds).indexOf(v.id) !== -1) {
                         m = '卸下';
                         r = false;

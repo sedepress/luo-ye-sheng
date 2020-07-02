@@ -2022,7 +2022,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__
   computed: {
     displayEquip: function displayEquip() {
       return function (val) {
-        if (val.type != 6) {
+        if (val.type != 7) {
           if (Object.values(this.equipIds).indexOf(val.id) !== -1) {
             return '卸下';
           } else {
@@ -2070,7 +2070,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__
       var m = '装备';
       var r = true;
 
-      if (v.type != 6) {
+      if (v.type != 7) {
         if (Object.values(this.equipIds).indexOf(v.id) !== -1) {
           m = '卸下';
           r = false;
@@ -2183,17 +2183,20 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__
         text: '鞋子',
         value: 3
       }, {
-        text: '锄头',
+        text: '腰带',
         value: 4
       }, {
-        text: '锻造炉',
+        text: '锄头',
         value: 5
       }, {
-        text: '矿石',
+        text: '锻造炉',
         value: 6
       }, {
-        text: '药品',
+        text: '矿石',
         value: 7
+      }, {
+        text: '药品',
+        value: 8
       }],
       ratingMap: [{
         text: '全部等级',
@@ -61176,7 +61179,7 @@ var render = function() {
       return _c("van-cell", {
         key: item.id,
         attrs: {
-          "is-link": item.type != 6 ? true : false,
+          "is-link": item.type != 7 ? true : false,
           label: item.prop_desc,
           "title-class": "equip-name",
           "value-class": "equip",
