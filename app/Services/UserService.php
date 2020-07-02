@@ -245,6 +245,8 @@ class UserService extends Service
 
                 $drup->status = false;
                 $drup->lower = 0;
+
+                $res[2] .= "\n您的红罗羹已经用尽";
             } else {
                 $user->current_blood_volume += $supNum;
 

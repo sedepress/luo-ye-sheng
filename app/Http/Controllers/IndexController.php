@@ -139,7 +139,6 @@ class IndexController extends Controller
         $res = $this->numberToChinese($ins) . "级洞穴\n打怪完毕,以下是你的战况\n\n";
         switch ($battleResult) {
             case 1:
-                $this->userService->getUserByOpenid($openid);
                 return $res . $battleStr . $rewardStr;
                 break;
             case 2:
