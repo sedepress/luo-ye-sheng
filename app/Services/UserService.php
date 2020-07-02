@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Libs\Constant;
 use App\Models\BattleScene;
+use App\Models\Hero;
 use App\Models\Monster;
 use App\Models\User;
 use App\Models\UserProp;
@@ -33,12 +34,12 @@ class UserService extends Service
 
     public function register($message)
     {
-        $user = User::query()->create([
+        $user                  = User::query()->create([
             'openid'       => $message['FromUserName'],
             'current_gold' => 100,
         ]);
         $user->invitation_code = 'yqm' . str_pad((string) $user->id, 6, '0', STR_PAD_LEFT);
-        $user->nickname = '编号' . (string) (100000 + $user->id);
+        $user->nickname        = '编号' . (string) (100000 + $user->id);
         $user->save();
     }
 
@@ -80,7 +81,7 @@ class UserService extends Service
                 $user->invite_people = $invUser->id;
                 $user->save();
                 $invUser->manpower += 1;
-                $invUser->inv_num += 1;
+                $invUser->inv_num  += 1;
                 $invUser->save();
 
                 return "设置完毕,对方人气值+1,回复0开始去打怪或者挖矿吧\n\n官方QQ群：1023380085";
@@ -198,9 +199,9 @@ class UserService extends Service
             if ($resultType == 1) {
                 $res = [self::BATTLE_FAILURE, 2, ''];
             } else {
-                $user->current_character_exp  += $exp;
-                $user->history_character_exp  += $exp;
-                $user->current_gold += $gold;
+                $user->current_character_exp += $exp;
+                $user->history_character_exp += $exp;
+                $user->current_gold          += $gold;
 
                 if ($this->judgeUpgrade($user->character_level, $user->current_character_exp) >= 0) {
                     $str .= ',可以升级了,去提升等级';
@@ -214,9 +215,9 @@ class UserService extends Service
             $user->current_blood_volume = $fast['blood'];
 
             if ($resultType == 1) {
-                $user->current_character_exp  += $exp;
-                $user->history_character_exp  += $exp;
-                $user->current_gold += $gold;
+                $user->current_character_exp += $exp;
+                $user->history_character_exp += $exp;
+                $user->current_gold          += $gold;
 
                 if ($this->judgeUpgrade($user->character_level, $user->current_character_exp >= 0)) {
                     $str .= ',可以升级了,去提升等级';
@@ -284,16 +285,99 @@ class UserService extends Service
 
             return [
                 'equiped_ids' => [
-                    'equip_weapon_id' => $user->equip_weapon_id,
-                    'equip_armor_id' => $user->equip_armor_id,
-                    'equip_shoes_id' => $user->equip_shoes_id,
-                    'equip_hoe_id' => $user->equip_hoe_id,
+                    'equip_weapon_id'  => $user->equip_weapon_id,
+                    'equip_armor_id'   => $user->equip_armor_id,
+                    'equip_shoes_id'   => $user->equip_shoes_id,
+                    'equip_hoe_id'     => $user->equip_hoe_id,
                     'equip_forging_id' => $user->equip_forging_id,
-                    'equip_drup_id' => $user->equip_drup_id,
+                    'equip_drup_id'    => $user->equip_drup_id,
                 ]
             ];
         }
 
         return false;
+    }
+
+    public function upgrade(User $user, $type)
+    {
+        switch ($type) {
+            case 1:
+                list($level, $field, $expField) = [$user->character_level, 'character_level', 'current_character_exp'];
+                break;
+            case 2:
+                list($level, $field, $expField) = [$user->mining_level, 'mining_level', 'current_mining_exp'];
+                break;
+            case 3:
+                list($level, $field, $expField) = [$user->forging_level, 'forging_level', 'current_forging_exp'];
+                break;
+            default:
+                logger()->error("升级异常：用户ID：{$user->id}，升级类型：{$type}");
+        }
+
+        $exp = $this->judgeUpgrade($level, $user->current_character_exp);
+        if ($exp < 0) {
+            return false;
+        }
+
+        $user->$field    = $level + 1;
+        $user->$expField = $exp;
+
+        if ($field == 'character_level') {
+            $hero                       = Hero::query()->find($user->hero_id);
+            $user->force                += $hero->force_growth;
+            $user->intelligence         += $hero->intelligence_growth;
+            $user->defence              += $hero->defence_growth;
+            $user->speed                += $hero->speed_growth;
+            $user->current_blood_volume += $hero->blood_growth;
+            $user->total_blood_volume   += $hero->blood_growth;
+        }
+
+        $user->save();
+
+        return $user;
+    }
+
+    public function constructUserInfo(User $user)
+    {
+        $user->inv_user_name = $this->getUserById($user->invite_people) ?? '无';
+        $characterNeed       = $this->judgeUpgrade($user->character_level, $user->current_character_exp);
+        $miningNeed          = $this->judgeUpgrade($user->mining_level, $user->current_mining_exp);
+        $forgingNeed         = $this->judgeUpgrade($user->forging_level, $user->current_forging_exp);
+        $res                 = [
+            'yqm'   => ['title' => '邀请码', 'value' => $user->invitation_code, 'desc' => "点击复制邀请内容，粘贴给你的朋友"],
+            'basic' => [
+                [
+                    'title'          => '打怪等级', 'value' => $user->character_level,
+                    'desc'           => $characterNeed >= 0 ? '可以提升等级，点击提升' : sprintf("再需要%d经验可升级",
+                        abs($characterNeed)),
+                    'is_need_render' => $characterNeed >= 0 ? true : false
+                ],
+                [
+                    'title'          => '挖矿等级', 'value' => $user->mining_level,
+                    'desc'           => $miningNeed >= 0 ? '可以提升等级，点击提升' : sprintf("再需要%d经验可升级", abs($miningNeed)),
+                    'is_need_render' => $miningNeed >= 0 ? true : false
+                ],
+                [
+                    'title'          => '锻造等级', 'value' => $user->forging_level,
+                    'desc'           => $forgingNeed >= 0 ? '可以提升等级，点击提升' : sprintf("再需要%d经验可升级", abs($forgingNeed)),
+                    'is_need_render' => $forgingNeed >= 0 ? true : false
+                ],
+                ['title' => '疲劳值', 'value' => $user->fatigue_value, 'desc' => '点击增加疲劳值'],
+                ['title' => '人力值', 'value' => $user->manpower, 'desc' => '每邀请一人，增加1点人力值，等他升到2级再奖励3点人力值，再升到5级再奖励6点人力值'],
+                ['title' => '金币数', 'value' => $user->current_gold, 'desc' => '金币通过打怪获得，层数越高金币掉落越高'],
+                ['title' => '邀请人', 'value' => $user->inv_user_name, 'desc' => '邀请你的人'],
+                ['title' => '邀请人数', 'value' => $user->inv_num, 'desc' => '你邀请的人数'],
+            ],
+            'attr'  => [
+                ['title' => '攻击', 'value' => $user->force, 'desc' => ''],
+                ['title' => '魔法', 'value' => $user->intelligence, 'desc' => ''],
+                ['title' => '防御', 'value' => $user->defence, 'desc' => ''],
+                ['title' => '速度', 'value' => $user->speed, 'desc' => ''],
+                ['title' => '当前血量', 'value' => $user->current_blood_volume, 'desc' => ''],
+                ['title' => '总血量', 'value' => $user->total_blood_volume, 'desc' => ''],
+            ]
+        ];
+
+        return $res;
     }
 }

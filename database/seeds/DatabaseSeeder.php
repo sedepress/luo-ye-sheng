@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             BattleSceneSeeder::class,
             MonsterSeeder::class,
             ShopSeeder::class,
+            HeroSeeder::class,
         ]);
     }
 }

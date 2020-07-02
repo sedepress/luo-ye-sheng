@@ -67,7 +67,7 @@
                             axios
                                 .post('/user/upgrade', {
                                     token: this.$root.token,
-                                    level_type: index,
+                                    level_type: index + 1,
                                 })
                                 .then(response => {
 

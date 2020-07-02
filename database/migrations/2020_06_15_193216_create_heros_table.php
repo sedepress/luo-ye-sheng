@@ -20,6 +20,7 @@ class CreateHerosTable extends Migration
             $table->tinyInteger('intelligence_growth', false, true)->default(5)->comment('智力成长');
             $table->tinyInteger('defence_growth', false, true)->default(1)->comment('防御成长');
             $table->tinyInteger('speed_growth', false, true)->default(1)->comment('速度成长');
+            $table->tinyInteger('blood_growth', false, true)->default(20)->comment('血量成长');
             $table->timestamps();
         });
     }

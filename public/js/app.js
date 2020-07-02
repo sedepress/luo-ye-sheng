@@ -2439,7 +2439,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_clipboard2__WEBPACK_IMPORTED_
         }).then(function () {
           axios.post('/user/upgrade', {
             token: _this2.$root.token,
-            level_type: index
+            level_type: index + 1
           }).then(function (response) {})["catch"](function (error) {
             console.log(error);
             vant__WEBPACK_IMPORTED_MODULE_2__["Toast"].fail('系统错误，请重新点击商店链接');
