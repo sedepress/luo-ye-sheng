@@ -13,7 +13,7 @@ class HeroSeeder extends Seeder
     {
         DB::table('heroes')->insert([
             'name'                => '小兵',
-            'force_growth'        => 5,
+            'attack_growth'       => 5,
             'intelligence_growth' => 5,
             'defence_growth'      => 1,
             'speed_growth'        => 1,

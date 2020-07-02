@@ -39,9 +39,9 @@ class IndexController extends Controller
                             $this->userService->register($message['FromUserName']);
                         }
 
-                        $this->userService->Subscribe($message['FromUserName'], true);
+                        $this->userService->subscribe($message['FromUserName'], true);
                     } elseif ($message['Event'] == 'unsubscribe') {
-                        $this->userService->Subscribe($message['FromUserName'], false);
+                        $this->userService->subscribe($message['FromUserName'], false);
                     }
 
                     return self::MENU;

@@ -29,7 +29,8 @@ class CreateUsersTable extends Migration
             $table->integer('current_forging_exp', false, true)->default(0)->comment('当前锻造等级经验值');
             $table->integer('history_forging_exp', false, true)->default(0)->comment('历史锻造等级经验值');
             $table->integer('current_gold', false, true)->default(0)->comment('当前金币');
-            $table->tinyInteger('force', false, true)->default(5)->comment('武力');
+            $table->tinyInteger('attack_lower', false, true)->default(5)->comment('攻击上限');
+            $table->tinyInteger('attack_upper', false, true)->default(5)->comment('攻击下限');
             $table->tinyInteger('intelligence', false, true)->default(5)->comment('智力');
             $table->tinyInteger('defence', false, true)->default(1)->comment('防御');
             $table->tinyInteger('speed', false, true)->default(1)->comment('速度');

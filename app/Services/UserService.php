@@ -34,7 +34,7 @@ class UserService extends Service
         return User::query()->where('nickname', $nickname)->first();
     }
 
-    public function Subscribe($openid, $isSubscribe)
+    public function subscribe($openid, $isSubscribe)
     {
         $user = $this->getUserByOpenid($openid);
         $user->is_subscribe = $isSubscribe;
@@ -50,6 +50,8 @@ class UserService extends Service
         $user->invitation_code = 'yqm' . str_pad((string)$user->id, 6, '0', STR_PAD_LEFT);
         $user->nickname = '编号' . (string)(100000 + $user->id);
         $user->save();
+
+        Hero::query()->where('id', 1)->increment('sales_num');
     }
 
     public function setNickname($str, $opeind)
@@ -120,19 +122,13 @@ class UserService extends Service
         }
 
         $monster = Monster::find($floor);
-        [$arm_lower, $arm_upper] = [0, 0];
-
-        if ($user->equip_weapon_id) {
-            // 需要增加武器的攻击上下限
-            [$arm_lower, $arm_upper] = [0, 0];
-        }
 
         if ($monster->speed > $user->speed) {
             $type = 1;
-            [$fast, $slow] = $this->getFastOrSlow($user, $monster, $type, $arm_lower, $arm_upper);
+            list($fast, $slow) = $this->getFastOrSlow($user, $monster, $type);
         } else {
             $type = 2;
-            [$fast, $slow] = $this->getFastOrSlow($user, $monster, $type, $arm_lower, $arm_upper);
+            list($fast, $slow) = $this->getFastOrSlow($user, $monster, $type);
         }
 
         $battleStr = '';
@@ -168,7 +164,7 @@ class UserService extends Service
         return $result;
     }
 
-    public function getFastOrSlow(User $user, Monster $monster, int $type, int $arm_lower, int $arm_upper)
+    public function getFastOrSlow(User $user, Monster $monster, int $type)
     {
         [$fast, $slow] = [[], []];
 
@@ -177,8 +173,8 @@ class UserService extends Service
             $slow['blood'] = $user->current_blood_volume;
             $fast['attack_lower'] = $monster->attack_lower;
             $fast['attack_upper'] = $monster->attack_upper;
-            $slow['attack_lower'] = $user->force + $arm_lower;
-            $slow['attack_upper'] = $user->force + $arm_upper;
+            $slow['attack_lower'] = $user->attack_lower;
+            $slow['attack_upper'] = $user->attack_upper;
             $fast['defense'] = $monster->defense;
             $slow['defense'] = $user->defense;
             $fast['name'] = $monster->name;
@@ -188,8 +184,8 @@ class UserService extends Service
             $fast['blood'] = $user->current_blood_volume;
             $slow['attack_lower'] = $monster->attack_lower;
             $slow['attack_upper'] = $monster->attack_upper;
-            $fast['attack_lower'] = $user->force + $arm_lower;
-            $fast['attack_upper'] = $user->force + $arm_upper;
+            $fast['attack_lower'] = $user->attack_lower;
+            $fast['attack_upper'] = $user->attack_upper;
             $slow['defense'] = $monster->defense;
             $fast['defense'] = $user->defense;
             $fast['name'] = '你';
@@ -344,7 +340,8 @@ class UserService extends Service
                 $field                 => $level + 1,
                 $expField              => $exp,
                 'manpower'             => $manpower - User::$levelNeedManpowerMap[$level],
-                'force'                => $user->force + $hero->force_growth,
+                'attack_lower'         => $user->attack_lower + $hero->attack_growth,
+                'attack_upper'         => $user->attack_upper + $hero->attack_growth,
                 'intelligence'         => $user->intelligence + $hero->intelligence_growth,
                 'defence'              => $user->defence + $hero->defence_growth,
                 'speed'                => $user->speed + $hero->speed_growth,
@@ -401,7 +398,8 @@ class UserService extends Service
                 ['title' => '邀请人数', 'value' => $user->inv_num, 'desc' => '你邀请的人数'],
             ],
             'attr'  => [
-                ['title' => '攻击', 'value' => $user->force, 'desc' => ''],
+                ['title' => '攻击上限', 'value' => $user->attack_upper, 'desc' => ''],
+                ['title' => '攻击下限', 'value' => $user->attack_lower, 'desc' => ''],
                 ['title' => '魔法', 'value' => $user->intelligence, 'desc' => ''],
                 ['title' => '防御', 'value' => $user->defence, 'desc' => ''],
                 ['title' => '速度', 'value' => $user->speed, 'desc' => ''],
