@@ -123,7 +123,7 @@ class UserService extends Service
 
         $monster = Monster::find($floor);
 
-        if ($monster->speed > $user->speed) {
+        if ($monster->speed > ($user->speed + $user->extra_speed)) {
             $type = 1;
             list($fast, $slow) = $this->getFastOrSlow($user, $monster, $type);
         } else {
@@ -173,10 +173,10 @@ class UserService extends Service
             $slow['blood'] = $user->current_blood_volume;
             $fast['attack_lower'] = $monster->attack_lower;
             $fast['attack_upper'] = $monster->attack_upper;
-            $slow['attack_lower'] = $user->attack_lower;
-            $slow['attack_upper'] = $user->attack_upper;
+            $slow['attack_lower'] = $user->attack_lower + $user->extra_attack_lower;
+            $slow['attack_upper'] = $user->attack_upper + $user->extra_attack_upper;
             $fast['defense'] = $monster->defense;
-            $slow['defense'] = $user->defense;
+            $slow['defense'] = $user->defense + $user->extra_defence;
             $fast['name'] = $monster->name;
             $slow['name'] = '你';
         } else {
@@ -184,10 +184,10 @@ class UserService extends Service
             $fast['blood'] = $user->current_blood_volume;
             $slow['attack_lower'] = $monster->attack_lower;
             $slow['attack_upper'] = $monster->attack_upper;
-            $fast['attack_lower'] = $user->attack_lower;
-            $fast['attack_upper'] = $user->attack_upper;
+            $fast['attack_lower'] = $user->attack_lower + $user->extra_attack_lower;
+            $fast['attack_upper'] = $user->attack_upper + $user->extra_attack_upper;
             $slow['defense'] = $monster->defense;
-            $fast['defense'] = $user->defense;
+            $fast['defense'] = $user->defense + $user->extra_defence;
             $fast['name'] = '你';
             $slow['name'] = $monster->name;
         }
@@ -281,42 +281,25 @@ class UserService extends Service
     {
         $equip = UserProp::query()->find($equipId);
         if ($equip) {
-            list($oriLower, $oriUpper) = [0, 0];
-            if (in_array($equip->type, Constant::$equipGroup)) {
-                $isEquiped = UserProp::query()->where('user_id', $user->id)->where('status', true)
-                    ->where('is_equip', true)->where('type', $equip->type)->first();
-                if ($isEquiped) {
-                    $oriLower = $isEquiped->lower;
-                    $oriUpper = $isEquiped->upper;
-                }
-            }
-
             $equip_weapon_id = $isEquip ? $equip->id : 0;
-            if ($equip_weapon_id) {
-                $addLower = $equip->lower - $oriLower;
-                $addUpper = $equip->upper - $oriUpper;
-            } else {
-                $addLower = -$equip->lower;
-                $addUpper = -$equip->upper;
-            }
 
             switch ($equip->type) {
                 case Constant::EQUIP_TYPE_WEAPON:
                     $user->equip_weapon_id = $equip_weapon_id;
-                    $user->attack_lower += $addLower;
-                    $user->attack_upper += $addUpper;
+                    $user->extra_attack_lower = $equip->lower;
+                    $user->extra_attack_upper = $equip->upper;
                     break;
                 case Constant::EQUIP_TYPE_ARMOR:
                     $user->equip_armor_id = $equip_weapon_id;
-                    $user->defence += $addLower;
+                    $user->extra_defence = $equip->lower;
                     break;
                 case Constant::EQUIP_TYPE_SHOES:
                     $user->equip_shoes_id = $equip_weapon_id;
-                    $user->speed += $addLower;
+                    $user->extra_speed += $equip->lower;
                     break;
                 case Constant::EQUIP_TYPE_BELT:
                     $user->equip_belt_id = $equip_weapon_id;
-                    $user->total_blood_volume += $addLower;
+                    $user->extra_blood += $equip->lower;
                     break;
                 case Constant::EQUIP_TYPE_HOE:
                     $user->equip_hoe_id = $equip_weapon_id;
@@ -431,13 +414,13 @@ class UserService extends Service
                 ['title' => '邀请人数', 'value' => $user->inv_num, 'desc' => '你邀请的人数'],
             ],
             'attr'  => [
-                ['title' => '攻击上限', 'value' => $user->attack_upper, 'desc' => ''],
-                ['title' => '攻击下限', 'value' => $user->attack_lower, 'desc' => ''],
-                ['title' => '魔法', 'value' => $user->intelligence, 'desc' => ''],
-                ['title' => '防御', 'value' => $user->defence, 'desc' => ''],
-                ['title' => '速度', 'value' => $user->speed, 'desc' => ''],
+                ['title' => '攻击上限', 'value' => $user->attack_upper + $user->extra_attack_upper, 'desc' => ''],
+                ['title' => '攻击下限', 'value' => $user->attack_lower + $user->extra_attack_lower, 'desc' => ''],
+                ['title' => '魔法', 'value' => $user->intelligence + $user->extra_intelligence, 'desc' => ''],
+                ['title' => '防御', 'value' => $user->defence + $user->extra_defence, 'desc' => ''],
+                ['title' => '速度', 'value' => $user->speed + $user->extra_speed, 'desc' => ''],
                 ['title' => '当前血量', 'value' => $user->current_blood_volume, 'desc' => ''],
-                ['title' => '总血量', 'value' => $user->total_blood_volume, 'desc' => ''],
+                ['title' => '总血量', 'value' => $user->total_blood_volume + $user->extra_blood, 'desc' => ''],
             ]
         ];
 

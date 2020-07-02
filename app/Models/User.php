@@ -41,7 +41,13 @@ class User extends Model
         'inv_num',
         'invite_people',
         'is_used_inv',
-        'is_subscribe'
+        'is_subscribe',
+        'extra_attack_lower',
+        'extra_attack_upper',
+        'extra_intelligence',
+        'extra_defence',
+        'extra_speed',
+        'extra_blood',
     ];
 
     // 升级需要经验常量
