@@ -38,8 +38,10 @@ class IndexController extends Controller
                         if (Redis::hSetnx($key, 'openid', $message['FromUserName'])) {
                             $this->userService->register($message['FromUserName']);
                         }
+
+                        $this->userService->Subscribe($message['FromUserName'], true);
                     } elseif ($message['Event'] == 'unsubscribe') {
-                        $this->userService->unSubscribe($message['FromUserName']);
+                        $this->userService->Subscribe($message['FromUserName'], false);
                     }
 
                     return self::MENU;

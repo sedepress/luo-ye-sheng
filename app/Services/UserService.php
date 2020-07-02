@@ -32,10 +32,10 @@ class UserService extends Service
         return User::query()->where('nickname', $nickname)->first();
     }
 
-    public function unSubscribe($openid)
+    public function Subscribe($openid, $isSubscribe)
     {
         $user = $this->getUserByOpenid($openid);
-        $user->is_subscribe = false;
+        $user->is_subscribe = $isSubscribe;
         $user->save();
     }
 

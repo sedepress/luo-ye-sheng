@@ -3,7 +3,7 @@
   <component name="WebServers">
     <option name="servers">
       <webServer id="941443d4-fbd5-45fc-9779-64316bd59629" name="luo-ye-sheng" url="http://120.27.145.17">
-        <fileTransfer rootFolder="/var/www/luo-ye-sheng" accessType="SFTP" host="120.27.145.17" port="22" sshConfigId="46e45a35-1260-4c59-805f-0fd3214694b0" sshConfig="root@120.27.145.17:22 password">
+        <fileTransfer rootFolder="/var/www/luo-ye-sheng" accessType="SFTP" host="120.27.145.17" port="22" sshConfigId="46e45a35-1260-4c59-805f-0fd3214694b0" sshConfig="www@120.27.145.17:22 password">
           <advancedOptions>
             <advancedOptions controlEncoding="UTF8" dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>
