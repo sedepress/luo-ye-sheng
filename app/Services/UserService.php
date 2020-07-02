@@ -197,24 +197,25 @@ class UserService extends Service
 
     public function judgeBattleResult(User $user, int $type, int $resultType, $fast, $slow, $exp, $gold)
     {
-        $str = sprintf("疲劳值减少1,当前%d\n经验值增加%d", $user->fatigue_value - 1, $exp);
+        $str = sprintf("疲劳值减少1,当前%d", $user->fatigue_value - 1);
+        $rewardStr = sprintf("\n经验值增加%d", $exp);
         if ($type == 1) {
             $user->current_blood_volume = $slow['blood'];
 
             if ($resultType == 1) {
-                $res = [self::BATTLE_FAILURE, 2, ''];
+                $res = [self::BATTLE_FAILURE, 2, $str];
             } else {
                 $user->current_character_exp += $exp;
                 $user->history_character_exp += $exp;
                 $user->current_gold += $gold;
 
                 if ($this->judgeUpgrade($user->character_level, $user->current_character_exp) >= 0) {
-                    $str .= ',可以升级了,去提升等级';
+                    $rewardStr .= ',可以升级了,去提升等级';
                 }
-                $str .= sprintf("\n金币增加了%d\n", $gold);
-                $str .= sprintf("您当前血量为%d", $slow['blood']);
+                $rewardStr .= sprintf("\n金币增加了%d\n", $gold);
+                $rewardStr .= sprintf("您当前血量为%d", $slow['blood']);
 
-                $res = [self::BATTLE_VICTORY, 1, $str];
+                $res = [self::BATTLE_VICTORY, 1, $str . $rewardStr];
             }
         } else {
             $user->current_blood_volume = $fast['blood'];
@@ -225,14 +226,14 @@ class UserService extends Service
                 $user->current_gold += $gold;
 
                 if ($this->judgeUpgrade($user->character_level, $user->current_character_exp) >= 0) {
-                    $str .= ',可以升级了,去提升等级';
+                    $rewardStr .= ',可以升级了,去提升等级';
                 }
-                $str .= sprintf("\n金币增加了%d\n", $gold);
-                $str .= sprintf("您当前血量为%d", $fast['blood']);
+                $rewardStr .= sprintf("\n金币增加了%d\n", $gold);
+                $rewardStr .= sprintf("您当前血量为%d", $fast['blood']);
 
-                $res = [self::BATTLE_VICTORY, 1, $str];
+                $res = [self::BATTLE_VICTORY, 1, $str . $rewardStr];
             } else {
-                $res = [self::BATTLE_FAILURE, 2, ''];
+                $res = [self::BATTLE_FAILURE, 2, $str];
             }
         }
 
