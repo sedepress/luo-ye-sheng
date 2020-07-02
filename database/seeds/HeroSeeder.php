@@ -18,6 +18,8 @@ class HeroSeeder extends Seeder
             'defence_growth'      => 1,
             'speed_growth'        => 1,
             'blood_growth'        => 20,
+            'created_at'          => date('Y-m-d H:i:s', time()),
+            'updated_at'          => date('Y-m-d H:i:s', time()),
         ]);
     }
 }
