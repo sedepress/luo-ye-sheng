@@ -533,25 +533,25 @@ class UserService extends Service
                     $name = '级强化武器';
                     $incLower = mt_rand(1 * $ins, 5 * $ins);
                     $incUpper = mt_rand(1 * $ins, 5 * $ins);
-                    $desc = '攻击范围 ';
+                    $desc = '攻击范围';
                     break;
                 case Constant::EQUIP_TYPE_ARMOR:
                     $name = '级强化护甲';
                     $incLower = mt_rand(1 * $ins, 3 * $ins);
                     $incUpper = $incLower;
-                    $desc = '防御 ';
+                    $desc = '防御';
                     break;
                 case Constant::EQUIP_TYPE_SHOES:
                     $name = '级强化鞋子';
                     $incLower = mt_rand(1 * $ins, 3 * $ins);
                     $incUpper = $incLower;
-                    $desc = '速度 ';
+                    $desc = '速度';
                     break;
                 case Constant::EQUIP_TYPE_BELT:
                     $name = '级强化腰带';
                     $incLower = mt_rand(5 * $ins, 10 * $ins);
                     $incUpper = $incLower;
-                    $desc = '血量 ';
+                    $desc = '血量';
                     break;
             }
             $equip = Shop::query()->where('rating', $ins)->where('type', $randEquipType)->first();
