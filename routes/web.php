@@ -27,4 +27,5 @@ Route::group(['prefix' => 'user'], function() {
     Route::get('/', 'UserController@show');
     Route::post('/detail', 'UserController@detail');
     Route::post('/upgrade', 'UserController@upgrade');
+    Route::post('/fatigue', 'UserController@fatigue');
 });

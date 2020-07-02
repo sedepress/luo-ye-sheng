@@ -74,6 +74,9 @@ class User extends Model
     const INV_LEVEL_THREE = 3;
     const INV_LEVEL_FIVE = 5;
 
+    // 疲劳购买量
+    const BUY_FATIGUE = 10;
+
     public static $levelExpMap = [
         1 => self::LEVEL_TWO_REQ_EXP,
         2 => self::LEVEL_THREE_REQ_EXP,

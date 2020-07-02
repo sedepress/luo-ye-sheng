@@ -32,7 +32,7 @@
                 basic: [],
                 attr: [],
                 invContent: '',
-                level:['打怪等级', '挖矿等级', '锻造等级'],
+                level:['打怪等级', '挖矿等级', '锻造等级', '疲劳值'],
                 price: [1, 2, 3, 4, 5, 6, 7, 8, 9]
             };
         },
@@ -59,7 +59,7 @@
             handleClick(v) {
                 let index = this.level.indexOf(v.title)
                 let price = this.price[v.value - 1]
-                if (index !== -1 && v.is_need_render) {
+                if (index !== -1 && v.is_need_render && index !== 3) {
                     Dialog.confirm({
                         title: '提升' + this.level[index],
                         message: '升级需要消耗' + price + '点人力值',
@@ -72,7 +72,30 @@
                                 })
                                 .then(response => {
                                     Toast(response.data.msg);
-                                    this.getUserInfo();
+                                })
+                                .catch(error => {
+                                    console.log(error);
+                                    Toast.fail('系统错误，请重新点击商店链接');
+                                })
+                        })
+                        .catch(() => {
+                            // on cancel
+                        });
+                } else if (index == 3) {
+                    Dialog.confirm({
+                        title: '增加疲劳值',
+                        message: '1点人力值加10点疲劳',
+                    })
+                        .then(() => {
+                            axios
+                                .post('/user/fatigue', {
+                                    token: this.$root.token,
+                                })
+                                .then(response => {
+                                    Toast(response.data.msg);
+                                    if (response.data.code == 0) {
+                                        this.getUserInfo();
+                                    }
                                 })
                                 .catch(error => {
                                     console.log(error);

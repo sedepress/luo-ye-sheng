@@ -3,6 +3,7 @@
         <van-tabbar v-model="active" route>
             <van-tabbar-item replace icon="shopping-cart-o" to="/shop">购买装备</van-tabbar-item>
             <van-tabbar-item replace icon="gem-o" to="/user/prop">我的装备</van-tabbar-item>
+            <van-tabbar-item replace icon="chart-trending-o">排行榜</van-tabbar-item>
             <van-tabbar-item replace icon="user-o" to="/user">个人信息</van-tabbar-item>
         </van-tabbar>
     </div>

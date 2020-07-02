@@ -353,6 +353,13 @@ class UserService extends Service
             ]);
         }
 
+        // 给邀请人增加人力值以后放队列
+        if ($user->invite_people && in_array($level + 1, [User::INV_LEVEL_THREE, User::INV_LEVEL_FIVE])) {
+            $invPeople = User::query()->find($user->invite_people);
+            $invPeople->manpower += User::$invLevelMap[$level + 1];
+            $invPeople->save();
+        }
+
         return '升级成功';
     }
 
@@ -404,5 +411,46 @@ class UserService extends Service
     {
         $field = User::$levelFieldMap[$type];
         return $user->manpower - User::$levelNeedManpowerMap[$user->$field] >= 0 ? true : false;
+    }
+
+    public function buyFatigue(User $user)
+    {
+        $manpower = $user->manpower;
+
+        if ($manpower < 1) {
+            return false;
+        }
+
+        $fatigue = $user->fatigue_value + User::BUY_FATIGUE;
+        User::query()->where('id', $user->id)->where('manpower', $manpower)->update([
+            'manpower' => $manpower - 1,
+            'fatigue_value'  => $fatigue,
+        ]);
+
+        return true;
+    }
+
+    public function miningResult($ins, $openid)
+    {
+        $user = $this->getUserByOpenid($openid);
+        if (!$user->equip_hoe_id) {
+            return '请先装备至少' . $ins . '级锄头';
+        }
+
+        $hoe = UserProp::query()->where('id', $user->equip_hoe_id)->first();
+        if (!$hoe->status) {
+            return '所装备的锄头已经耗尽';
+        }
+
+        if ($hoe->rating < $ins) {
+            return '所装备的锄头等级不足，该层需要至少' . $ins . '级锄头';
+        }
+
+        $randnum = mt_rand(0, 100);
+        $need = 100 - 5 * $ins + ($hoe->rating - $ins) * 5;
+        if ($randnum > $need) {
+
+        }
+        $minungResult = mt_rand(0, 100);
     }
 }

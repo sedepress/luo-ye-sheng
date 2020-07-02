@@ -2338,6 +2338,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 
@@ -2407,7 +2408,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_clipboard2__WEBPACK_IMPORTED_
       basic: [],
       attr: [],
       invContent: '',
-      level: ['打怪等级', '挖矿等级', '锻造等级'],
+      level: ['打怪等级', '挖矿等级', '锻造等级', '疲劳值'],
       price: [1, 2, 3, 4, 5, 6, 7, 8, 9]
     };
   },
@@ -2436,7 +2437,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_clipboard2__WEBPACK_IMPORTED_
       var index = this.level.indexOf(v.title);
       var price = this.price[v.value - 1];
 
-      if (index !== -1 && v.is_need_render) {
+      if (index !== -1 && v.is_need_render && index !== 3) {
         vant__WEBPACK_IMPORTED_MODULE_2__["Dialog"].confirm({
           title: '提升' + this.level[index],
           message: '升级需要消耗' + price + '点人力值'
@@ -2446,8 +2447,25 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_clipboard2__WEBPACK_IMPORTED_
             level_type: index + 1
           }).then(function (response) {
             Object(vant__WEBPACK_IMPORTED_MODULE_2__["Toast"])(response.data.msg);
+          })["catch"](function (error) {
+            console.log(error);
+            vant__WEBPACK_IMPORTED_MODULE_2__["Toast"].fail('系统错误，请重新点击商店链接');
+          });
+        })["catch"](function () {// on cancel
+        });
+      } else if (index == 3) {
+        vant__WEBPACK_IMPORTED_MODULE_2__["Dialog"].confirm({
+          title: '增加疲劳值',
+          message: '1点人力值加10点疲劳'
+        }).then(function () {
+          axios.post('/user/fatigue', {
+            token: _this2.$root.token
+          }).then(function (response) {
+            Object(vant__WEBPACK_IMPORTED_MODULE_2__["Toast"])(response.data.msg);
 
-            _this2.getUserInfo();
+            if (response.data.code == 0) {
+              _this2.getUserInfo();
+            }
           })["catch"](function (error) {
             console.log(error);
             vant__WEBPACK_IMPORTED_MODULE_2__["Toast"].fail('系统错误，请重新点击商店链接');
@@ -61339,6 +61357,12 @@ var render = function() {
             "van-tabbar-item",
             { attrs: { replace: "", icon: "gem-o", to: "/user/prop" } },
             [_vm._v("我的装备")]
+          ),
+          _vm._v(" "),
+          _c(
+            "van-tabbar-item",
+            { attrs: { replace: "", icon: "chart-trending-o" } },
+            [_vm._v("排行榜")]
           ),
           _vm._v(" "),
           _c(
