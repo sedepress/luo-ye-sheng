@@ -70,7 +70,10 @@
                                     level_type: index + 1,
                                 })
                                 .then(response => {
-
+                                    this.yqm = response.data.data.yqm;
+                                    this.basic = response.data.data.basic;
+                                    this.attr = response.data.data.attr;
+                                    this.invContent = "大家关注公众号【落叶生】回复 " + response.data.data.yqm.value + " 绑定邀请人，体验随时随地随机能玩的指令游戏！";
                                 })
                                 .catch(error => {
                                     console.log(error);

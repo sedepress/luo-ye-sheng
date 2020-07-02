@@ -110,6 +110,12 @@ class UserController extends Controller
         }
 
         $upgradeUser = $this->userService->upgrade($user, $data['level_type']);
+        if ($upgradeUser) {
+            $res = $this->userService->constructUserInfo($upgradeUser);
 
+            return self::success($res);
+        }
+
+        abort(500);
     }
 }

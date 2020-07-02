@@ -2440,7 +2440,12 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_clipboard2__WEBPACK_IMPORTED_
           axios.post('/user/upgrade', {
             token: _this2.$root.token,
             level_type: index + 1
-          }).then(function (response) {})["catch"](function (error) {
+          }).then(function (response) {
+            _this2.yqm = response.data.data.yqm;
+            _this2.basic = response.data.data.basic;
+            _this2.attr = response.data.data.attr;
+            _this2.invContent = "大家关注公众号【落叶生】回复 " + response.data.data.yqm.value + " 绑定邀请人，体验随时随地随机能玩的指令游戏！";
+          })["catch"](function (error) {
             console.log(error);
             vant__WEBPACK_IMPORTED_MODULE_2__["Toast"].fail('系统错误，请重新点击商店链接');
           });
