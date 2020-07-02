@@ -37,6 +37,7 @@ class IndexController extends Controller
                     if (Redis::hSetnx($key, 'openid', $message['FromUserName'])) {
                         $this->userService->register($message);
                     }
+                    logger()->debug($message->Event);
 
                     return self::MENU;
                     break;
