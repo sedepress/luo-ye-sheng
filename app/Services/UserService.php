@@ -238,22 +238,8 @@ class UserService extends Service
         }
 
         if ($user->equip_drup_id) {
-            $drup = UserProp::query()->find($user->equip_drup_id);
-            $supNum = $user->total_blood_volume + $user->extra_blood - $user->current_blood_volume;
-            if ($drup->lower < $supNum) {
-                $user->current_blood_volume += $drup->lower;
-                $user->equip_drup_id = 0;
-
-                $drup->status = false;
-                $drup->lower = 0;
-
-                $res[2] .= "\n您的红罗羹已经用尽";
-            } else {
-                $user->current_blood_volume += $supNum;
-
-                $drup->lower -= $supNum;
-            }
-            $drup->save();
+            $s = $this->suppleBlood($user);
+            $res[2] .= $s;
         }
 
         $user->fatigue_value -= 1;
@@ -314,6 +300,7 @@ class UserService extends Service
                     break;
                 case Constant::EQUIP_TYPE_DRUP:
                     $user->equip_drup_id = $equip_weapon_id;
+                    $this->suppleBlood($user);
                     break;
                 default:
                     break;
@@ -642,5 +629,28 @@ class UserService extends Service
             'equip_forging_id' => $user->equip_forging_id,
             'equip_drup_id'    => $user->equip_drup_id,
         ];
+    }
+
+    public function suppleBlood(User $user)
+    {
+        $str = "";
+        $drup = UserProp::query()->find($user->equip_drup_id);
+        $supNum = $user->total_blood_volume + $user->extra_blood - $user->current_blood_volume;
+        if ($drup->lower < $supNum) {
+            $user->current_blood_volume += $drup->lower;
+            $user->equip_drup_id = 0;
+
+            $drup->status = false;
+            $drup->lower = 0;
+
+            $str = "\n您的红罗羹已经用尽";
+        } else {
+            $user->current_blood_volume += $supNum;
+
+            $drup->lower -= $supNum;
+        }
+        $drup->save();
+
+        return $str;
     }
 }
