@@ -256,7 +256,7 @@ class UserService extends Service
         if ($page == 1) {
             $total = $user->props()->where('status', true)->count();
         }
-        $data = $user->props()->offset($offset)->where('status', true)->limit(self::LIMIT)->orderBy('rating', 'desc')->get();
+        $data = $user->props()->offset($offset)->where('status', true)->limit(self::LIMIT)->latest()->get();
         $data->each->append('prop_desc');
 
         return [$data->toArray(), $total];
