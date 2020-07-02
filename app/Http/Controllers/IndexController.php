@@ -157,7 +157,7 @@ class IndexController extends Controller
             return $menu;
         }
 
-        return $this->numberToChinese($ins) . '级锻造';
+        return $this->userService->forgingResult($ins, $openid);
     }
 
     protected function mining(int $ins, string $key, string $menu, string $openid)

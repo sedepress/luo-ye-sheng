@@ -520,50 +520,81 @@ class UserService extends Service
             return '所装备的锻造炉次数已经用尽，请更换新锻造炉';
         }
 
+        $ore = UserProp::query()->where('user_id', $user->id)->where('type', Constant::EQUIP_TYPE_ORE)
+            ->where('rating', $ins)->where('status', true)->first();
+        if (!$ore) {
+            return '背包中没有对应等级的矿石';
+        }
+
         $randnum = mt_rand(0, 100);
         $need = 100 - 5 * $ins + ($forging->rating - $ins) * 5;
         if ($randnum < $need) {
             $randEquipType = mt_rand(1, 4);
             switch ($randEquipType) {
                 case Constant::EQUIP_TYPE_WEAPON:
-                    $name = '强化武器';
+                    $name = '级强化武器';
+                    $incLower = mt_rand(1 * $ins, 5 * $ins);
+                    $incUpper = mt_rand(1 * $ins, 5 * $ins);
+                    $desc = '攻击范围 ';
                     break;
                 case Constant::EQUIP_TYPE_ARMOR:
-                    $name = '强化护甲';
+                    $name = '级强化护甲';
+                    $incLower = mt_rand(1 * $ins, 3 * $ins);
+                    $incUpper = $incLower;
+                    $desc = '防御 ';
                     break;
                 case Constant::EQUIP_TYPE_SHOES:
-                    $name = '强化鞋子';
+                    $name = '级强化鞋子';
+                    $incLower = mt_rand(1 * $ins, 3 * $ins);
+                    $incUpper = $incLower;
+                    $desc = '速度 ';
                     break;
-                case Constant::EQUIP_TYPE_HOE:
-                    $name = '强化武器';
+                case Constant::EQUIP_TYPE_BELT:
+                    $name = '级强化腰带';
+                    $incLower = mt_rand(5 * $ins, 10 * $ins);
+                    $incUpper = $incLower;
+                    $desc = '血量 ';
                     break;
             }
-            $name = $ins . '级强化武器';
             $equip = Shop::query()->where('rating', $ins)->where('type', $randEquipType)->first();
 
             DB::beginTransaction();
             try {
+                $name = $ins . $name;
+                $lower = $equip->lower + $incLower;
+                $upper = $equip->upper + $incUpper;
+
                 $user->props()->create([
                     'name'   => $name,
-                    'lower'  => 1,
-                    'upper'  => 1,
+                    'lower'  => $lower,
+                    'upper'  => $upper,
                     'rating' => $ins,
-                    'type'   => Constant::EQUIP_TYPE_ORE,
+                    'type'   => $randEquipType,
                 ]);
+
+                $ore->status = false;
+                $ore->save();
+
                 $str = $this->decForgingTimes($forging, $user);
                 DB::commit();
             } catch (\PDOException $exception) {
                 DB::rollBack();
-                logger()->error('挖矿异常：用户id = ' . $user->id);
+                logger()->error('锻造装备异常：用户id = ' . $user->id);
 
                 return '系统异常，请重试';
             }
 
-            return "真幸运，挖到了{$name}" . $str;
+            if ($randEquipType == 1) {
+                $desc .= $lower . ' ~ ' . $upper;
+            } else {
+                $desc .= $lower;
+            }
+
+            return "恭喜你获得了{$name} {$desc}" . $str;
         }
         $str = $this->decForgingTimes($forging, $user);
 
-        return "糟糕，什么也没挖到，再试试吧不要灰心" . $str;
+        return "糟糕，锻造失败了，再试试吧不要灰心" . $str;
     }
 
     public function decForgingTimes(UserProp $userProp, User $user)

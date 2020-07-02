@@ -11,14 +11,13 @@ class ShopSeeder extends Seeder
      */
     public function run()
     {
-        $lower1 = [1, 5, 10, 15, 20, 25, 30, 35, 40, 45];
         $upper1 = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
         $price  = [1, 3, 8, 15, 25, 50, 100, 200, 500, 1000];
         for ($i = 1; $i < 11; $i++) {
             DB::table('shops')->insert([
                 'name'       => $i.'级武器',
                 'type'       => 1,
-                'lower'      => $lower1[$i - 1],
+                'lower'      => 1,
                 'upper'      => $upper1[$i - 1],
                 'rating'     => $i,
                 'price'      => $price[$i - 1],
