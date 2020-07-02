@@ -8,6 +8,7 @@ use App\Models\Hero;
 use App\Models\Monster;
 use App\Models\User;
 use App\Models\UserProp;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 
 class UserService extends Service
@@ -118,11 +119,11 @@ class UserService extends Service
         }
 
         $monster = Monster::find($floor);
-        list($arm_lower, $arm_upper) = [0, 0];
+        [$arm_lower, $arm_upper] = [0, 0];
 
         if ($user->equip_weapon_id) {
             // 需要增加武器的攻击上下限
-            list($arm_lower, $arm_upper) = [0, 0];
+            [$arm_lower, $arm_upper] = [0, 0];
         }
 
         if ($monster->speed > $user->speed) {
@@ -168,7 +169,7 @@ class UserService extends Service
 
     public function getFastOrSlow(User $user, Monster $monster, int $type, int $arm_lower, int $arm_upper)
     {
-        list($fast, $slow) = [[], []];
+        [$fast, $slow] = [[], []];
 
         if ($type == 1) {
             $fast['blood'] = $monster->blood_volume;
@@ -255,7 +256,7 @@ class UserService extends Service
         if ($page == 1) {
             $total = $user->props()->count();
         }
-        $data = $user->props()->offset($offset)->limit(self::LIMIT)->orderBy('rating', 'desc')->get();
+        $data = $user->props()->offset($offset)->where('status', true)->limit(self::LIMIT)->orderBy('rating', 'desc')->get();
         $data->each->append('prop_desc');
 
         return [$data->toArray(), $total];
@@ -313,13 +314,13 @@ class UserService extends Service
 
         switch ($type) {
             case User::LEVEL_TYPE_CHARACTER:
-                list($level, $field, $expField) = [$user->character_level, User::$levelFieldMap[User::LEVEL_TYPE_CHARACTER], 'current_character_exp'];
+                [$level, $field, $expField] = [$user->character_level, User::$levelFieldMap[User::LEVEL_TYPE_CHARACTER], 'current_character_exp'];
                 break;
             case User::LEVEL_TYPE_MINING:
-                list($level, $field, $expField) = [$user->mining_level, User::$levelFieldMap[User::LEVEL_TYPE_MINING], 'current_mining_exp'];
+                [$level, $field, $expField] = [$user->mining_level, User::$levelFieldMap[User::LEVEL_TYPE_MINING], 'current_mining_exp'];
                 break;
             case User::LEVEL_TYPE_FORGING:
-                list($level, $field, $expField) = [$user->forging_level, User::$levelFieldMap[User::LEVEL_TYPE_FORGING], 'current_forging_exp'];
+                [$level, $field, $expField] = [$user->forging_level, User::$levelFieldMap[User::LEVEL_TYPE_FORGING], 'current_forging_exp'];
                 break;
             default:
                 logger()->error("升级异常：用户ID：{$user->id}，升级类型：{$type}");
@@ -446,15 +447,33 @@ class UserService extends Service
             return '所装备的锄头等级不足，该层需要至少' . $ins . '级锄头';
         }
 
+        if ($hoe->remaining_usage < 1) {
+            return '所装备的锄头次数已经用尽，请更换新锄头';
+        }
+
         $randnum = mt_rand(0, 100);
         $need = 100 - 5 * $ins + ($hoe->rating - $ins) * 5;
         if ($randnum < $need) {
             $name = $ins . '级矿石';
-            $user->props()->create([
-                'name' => $name,
-                'rating'=> $ins,
-                'type' => Constant::EQUIP_TYPE_ORE,
-            ]);
+
+            DB::beginTransaction();
+            try {
+                $user->props()->create([
+                    'name' => $name,
+                    'rating'=> $ins,
+                    'type' => Constant::EQUIP_TYPE_ORE,
+                ]);
+                $hoe->remaining_usage -= 1;
+                if ($hoe->remaining_usage == 0) {
+                    $hoe->status = false;
+                }
+                $hoe->save();
+                DB::commit();
+            } catch (\PDOException $exception) {
+                DB::rollBack();
+                logger()->error('挖矿异常：用户id = ' . $user->id);
+                return '系统异常，请重试';
+            }
 
             return "真幸运，挖到了{$name}";
         }
