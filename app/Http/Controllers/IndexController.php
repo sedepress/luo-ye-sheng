@@ -34,6 +34,7 @@ class IndexController extends Controller
             $key = self::USER_INSTRUCTION . $message['FromUserName'];
             switch ($message['MsgType']) {
                 case 'event':
+                    logger()->info('测试测试测试测试测试测试');
                     if ($message->Event == 'subscribe') {
                         if (Redis::hSetnx($key, 'openid', $message['FromUserName'])) {
                             $this->userService->register($message);
