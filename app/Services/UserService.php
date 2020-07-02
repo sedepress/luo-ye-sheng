@@ -32,6 +32,13 @@ class UserService extends Service
         return User::query()->where('nickname', $nickname)->first();
     }
 
+    public function unSubscribe($openid)
+    {
+        $user = $this->getUserByOpenid($openid);
+        $user->is_subscribe = false;
+        $user->save();
+    }
+
     public function register($message)
     {
         $user                  = User::query()->create([

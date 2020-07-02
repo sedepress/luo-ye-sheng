@@ -47,6 +47,7 @@ class CreateUsersTable extends Migration
             $table->integer('inv_num', false, true)->default(0)->comment('邀请人数');
             $table->integer('invite_people', false, true)->default(0)->comment('邀请人');
             $table->boolean('is_used_inv')->default(false)->comment('是否使用邀请码');
+            $table->boolean('is_subscribe')->default(true)->comment('是否关注公众号');
             $table->timestamps();
         });
     }

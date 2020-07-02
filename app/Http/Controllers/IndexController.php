@@ -34,12 +34,15 @@ class IndexController extends Controller
             $key = self::USER_INSTRUCTION . $message['FromUserName'];
             switch ($message['MsgType']) {
                 case 'event':
-                    if (Redis::hSetnx($key, 'openid', $message['FromUserName'])) {
-                        $this->userService->register($message);
-                    }
-                    logger()->error(json_encode($message));
+                    if ($message->Event == 'subscribe') {
+                        if (Redis::hSetnx($key, 'openid', $message['FromUserName'])) {
+                            $this->userService->register($message);
+                        }
 
-                    return self::MENU;
+                        return self::MENU;
+                    } elseif ($message->Event == 'unsubscribe') {
+                        $this->userService->unSubscribe($message['FromUserName']);
+                    }
                     break;
                 case 'text':
                     if (Str::startsWith(strtolower($message['Content']), 'nc')) {

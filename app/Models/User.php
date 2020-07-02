@@ -38,7 +38,8 @@ class User extends Model
         'invitation_code',
         'inv_num',
         'invite_people',
-        'is_used_inv'
+        'is_used_inv',
+        'is_subscribe'
     ];
 
     // 升级需要经验常量
