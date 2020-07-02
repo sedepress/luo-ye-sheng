@@ -34,19 +34,23 @@ class IndexController extends Controller
             $key = self::USER_INSTRUCTION . $message['FromUserName'];
             switch ($message['MsgType']) {
                 case 'event':
-                    logger()->info('测试测试测试测试测试测试');
-                    if ($message->Event == 'subscribe') {
-                        if (Redis::hSetnx($key, 'openid', $message['FromUserName'])) {
-                            $this->userService->register($message);
-                        }
-
-                        return self::MENU;
-                    } elseif ($message->Event == 'unsubscribe') {
-                        $this->userService->unSubscribe($message['FromUserName']);
+                    if (Redis::hSetnx($key, 'openid', $message['FromUserName'])) {
+                        $this->userService->register($message);
                     }
+
+                    return self::MENU;
+//                    logger()->info('测试测试测试测试测试测试');
+//                    if ($message->Event == 'subscribe') {
+//                        if (Redis::hSetnx($key, 'openid', $message['FromUserName'])) {
+//                            $this->userService->register($message);
+//                        }
+//
+//                        return self::MENU;
+//                    } elseif ($message->Event == 'unsubscribe') {
+//                        $this->userService->unSubscribe($message['FromUserName']);
+//                    }
                     break;
                 case 'text':
-                    logger()->info(json_encode($message));
                     if (Str::startsWith(strtolower($message['Content']), 'nc')) {
                         return $this->userService->setNickname($message['Content'], $message['FromUserName']);
                     }
