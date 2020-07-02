@@ -35,7 +35,7 @@ class IndexController extends Controller
             switch ($message['MsgType']) {
                 case 'event':
                     if (Redis::hSetnx($key, 'openid', $message['FromUserName'])) {
-                        $this->userService->register($message);
+                        $this->userService->register($message['FromUserName']);
                     }
 
                     return self::MENU;
@@ -51,6 +51,7 @@ class IndexController extends Controller
 //                    }
                     break;
                 case 'text':
+                    logger()->info(json_encode($message));
                     if (Str::startsWith(strtolower($message['Content']), 'nc')) {
                         return $this->userService->setNickname($message['Content'], $message['FromUserName']);
                     }
