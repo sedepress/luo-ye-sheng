@@ -463,13 +463,7 @@ class UserService extends Service
                     'rating'=> $ins,
                     'type' => Constant::EQUIP_TYPE_ORE,
                 ]);
-                $hoe->lower -= 1;
-                if ($hoe->lower == 0) {
-                    $user->equip_hoe_id = 0;
-                    $user->save();
-                    $hoe->status = false;
-                }
-                $hoe->save();
+                $this->decHoeTimes($hoe, $user);
                 DB::commit();
             } catch (\PDOException $exception) {
                 DB::rollBack();
@@ -479,7 +473,19 @@ class UserService extends Service
 
             return "真幸运，挖到了{$name}";
         }
+        $this->decHoeTimes($hoe, $user);
 
         return "糟糕，什么也没挖到，再试试吧不要灰心";
+    }
+
+    public function decHoeTimes(UserProp $userProp, User $user)
+    {
+        $userProp->lower -= 1;
+        if ($userProp->lower == 0) {
+            $user->equip_hoe_id = 0;
+            $user->save();
+            $userProp->status = false;
+        }
+        $userProp->save();
     }
 }
