@@ -465,6 +465,8 @@ class UserService extends Service
                 ]);
                 $hoe->lower -= 1;
                 if ($hoe->lower == 0) {
+                    $user->equip_hoe_id = 0;
+                    $user->save();
                     $hoe->status = false;
                 }
                 $hoe->save();
