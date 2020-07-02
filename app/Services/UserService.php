@@ -282,24 +282,26 @@ class UserService extends Service
         $equip = UserProp::query()->find($equipId);
         if ($equip) {
             $equip_weapon_id = $isEquip ? $equip->id : 0;
+            $extraLower = $isEquip ? $equip->lower : 0;
+            $extraUpper = $isEquip ? $equip->upper : 0;
 
             switch ($equip->type) {
                 case Constant::EQUIP_TYPE_WEAPON:
                     $user->equip_weapon_id = $equip_weapon_id;
-                    $user->extra_attack_lower = $equip->lower;
-                    $user->extra_attack_upper = $equip->upper;
+                    $user->extra_attack_lower = $extraLower;
+                    $user->extra_attack_upper = $extraUpper;
                     break;
                 case Constant::EQUIP_TYPE_ARMOR:
                     $user->equip_armor_id = $equip_weapon_id;
-                    $user->extra_defence = $equip->lower;
+                    $user->extra_defence = $extraLower;
                     break;
                 case Constant::EQUIP_TYPE_SHOES:
                     $user->equip_shoes_id = $equip_weapon_id;
-                    $user->extra_speed += $equip->lower;
+                    $user->extra_speed = $extraLower;
                     break;
                 case Constant::EQUIP_TYPE_BELT:
                     $user->equip_belt_id = $equip_weapon_id;
-                    $user->extra_blood += $equip->lower;
+                    $user->extra_blood = $extraLower;
                     break;
                 case Constant::EQUIP_TYPE_HOE:
                     $user->equip_hoe_id = $equip_weapon_id;
