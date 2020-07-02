@@ -254,7 +254,7 @@ class UserService extends Service
         $offset = ($page - 1) * self::LIMIT;
         $total = 0;
         if ($page == 1) {
-            $total = $user->props()->count();
+            $total = $user->props()->where('status', true)->count();
         }
         $data = $user->props()->offset($offset)->where('status', true)->limit(self::LIMIT)->orderBy('rating', 'desc')->get();
         $data->each->append('prop_desc');
@@ -463,7 +463,7 @@ class UserService extends Service
                     'rating'=> $ins,
                     'type' => Constant::EQUIP_TYPE_ORE,
                 ]);
-                $this->decHoeTimes($hoe, $user);
+                $str = $this->decHoeTimes($hoe, $user);
                 DB::commit();
             } catch (\PDOException $exception) {
                 DB::rollBack();
@@ -471,21 +471,25 @@ class UserService extends Service
                 return '系统异常，请重试';
             }
 
-            return "真幸运，挖到了{$name}";
+            return "真幸运，挖到了{$name}" . $str;
         }
-        $this->decHoeTimes($hoe, $user);
+        $str = $this->decHoeTimes($hoe, $user);
 
-        return "糟糕，什么也没挖到，再试试吧不要灰心";
+        return "糟糕，什么也没挖到，再试试吧不要灰心" . $str;
     }
 
     public function decHoeTimes(UserProp $userProp, User $user)
     {
+        $str = '';
         $userProp->lower -= 1;
         if ($userProp->lower == 0) {
             $user->equip_hoe_id = 0;
             $user->save();
             $userProp->status = false;
+            $str .= '，锄头次数已耗尽，快更换一个锄头吧';
         }
         $userProp->save();
+
+        return $str;
     }
 }
