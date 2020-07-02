@@ -283,7 +283,7 @@ class UserService extends Service
         if ($equip) {
             if (in_array($equip->type, Constant::$equipGroup)) {
                 $isEquiped = UserProp::query()->where('user_id', $user->id)->where('status', true)
-                    ->where('is_equip', true)->first();
+                    ->where('is_equip', true)->where('type', $equip->type)->first();
                 if ($isEquiped) {
                     $oriLower = $isEquiped->lower;
                     $oriUpper = $isEquiped->upper;
