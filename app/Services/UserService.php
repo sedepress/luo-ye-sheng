@@ -307,15 +307,19 @@ class UserService extends Service
 
     public function upgrade(User $user, $type)
     {
+        if (!$this->judgeEnoughManpower($user, $type)) {
+            return '人力值不足';
+        }
+
         switch ($type) {
-            case 1:
-                list($level, $field, $expField) = [$user->character_level, 'character_level', 'current_character_exp'];
+            case User::LEVEL_TYPE_CHARACTER:
+                list($level, $field, $expField) = [$user->character_level, User::$levelFieldMap[User::LEVEL_TYPE_CHARACTER], 'current_character_exp'];
                 break;
-            case 2:
-                list($level, $field, $expField) = [$user->mining_level, 'mining_level', 'current_mining_exp'];
+            case User::LEVEL_TYPE_MINING:
+                list($level, $field, $expField) = [$user->mining_level, User::$levelFieldMap[User::LEVEL_TYPE_MINING], 'current_mining_exp'];
                 break;
-            case 3:
-                list($level, $field, $expField) = [$user->forging_level, 'forging_level', 'current_forging_exp'];
+            case User::LEVEL_TYPE_FORGING:
+                list($level, $field, $expField) = [$user->forging_level, User::$levelFieldMap[User::LEVEL_TYPE_FORGING], 'current_forging_exp'];
                 break;
             default:
                 logger()->error("升级异常：用户ID：{$user->id}，升级类型：{$type}");
@@ -323,25 +327,33 @@ class UserService extends Service
 
         $exp = $this->judgeUpgrade($level, $user->current_character_exp);
         if ($exp < 0) {
-            return false;
+            return '经验不足';
         }
 
-        $user->$field = $level + 1;
-        $user->$expField = $exp;
+        $manpower = $user->manpower;
 
-        if ($field == 'character_level') {
+        if ($field == User::$levelFieldMap[User::LEVEL_TYPE_CHARACTER]) {
             $hero = Hero::query()->find($user->hero_id);
-            $user->force += $hero->force_growth;
-            $user->intelligence += $hero->intelligence_growth;
-            $user->defence += $hero->defence_growth;
-            $user->speed += $hero->speed_growth;
-            $user->current_blood_volume += $hero->blood_growth;
-            $user->total_blood_volume += $hero->blood_growth;
+            User::query()->where('id', $user->id)->where('manpower', $manpower)->update([
+                $field => $level + 1,
+                $expField => $exp,
+                'manpower' => $manpower - User::$levelNeedManpowerMap[$level],
+                'force' => $user->force + $hero->force_growth,
+                'intelligence' => $user->intelligence + $hero->intelligence_growth,
+                'defence' => $user->defence + $hero->defence_growth,
+                'speed' => $user->speed + $hero->speed_growth,
+                'current_blood_volume' => $user->current_blood_volume + $hero->blood_growth,
+                'total_blood_volume' => $user->total_blood_volume + $hero->blood_growth,
+            ]);
+        } else {
+            User::query()->where('id', $user->id)->where('manpower', $manpower)->update([
+                $field => $level + 1,
+                $expField => $exp,
+                'manpower' => $manpower - User::$levelNeedManpowerMap[$level],
+            ]);
         }
 
-        $user->save();
-
-        return $user;
+        return '升级成功';
     }
 
     public function constructUserInfo(User $user)
@@ -370,7 +382,7 @@ class UserService extends Service
                     'is_need_render' => $forgingNeed >= 0 ? true : false
                 ],
                 ['title' => '疲劳值', 'value' => $user->fatigue_value, 'desc' => '点击增加疲劳值'],
-                ['title' => '人力值', 'value' => $user->manpower, 'desc' => '每邀请一人，增加1点人力值，等他升到2级再奖励3点人力值，再升到5级再奖励6点人力值'],
+                ['title' => '人力值', 'value' => $user->manpower, 'desc' => '每邀请一人，增加1点人力值，等他升到3级再奖励3点人力值，再升到5级再奖励6点人力值'],
                 ['title' => '金币数', 'value' => $user->current_gold, 'desc' => '金币通过打怪获得，层数越高金币掉落越高'],
                 ['title' => '邀请人', 'value' => $user->inv_user_name, 'desc' => '邀请你的人'],
                 ['title' => '邀请人数', 'value' => $user->inv_num, 'desc' => '你邀请的人数'],
@@ -386,5 +398,11 @@ class UserService extends Service
         ];
 
         return $res;
+    }
+
+    public function judgeEnoughManpower(User $user, $type)
+    {
+        $field = User::$levelFieldMap[$type];
+        return $user->manpower - User::$levelNeedManpowerMap[$user->$field] >= 0 ? true : false;
     }
 }

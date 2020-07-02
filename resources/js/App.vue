@@ -1,6 +1,7 @@
 <template>
     <div>
         <router-view />
+        <div style="height: 5rem;"></div>
         <tabbar />
     </div>
 </template>

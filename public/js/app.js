@@ -1959,6 +1959,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "App",
@@ -2373,6 +2374,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vant_lib_cell_group_style__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(vant_lib_cell_group_style__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var vant_lib_toast_style__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vant/lib/toast/style */ "./node_modules/vant/lib/toast/style/index.js");
 /* harmony import */ var vant_lib_toast_style__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(vant_lib_toast_style__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var vant_lib_dialog_style__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! vant/lib/dialog/style */ "./node_modules/vant/lib/dialog/style/index.js");
+/* harmony import */ var vant_lib_dialog_style__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(vant_lib_dialog_style__WEBPACK_IMPORTED_MODULE_6__);
 //
 //
 //
@@ -2385,6 +2388,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 
 
 
@@ -2441,10 +2445,9 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_clipboard2__WEBPACK_IMPORTED_
             token: _this2.$root.token,
             level_type: index + 1
           }).then(function (response) {
-            _this2.yqm = response.data.data.yqm;
-            _this2.basic = response.data.data.basic;
-            _this2.attr = response.data.data.attr;
-            _this2.invContent = "大家关注公众号【落叶生】回复 " + response.data.data.yqm.value + " 绑定邀请人，体验随时随地随机能玩的指令游戏！";
+            Object(vant__WEBPACK_IMPORTED_MODULE_2__["Toast"])(response.data.msg);
+
+            _this2.getUserInfo();
           })["catch"](function (error) {
             console.log(error);
             vant__WEBPACK_IMPORTED_MODULE_2__["Toast"].fail('系统错误，请重新点击商店链接');
@@ -61094,7 +61097,17 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [_c("router-view"), _vm._v(" "), _c("tabbar")], 1)
+  return _c(
+    "div",
+    [
+      _c("router-view"),
+      _vm._v(" "),
+      _c("div", { staticStyle: { height: "5rem" } }),
+      _vm._v(" "),
+      _c("tabbar")
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -61430,10 +61443,10 @@ var render = function() {
           return _c("van-cell", {
             key: index,
             attrs: {
+              center: "",
               title: item.title,
               "is-link": "",
-              value: item.value,
-              label: item.desc
+              value: item.value
             }
           })
         }),

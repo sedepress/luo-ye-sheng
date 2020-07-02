@@ -11,7 +11,7 @@ class HeroSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('heros')->insert([
+        DB::table('heroes')->insert([
             'name'                => '小兵',
             'force_growth'        => 5,
             'intelligence_growth' => 5,

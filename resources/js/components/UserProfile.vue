@@ -5,7 +5,7 @@
             <van-cell @click="handleClick(item)" v-for="(item,index) in basic" :key="index" :title="item.title" is-link :value="item.value" :label="item.desc" :label-class="item.is_need_render ? 'desc-color' : ''" />
         </van-cell-group>
         <van-cell-group title="人物属性值">
-            <van-cell v-for="(item,index) in attr" :title="item.title" is-link :key="index" :value="item.value" :label="item.desc" />
+            <van-cell center v-for="(item,index) in attr" :title="item.title" is-link :key="index" :value="item.value" />
         </van-cell-group>
     </div>
 </template>
@@ -17,6 +17,7 @@
     import 'vant/lib/cell/style';
     import 'vant/lib/cell-group/style';
     import 'vant/lib/toast/style';
+    import 'vant/lib/dialog/style';
 
     Vue.use(Cell);
     Vue.use(CellGroup);
@@ -70,10 +71,8 @@
                                     level_type: index + 1,
                                 })
                                 .then(response => {
-                                    this.yqm = response.data.data.yqm;
-                                    this.basic = response.data.data.basic;
-                                    this.attr = response.data.data.attr;
-                                    this.invContent = "大家关注公众号【落叶生】回复 " + response.data.data.yqm.value + " 绑定邀请人，体验随时随地随机能玩的指令游戏！";
+                                    Toast(response.data.msg);
+                                    this.getUserInfo();
                                 })
                                 .catch(error => {
                                     console.log(error);

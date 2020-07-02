@@ -13,7 +13,7 @@ class CreateHerosTable extends Migration
      */
     public function up()
     {
-        Schema::create('heros', function (Blueprint $table) {
+        Schema::create('heroes', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->tinyInteger('force_growth', false, true)->default(5)->comment('武力成长');
@@ -32,6 +32,6 @@ class CreateHerosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heros');
+        Schema::dropIfExists('heroes');
     }
 }
