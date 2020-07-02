@@ -25,4 +25,11 @@ class Constant
         self::EQUIP_TYPE_ORE     => '矿石',
         self::EQUIP_TYPE_DRUP    => '药品',
     ];
+
+    public static $equipGroup = [
+        self::EQUIP_TYPE_WEAPON,
+        self::EQUIP_TYPE_ARMOR,
+        self::EQUIP_TYPE_SHOES,
+        self::EQUIP_TYPE_BELT,
+    ];
 }

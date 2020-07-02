@@ -166,7 +166,7 @@ class UserService extends Service
 
     public function getFastOrSlow(User $user, Monster $monster, int $type)
     {
-        [$fast, $slow] = [[], []];
+        list($fast, $slow) = [[], []];
 
         if ($type == 1) {
             $fast['blood'] = $monster->blood_volume;
@@ -281,10 +281,19 @@ class UserService extends Service
     {
         $equip = UserProp::query()->find($equipId);
         if ($equip) {
+            if (in_array($equip->type, Constant::$equipGroup)) {
+                $isEquiped = UserProp::query()->where('user_id', $user->id)->where('status', true)
+                    ->where('is_equip', true)->first();
+                if ($isEquiped) {
+                    $oriLower = $isEquiped->lower;
+                    $oriUpper = $isEquiped->upper;
+                }
+            }
+
             $equip_weapon_id = $isEquip ? $equip->id : 0;
             if ($equip_weapon_id) {
-                $addLower = $equip->lower;
-                $addUpper = $equip->upper;
+                $addLower = $equip->lower - $oriLower;
+                $addUpper = $equip->upper - $oriUpper;
             } else {
                 $addLower = -$equip->lower;
                 $addUpper = -$equip->upper;
