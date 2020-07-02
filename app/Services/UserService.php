@@ -653,7 +653,7 @@ class UserService extends Service
 
             $drup->lower -= $supNum;
 
-            $str = "您的红罗羹补充了" . $supNum . '点血量';
+            $str = "\n您的红罗羹补充了" . $supNum . '点血量';
         }
         $drup->save();
 
