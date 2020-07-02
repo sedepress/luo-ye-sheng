@@ -203,6 +203,7 @@ class UserService extends Service
             $user->current_blood_volume = $slow['blood'];
 
             if ($resultType == 1) {
+                $bloodStr = "\n您当前血量为0";
                 $res = [self::BATTLE_FAILURE, 2, $str];
             } else {
                 $user->current_character_exp += $exp;
@@ -212,8 +213,8 @@ class UserService extends Service
                 if ($this->judgeUpgrade($user->character_level, $user->current_character_exp) >= 0) {
                     $rewardStr .= ',可以升级了,去提升等级';
                 }
-                $rewardStr .= sprintf("\n金币增加了%d\n", $gold);
-                $rewardStr .= sprintf("您当前血量为%d", $slow['blood']);
+                $rewardStr .= sprintf("\n金币增加了%d", $gold);
+                $bloodStr = sprintf("\n您当前血量为%d", $slow['blood']);
 
                 $res = [self::BATTLE_VICTORY, 1, $str . $rewardStr];
             }
@@ -228,19 +229,22 @@ class UserService extends Service
                 if ($this->judgeUpgrade($user->character_level, $user->current_character_exp) >= 0) {
                     $rewardStr .= ',可以升级了,去提升等级';
                 }
-                $rewardStr .= sprintf("\n金币增加了%d\n", $gold);
-                $rewardStr .= sprintf("您当前血量为%d", $fast['blood']);
+                $rewardStr .= sprintf("\n金币增加了%d", $gold);
+                $bloodStr = sprintf("\n您当前血量为%d", $fast['blood']);
 
                 $res = [self::BATTLE_VICTORY, 1, $str . $rewardStr];
             } else {
+                $bloodStr = "\n您当前血量为0";
                 $res = [self::BATTLE_FAILURE, 2, $str];
             }
         }
 
         if ($user->equip_drup_id) {
-            $s = $this->suppleBlood($user);
+            list($curBlood, $s) = $this->suppleBlood($user);
+            $bloodStr = sprintf("\n您当前血量为%d", $curBlood);
             $res[2] .= $s;
         }
+        $res[2] .= $bloodStr;
 
         $user->fatigue_value -= 1;
         $user->save();
@@ -633,7 +637,6 @@ class UserService extends Service
 
     public function suppleBlood(User $user)
     {
-        $str = "";
         $drup = UserProp::query()->find($user->equip_drup_id);
         $supNum = $user->total_blood_volume + $user->extra_blood - $user->current_blood_volume;
         if ($drup->lower < $supNum) {
@@ -643,14 +646,17 @@ class UserService extends Service
             $drup->status = false;
             $drup->lower = 0;
 
-            $str = "\n您的红罗羹已经用尽";
+            $str = "\n您的红罗羹补充了" . $drup->lower . '点血量';
+            $str .= "\n您的红罗羹已经用尽";
         } else {
             $user->current_blood_volume += $supNum;
 
             $drup->lower -= $supNum;
+
+            $str = "您的红罗羹补充了" . $supNum . '点血量';
         }
         $drup->save();
 
-        return $str;
+        return [$user->current_blood_volume, $str];
     }
 }
