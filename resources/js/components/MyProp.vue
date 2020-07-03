@@ -94,7 +94,7 @@
                                 .post('/user/equip', {
                                     token: this.$root.token,
                                     equip_id: v.id,
-                                    r
+                                    r: r
                                 })
                                 .then(response => {
                                     this.equipIds = response.data.data.equiped_ids;
