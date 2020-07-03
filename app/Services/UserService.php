@@ -642,11 +642,11 @@ class UserService extends Service
             $user->current_blood_volume += $drup->lower;
             $user->equip_drup_id = 0;
 
-            $drup->status = false;
-            $drup->lower = 0;
-
             $str = "\n您的红罗羹补充了" . $drup->lower . '点血量';
             $str .= "\n您的红罗羹已经用尽";
+
+            $drup->status = false;
+            $drup->lower = 0;
         } else {
             $user->current_blood_volume += $supNum;
 
