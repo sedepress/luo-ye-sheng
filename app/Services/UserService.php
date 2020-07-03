@@ -338,7 +338,7 @@ class UserService extends Service
                 logger()->error("升级异常：用户ID：{$user->id},升级类型：{$type}");
         }
 
-        $exp = $this->judgeUpgrade($level, $user->current_character_exp);
+        $exp = $this->judgeUpgrade($level, $user->$expField);
         if ($exp < 0) {
             return [false, '经验不足'];
         }
