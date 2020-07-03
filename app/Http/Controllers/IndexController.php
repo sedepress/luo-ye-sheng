@@ -134,15 +134,15 @@ class IndexController extends Controller
             return "你今日疲劳已用完,如果没有领取疲劳,可以回复0然后回复4领取疲劳,或者到商店购买疲劳吧";
         }
 
-        list($battleStr, $battleResult, $rewardStr) = $this->userService->battleResult($user, $ins);
+        list($battleResult, $battleStr, $fatigueStr, $bloodStr, $rewardStr) = $this->userService->battleResult($user, $ins);
 
         $res = $this->numberToChinese($ins) . "级洞穴\n打怪完毕,以下是你的战况\n\n";
         switch ($battleResult) {
             case 1:
-                return $res . $battleStr . $rewardStr;
+                return $res . $battleStr . $fatigueStr . $rewardStr . $bloodStr;
                 break;
             case 2:
-                return $res . $battleStr;
+                return $res . $battleStr . $fatigueStr . $bloodStr;
                 break;
             case 3:
                 return $battleStr;

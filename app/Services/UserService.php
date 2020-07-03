@@ -47,8 +47,8 @@ class UserService extends Service
             'openid'       => $openid,
             'current_gold' => 100,
         ]);
-        $user->invitation_code = 'yqm' . str_pad((string)$user->id, 6, '0', STR_PAD_LEFT);
-        $user->nickname = '编号' . (string)(100000 + $user->id);
+        $user->invitation_code = 'yqm' . str_pad((string) $user->id, 6, '0', STR_PAD_LEFT);
+        $user->nickname = '编号' . (string) (100000 + $user->id);
         $user->save();
 
         Hero::query()->where('id', 1)->increment('sales_num');
@@ -118,17 +118,17 @@ class UserService extends Service
     {
         $battleScene = BattleScene::find($floor);
         if ($user->character_level < $battleScene->minimum_level_limit) {
-            return ['你等级还不够哦该层最低需要' . $battleScene->minimum_level_limit . '级', 3, ''];
+            return [3, '你等级还不够哦该层最低需要' . $battleScene->minimum_level_limit . '级', '', '', ''];
         }
 
         $monster = Monster::find($floor);
 
         if ($monster->speed > ($user->speed + $user->extra_speed)) {
             $type = 1;
-            list($fast, $slow) = $this->getFastOrSlow($user, $monster, $type);
+            list($fast, $slow) = $this->getFastAndSlow($user, $monster);
         } else {
             $type = 2;
-            list($fast, $slow) = $this->getFastOrSlow($user, $monster, $type);
+            list($slow, $fast) = $this->getFastAndSlow($user, $monster);
         }
 
         $battleStr = '';
@@ -140,7 +140,7 @@ class UserService extends Service
             if ($slow['blood'] <= 0) {
                 $slow['blood'] = 0;
                 $battleStr .= sprintf(",%s阵亡了\n", $slow['name']);
-                $resultType = 1;
+                $resultType = true;
                 break;
             }
 
@@ -150,106 +150,99 @@ class UserService extends Service
             if ($fast['blood'] <= 0) {
                 $fast['blood'] = 0;
                 $battleStr .= sprintf(",%s阵亡了\n", $fast['name']);
-                $resultType = 2;
+                $resultType = false;
                 break;
             }
             $battleStr .= "\n";
             $round++;
         } while (true);
 
-        $result = $this->judgeBattleResult($user, $type, $resultType, $fast, $slow, $monster->exp,
-            mt_rand($battleScene->gold_lower, $battleScene->gold_upper));
-        $result[0] .= $battleStr;
+        $blood = [
+            'fast' => $fast['blood'],
+            'slow' => $slow['blood']
+        ];
+
+        $reward = [
+            'exp'  => $monster->exp,
+            'gold' => mt_rand($battleScene->gold_lower, $battleScene->gold_upper),
+        ];
+
+        $result = $this->judgeBattleResult($user, $type, $resultType, $blood, $reward);
+        $result[1] .= $battleStr;
 
         return $result;
     }
 
-    public function getFastOrSlow(User $user, Monster $monster, int $type)
+    public function getFastAndSlow(User $user, Monster $monster)
     {
         list($fast, $slow) = [[], []];
 
-        if ($type == 1) {
-            $fast['blood'] = $monster->blood_volume;
-            $slow['blood'] = $user->current_blood_volume;
-            $fast['attack_lower'] = $monster->attack_lower;
-            $fast['attack_upper'] = $monster->attack_upper;
-            $slow['attack_lower'] = $user->attack_lower + $user->extra_attack_lower;
-            $slow['attack_upper'] = $user->attack_upper + $user->extra_attack_upper;
-            $fast['defense'] = $monster->defense;
-            $slow['defense'] = $user->defense + $user->extra_defence;
-            $fast['name'] = $monster->name;
-            $slow['name'] = '你';
-        } else {
-            $slow['blood'] = $monster->blood_volume;
-            $fast['blood'] = $user->current_blood_volume;
-            $slow['attack_lower'] = $monster->attack_lower;
-            $slow['attack_upper'] = $monster->attack_upper;
-            $fast['attack_lower'] = $user->attack_lower + $user->extra_attack_lower;
-            $fast['attack_upper'] = $user->attack_upper + $user->extra_attack_upper;
-            $slow['defense'] = $monster->defense;
-            $fast['defense'] = $user->defense + $user->extra_defence;
-            $fast['name'] = '你';
-            $slow['name'] = $monster->name;
-        }
+        $fast['blood'] = $monster->blood_volume;
+        $slow['blood'] = $user->current_blood_volume;
+        $fast['attack_lower'] = $monster->attack_lower;
+        $fast['attack_upper'] = $monster->attack_upper;
+        $slow['attack_lower'] = $user->attack_lower + $user->extra_attack_lower;
+        $slow['attack_upper'] = $user->attack_upper + $user->extra_attack_upper;
+        $fast['defense'] = $monster->defense;
+        $slow['defense'] = $user->defense + $user->extra_defence;
+        $fast['name'] = $monster->name;
+        $slow['name'] = '你';
 
         return [$fast, $slow];
     }
 
-    public function judgeBattleResult(User $user, int $type, int $resultType, $fast, $slow, $exp, $gold)
+    public function judgeBattleResult(User $user, int $type, bool $resultType, $blood, $reward)
     {
-        $str = sprintf("疲劳值减少1,当前%d", $user->fatigue_value - 1);
-        $rewardStr = sprintf("\n经验值增加%d", $exp);
+        $fatigueStr = sprintf("疲劳值减少1,当前%d", $user->fatigue_value - 1);
+        $rewardStr = '';
+
         if ($type == 1) {
-            $user->current_blood_volume = $slow['blood'];
+            $user->current_blood_volume = $blood['slow'];
 
-            if ($resultType == 1) {
+            if ($resultType) {
                 $bloodStr = "\n您当前血量为0";
-                $res = [self::BATTLE_FAILURE, 2, $str];
+                $res = [2, self::BATTLE_FAILURE, $fatigueStr, $bloodStr, $rewardStr];
             } else {
-                $user->current_character_exp += $exp;
-                $user->history_character_exp += $exp;
-                $user->current_gold += $gold;
-
-                if ($this->judgeUpgrade($user->character_level, $user->current_character_exp) >= 0) {
-                    $rewardStr .= ',可以升级了,去提升等级';
-                }
-                $rewardStr .= sprintf("\n金币增加了%d", $gold);
-                $bloodStr = sprintf("\n您当前血量为%d", $slow['blood']);
-
-                $res = [self::BATTLE_VICTORY, 1, $str . $rewardStr];
+                $res = $this->battleVictory($user, $reward, $blood, $fatigueStr);
             }
         } else {
-            $user->current_blood_volume = $fast['blood'];
+            $user->current_blood_volume = $blood['fast'];
 
-            if ($resultType == 1) {
-                $user->current_character_exp += $exp;
-                $user->history_character_exp += $exp;
-                $user->current_gold += $gold;
-
-                if ($this->judgeUpgrade($user->character_level, $user->current_character_exp) >= 0) {
-                    $rewardStr .= ',可以升级了,去提升等级';
-                }
-                $rewardStr .= sprintf("\n金币增加了%d", $gold);
-                $bloodStr = sprintf("\n您当前血量为%d", $fast['blood']);
-
-                $res = [self::BATTLE_VICTORY, 1, $str . $rewardStr];
+            if ($resultType) {
+                $res = $this->battleVictory($user, $reward, $blood, $fatigueStr);
             } else {
                 $bloodStr = "\n您当前血量为0";
-                $res = [self::BATTLE_FAILURE, 2, $str];
+                $res = [2, self::BATTLE_FAILURE, $fatigueStr, $bloodStr, $rewardStr];
             }
         }
 
         if ($user->equip_drup_id) {
             list($curBlood, $s) = $this->suppleBlood($user);
             $bloodStr = sprintf("\n您当前血量为%d", $curBlood);
-            $res[2] .= $s;
+            $res[3] = $bloodStr . $s;
         }
-        $res[2] .= $bloodStr;
 
         $user->fatigue_value -= 1;
         $user->save();
 
         return $res;
+    }
+
+    public function battleVictory(User $user, $reward, $blood, $fatigueStr)
+    {
+        $rewardStr = sprintf("\n经验值增加%d", $reward['exp']);
+
+        $user->current_character_exp += $reward['exp'];
+        $user->history_character_exp += $reward['exp'];
+        $user->current_gold += $reward['glod'];
+
+        if ($this->judgeUpgrade($user->character_level, $user->current_character_exp) >= 0) {
+            $rewardStr .= ',可以升级了,去提升等级';
+        }
+        $rewardStr .= sprintf("\n金币增加了%d", $reward['glod']);
+        $bloodStr = sprintf("\n您当前血量为%d", $blood['fast']);
+
+        return [1, self::BATTLE_VICTORY, $fatigueStr, $bloodStr, $rewardStr];
     }
 
     public function judgeUpgrade($currentLevel, $currentExp)
@@ -327,13 +320,19 @@ class UserService extends Service
 
         switch ($type) {
             case User::LEVEL_TYPE_CHARACTER:
-                [$level, $field, $expField] = [$user->character_level, User::$levelFieldMap[User::LEVEL_TYPE_CHARACTER], 'current_character_exp'];
+                [$level, $field, $expField] = [
+                    $user->character_level, User::$levelFieldMap[User::LEVEL_TYPE_CHARACTER], 'current_character_exp'
+                ];
                 break;
             case User::LEVEL_TYPE_MINING:
-                [$level, $field, $expField] = [$user->mining_level, User::$levelFieldMap[User::LEVEL_TYPE_MINING], 'current_mining_exp'];
+                [$level, $field, $expField] = [
+                    $user->mining_level, User::$levelFieldMap[User::LEVEL_TYPE_MINING], 'current_mining_exp'
+                ];
                 break;
             case User::LEVEL_TYPE_FORGING:
-                [$level, $field, $expField] = [$user->forging_level, User::$levelFieldMap[User::LEVEL_TYPE_FORGING], 'current_forging_exp'];
+                [$level, $field, $expField] = [
+                    $user->forging_level, User::$levelFieldMap[User::LEVEL_TYPE_FORGING], 'current_forging_exp'
+                ];
                 break;
             default:
                 logger()->error("升级异常：用户ID：{$user->id},升级类型：{$type}");
