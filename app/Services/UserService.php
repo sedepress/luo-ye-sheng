@@ -489,7 +489,7 @@ class UserService extends Service
 
                 DB::commit();
 
-                if ($this->judgeUpgrade($user->character_level, $user->current_character_exp) >= 0) {
+                if ($this->judgeUpgrade($user->mining_level, $user->current_mining_exp) >= 0) {
                     $rewardStr .= ',可以升级了,去提升等级';
                 }
             } catch (\PDOException $exception) {
