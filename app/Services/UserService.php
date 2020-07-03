@@ -224,7 +224,6 @@ class UserService extends Service
 
         $user->fatigue_value -= 1;
         $user->save();
-        logger()->info(json_encode($res));
 
         return $res;
     }
@@ -235,12 +234,12 @@ class UserService extends Service
 
         $user->current_character_exp += $reward['exp'];
         $user->history_character_exp += $reward['exp'];
-        $user->current_gold += $reward['glod'];
+        $user->current_gold += $reward['gold'];
 
         if ($this->judgeUpgrade($user->character_level, $user->current_character_exp) >= 0) {
             $rewardStr .= ',可以升级了,去提升等级';
         }
-        $rewardStr .= sprintf("\n金币增加了%d", $reward['glod']);
+        $rewardStr .= sprintf("\n金币增加了%d", $reward['gold']);
         $bloodStr = sprintf("\n您当前血量为%d", $blood['fast']);
 
         return [1, self::BATTLE_VICTORY, $fatigueStr, $bloodStr, $rewardStr];

@@ -47,7 +47,6 @@ class IndexController extends Controller
                     return self::MENU;
                     break;
                 case 'text':
-                    logger()->info('1111');
                     if (Str::startsWith(strtolower($message['Content']), 'nc')) {
                         return $this->userService->setNickname($message['Content'], $message['FromUserName']);
                     }
