@@ -219,7 +219,7 @@ class UserService extends Service
         if ($user->equip_drup_id) {
             list($curBlood, $s) = $this->suppleBlood($user);
             $bloodStr = sprintf("\n您当前血量为%d", $curBlood);
-            $res[3] = $bloodStr . $s;
+            $res[3] = $s . $bloodStr;
         }
 
         $user->fatigue_value -= 1;
