@@ -367,7 +367,7 @@ class UserService extends Service
             ]);
         }
 
-        // 给邀请人增加人力值以后放队列
+        // TODO 给邀请人增加人力值以后放队列
         if ($user->invite_people && in_array($level + 1, [User::INV_LEVEL_THREE, User::INV_LEVEL_FIVE])) {
             $invPeople = User::query()->find($user->invite_people);
             $invPeople->manpower += User::$invLevelMap[$level + 1];
@@ -404,6 +404,7 @@ class UserService extends Service
                 ],
                 ['title' => '疲劳值', 'value' => $user->fatigue_value, 'desc' => '点击增加疲劳值'],
                 ['title' => '人力值', 'value' => $user->manpower, 'desc' => '每邀请一人,增加1点人力值,等他升到3级再奖励3点人力值,再升到5级再奖励6点人力值'],
+                ['title' => '幸运值', 'value' => $user->lucky_value, 'desc' => '影响特殊事件的发生概率'],
                 ['title' => '金币数', 'value' => $user->current_gold, 'desc' => '金币通过打怪获得,层数越高金币掉落越高'],
                 ['title' => '邀请人', 'value' => $user->inv_user_name, 'desc' => '邀请你的人'],
                 ['title' => '邀请人数', 'value' => $user->inv_num, 'desc' => '你邀请的人数'],
@@ -470,6 +471,7 @@ class UserService extends Service
         $need = 100 - 5 * $ins + ($hoe->rating - $ins) * 5;
         if ($randnum < $need) {
             $name = $ins . '级矿石';
+            $rewardStr = '';
 
             DB::beginTransaction();
             try {
@@ -478,8 +480,18 @@ class UserService extends Service
                     'rating' => $ins,
                     'type'   => Constant::EQUIP_TYPE_ORE,
                 ]);
+
                 $str = $this->decHoeTimes($hoe, $user);
+
+                $user->current_mining_exp += Constant::$getExpLevelMap[$ins];
+                $user->history_mining_exp += Constant::$getExpLevelMap[$ins];
+                $user->save();
+
                 DB::commit();
+
+                if ($this->judgeUpgrade($user->character_level, $user->current_character_exp) >= 0) {
+                    $rewardStr .= ',可以升级了,去提升等级';
+                }
             } catch (\PDOException $exception) {
                 DB::rollBack();
                 logger()->error('挖矿异常：用户id = ' . $user->id);
@@ -487,7 +499,7 @@ class UserService extends Service
                 return '系统异常,请重试';
             }
 
-            return "真幸运,挖到了{$name}" . $str;
+            return "真幸运,挖到了{$name}" . $str . $rewardStr;
         }
         $str = $this->decHoeTimes($hoe, $user);
 
@@ -572,6 +584,8 @@ class UserService extends Service
                 $name = $ins . $name;
                 $lower = $equip->lower + $incLower;
                 $upper = $equip->upper + $incUpper;
+
+                $user->current_forging_exp +=
 
                 $user->props()->create([
                     'name'   => $name,
