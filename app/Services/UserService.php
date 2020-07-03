@@ -224,6 +224,7 @@ class UserService extends Service
 
         $user->fatigue_value -= 1;
         $user->save();
+        logger()->info(json_encode($res));
 
         return $res;
     }
