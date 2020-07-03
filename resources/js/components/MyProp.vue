@@ -18,9 +18,9 @@
     import 'vant/lib/toast/style';
     import 'vant/lib/dialog/style';
 
-    Vue.use(Dialog)
+    Vue.use(Dialog);
     Vue.use(List);
-    Vue.use(Toast)
+    Vue.use(Toast);
 
     export default {
         name: "MyProp",

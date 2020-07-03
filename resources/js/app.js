@@ -12,6 +12,7 @@ window.VueRouter = require('vue-router').default;
 
 Vue.use(VueRouter)
 
+import 'babel-polyfill';
 import Shop from "./components/Shop";
 import MyProp from "./components/MyProp";
 import UserProfile from "./components/UserProfile";
