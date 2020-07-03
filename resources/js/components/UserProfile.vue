@@ -57,8 +57,8 @@
                     })
             },
             handleClick(v) {
-                let index = this.level.indexOf(v.title)
-                let price = this.price[v.value - 1]
+                var index = this.level.indexOf(v.title)
+                var price = this.price[v.value - 1]
                 if (index !== -1 && v.is_need_render && index !== 3) {
                     Dialog.confirm({
                         title: '提升' + this.level[index],
