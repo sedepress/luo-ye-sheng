@@ -578,14 +578,13 @@ class UserService extends Service
                     break;
             }
             $equip = Shop::query()->where('rating', $ins)->where('type', $randEquipType)->first();
+            $rewardStr = '';
 
             DB::beginTransaction();
             try {
                 $name = $ins . $name;
                 $lower = $equip->lower + $incLower;
                 $upper = $equip->upper + $incUpper;
-
-                $user->current_forging_exp +=
 
                 $user->props()->create([
                     'name'   => $name,
@@ -598,8 +597,16 @@ class UserService extends Service
                 $ore->status = false;
                 $ore->save();
 
+                $user->current_forging_exp += Constant::$getExpLevelMap[$ins];
+                $user->history_forging_exp += Constant::$getExpLevelMap[$ins];
+                $user->save();
+
                 $str = $this->decForgingTimes($forging, $user);
                 DB::commit();
+
+                if ($this->judgeUpgrade($user->forging_level, $user->current_forging_exp) >= 0) {
+                    $rewardStr .= ',可以升级了,去提升等级';
+                }
             } catch (\PDOException $exception) {
                 DB::rollBack();
                 logger()->error('锻造装备异常：用户id = ' . $user->id);
@@ -613,7 +620,7 @@ class UserService extends Service
                 $desc .= $lower;
             }
 
-            return "恭喜你获得了{$name} {$desc}" . $str;
+            return "恭喜你获得了{$name} {$desc}" . $str . $rewardStr;
         }
         $str = $this->decForgingTimes($forging, $user);
 
