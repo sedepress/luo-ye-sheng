@@ -45,7 +45,7 @@ class Constant
     ];
 
     public static $getExpLevelMap = [
-        1  => self::GET_EXP_LEVEL_ON,
+        1  => self::GET_EXP_LEVEL_ONE,
         2  => self::GET_EXP_LEVEL_TWO,
         3  => self::GET_EXP_LEVEL_THREE,
         4  => self::GET_EXP_LEVEL_FOUR,
