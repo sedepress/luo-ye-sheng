@@ -37,15 +37,16 @@
         computed: {
             displayEquip() {
                 return function(val) {
-                    if (val.type != 7) {
-                        if (Object.values(this.equipIds).indexOf(val.id) !== -1) {
-                            return '卸下';
-                        } else {
-                            return '装备';
-                        }
-                    } else {
-                        return '';
-                    }
+                    return '';
+                    // if (val.type != 7) {
+                    //     if (Object.values(this.equipIds).indexOf(val.id) !== -1) {
+                    //         return '卸下';
+                    //     } else {
+                    //         return '装备';
+                    //     }
+                    // } else {
+                    //     return '';
+                    // }
                 }
             }
         },
