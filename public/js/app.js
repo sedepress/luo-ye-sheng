@@ -1986,6 +1986,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vant_lib_list_style__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vant_lib_list_style__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var vant_lib_toast_style__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vant/lib/toast/style */ "./node_modules/vant/lib/toast/style/index.js");
 /* harmony import */ var vant_lib_toast_style__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(vant_lib_toast_style__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var vant_lib_dialog_style__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vant/lib/dialog/style */ "./node_modules/vant/lib/dialog/style/index.js");
+/* harmony import */ var vant_lib_dialog_style__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(vant_lib_dialog_style__WEBPACK_IMPORTED_MODULE_4__);
 //
 //
 //
@@ -1999,6 +2001,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 
 
 
@@ -2022,15 +2025,15 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__
   computed: {
     displayEquip: function displayEquip() {
       return function (val) {
-        return ''; // if (val.type != 7) {
-        //     if (Object.values(this.equipIds).indexOf(val.id) !== -1) {
-        //         return '卸下';
-        //     } else {
-        //         return '装备';
-        //     }
-        // } else {
-        //     return '';
-        // }
+        if (val.type != 7) {
+          if (Object.values(this.equipIds).indexOf(val.id) !== -1) {
+            return '卸下';
+          } else {
+            return '装备';
+          }
+        } else {
+          return '';
+        }
       };
     }
   },

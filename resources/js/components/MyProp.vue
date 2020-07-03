@@ -16,6 +16,7 @@
     import {Dialog, List, Toast} from 'vant';
     import 'vant/lib/list/style';
     import 'vant/lib/toast/style';
+    import 'vant/lib/dialog/style';
 
     Vue.use(Dialog)
     Vue.use(List);
@@ -37,16 +38,15 @@
         computed: {
             displayEquip() {
                 return function(val) {
-                    return '';
-                    // if (val.type != 7) {
-                    //     if (Object.values(this.equipIds).indexOf(val.id) !== -1) {
-                    //         return '卸下';
-                    //     } else {
-                    //         return '装备';
-                    //     }
-                    // } else {
-                    //     return '';
-                    // }
+                    if (val.type != 7) {
+                        if (Object.values(this.equipIds).indexOf(val.id) !== -1) {
+                            return '卸下';
+                        } else {
+                            return '装备';
+                        }
+                    } else {
+                        return '';
+                    }
                 }
             }
         },
