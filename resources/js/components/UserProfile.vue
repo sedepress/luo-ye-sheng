@@ -87,7 +87,7 @@
                 } else if (index == 3) {
                     Dialog.confirm({
                         title: '增加疲劳值',
-                        message: '1点人力值加10点疲劳',
+                        message: '1点人力值加5点疲劳',
                     })
                         .then(() => {
                             axios

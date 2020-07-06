@@ -26,7 +26,7 @@ class ShopSeeder extends Seeder
             ]);
         }
 
-        $lower2 = [1, 3, 5, 8, 10, 15, 20, 30, 40, 50];
+        $lower2 = [1, 2, 3, 4, 6, 8, 10, 12, 16, 20];
         for ($i = 1; $i < 11; $i++) {
             DB::table('shops')->insert([
                 'name'       => $i.'级护甲',
@@ -40,7 +40,7 @@ class ShopSeeder extends Seeder
             ]);
         }
 
-        $lower3 = [1, 3, 5, 8, 10, 15, 20, 30, 40, 50];
+        $lower3 = [5, 10, 15, 20, 30, 40, 50, 60, 80, 100];
         for ($i = 1; $i < 11; $i++) {
             DB::table('shops')->insert([
                 'name'       => $i.'级鞋子',

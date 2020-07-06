@@ -2466,7 +2466,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_clipboard2__WEBPACK_IMPORTED_
       } else if (index == 3) {
         vant__WEBPACK_IMPORTED_MODULE_2__["Dialog"].confirm({
           title: '增加疲劳值',
-          message: '1点人力值加10点疲劳'
+          message: '1点人力值加5点疲劳'
         }).then(function () {
           axios.post('/user/fatigue', {
             token: _this2.$root.token

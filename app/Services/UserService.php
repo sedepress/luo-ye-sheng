@@ -95,7 +95,7 @@ class UserService extends Service
                 $invUser->inv_num += 1;
                 $invUser->save();
 
-                return "设置完毕,对方人气值+1,回复0开始去打怪或者挖矿吧\n\n官方QQ群：1023380085";
+                return "设置完毕,对方人气值+1,回复0开始去打怪或者挖矿吧\n\n官方QQ群：1108302208";
             }
         }
 
@@ -123,7 +123,7 @@ class UserService extends Service
 
         $monster = Monster::find($floor);
 
-        if ($monster->speed > ($user->speed + $user->extra_speed)) {
+        if (($monster->speed + mt_rand(-$floor, $floor)) > ($user->speed + $user->extra_speed)) {
             $type = 1;
             list($fast, $slow) = $this->getFastAndSlow($user, $monster);
         } else {
