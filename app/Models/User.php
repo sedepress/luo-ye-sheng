@@ -50,17 +50,16 @@ class User extends Model
         'extra_blood',
     ];
 
-    // $exp = [5, 10, 15, 25, 40, 70, 100, 130, 160, 250];
     // 升级需要经验常量
-    const LEVEL_TWO_REQ_EXP = 100; // 10
-    const LEVEL_THREE_REQ_EXP = 500; // 33
-    const LEVEL_FOUR_REQ_EXP = 1500; // 60
-    const LEVEL_FIVE_REQ_EXP = 4000; // 100
-    const LEVEL_SIX_REQ_EXP = 12500; // 178
-    const LEVEL_SEVEN_REQ_EXP = 30000; // 300
-    const LEVEL_EIGHT_REQ_EXP = 70000; // 538
-    const LEVEL_NIGHT_REQ_EXP = 200000; // 1250
-    const LEVEL_TEN_REQ_EXP = 500000; // 2000
+    const LEVEL_TWO_REQ_EXP = 100;
+    const LEVEL_THREE_REQ_EXP = 500;
+    const LEVEL_FOUR_REQ_EXP = 1500;
+    const LEVEL_FIVE_REQ_EXP = 3000;
+    const LEVEL_SIX_REQ_EXP = 8000;
+    const LEVEL_SEVEN_REQ_EXP = 21000;
+    const LEVEL_EIGHT_REQ_EXP = 55000;
+    const LEVEL_NIGHT_REQ_EXP = 128000;
+    const LEVEL_TEN_REQ_EXP = 264000;
 
     // 升级所需人力值
     const LEVEL_TWO_MANPOWER = 1;

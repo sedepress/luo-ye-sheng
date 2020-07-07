@@ -560,7 +560,7 @@ class UserService extends Service
                     break;
                 case Constant::EQUIP_TYPE_ARMOR:
                     $name = '级强化护甲';
-                    $incLower = mt_rand(1 * $ins, 3 * $ins);
+                    $incLower = mt_rand(1 * $ins, 5 * $ins);
                     $incUpper = $incLower;
                     $desc = '防御';
                     break;
@@ -572,7 +572,7 @@ class UserService extends Service
                     break;
                 case Constant::EQUIP_TYPE_BELT:
                     $name = '级强化腰带';
-                    $incLower = mt_rand(5 * $ins, 10 * $ins);
+                    $incLower = mt_rand(5 * $ins, 20 * $ins);
                     $incUpper = $incLower;
                     $desc = '血量';
                     break;
