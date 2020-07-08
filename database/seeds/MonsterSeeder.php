@@ -22,7 +22,7 @@ class MonsterSeeder extends Seeder
                 'name'         => ($i + 1) . '级怪物',
                 'attack_lower' => $lower[$i],
                 'attack_upper' => $upper[$i],
-                'defense'      => $defense[$i],
+                'defence'      => $defense[$i],
                 'speed'        => $speed[$i],
                 'blood_volume' => $blood[$i],
                 'exp'          => $exp[$i],

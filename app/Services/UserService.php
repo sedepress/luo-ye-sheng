@@ -140,7 +140,7 @@ class UserService extends Service
         $battleStr = '';
         $round = 1;
         do {
-            $fast_a_res = mt_rand($fast['attack_lower'], $fast['attack_upper']) - $slow['defense'];
+            $fast_a_res = mt_rand($fast['attack_lower'], $fast['attack_upper']) - $slow['defence'];
             $slow['blood'] -= $fast_a_res > 0 ? $fast_a_res : 0;
             $battleStr .= sprintf("第%d回合,%s对%s造成%d点伤害", $round, $fast['name'], $slow['name'], $fast_a_res);
             if ($slow['blood'] <= 0) {
@@ -150,7 +150,7 @@ class UserService extends Service
                 break;
             }
 
-            $slow_a_res = mt_rand($slow['attack_lower'], $slow['attack_upper']) - $fast['defense'];
+            $slow_a_res = mt_rand($slow['attack_lower'], $slow['attack_upper']) - $fast['defence'];
             $fast['blood'] -= $slow_a_res > 0 ? $slow_a_res : 0;
             $battleStr .= sprintf(",%s对%s造成%d点伤害", $slow['name'], $fast['name'], $slow_a_res);
             if ($fast['blood'] <= 0) {
@@ -189,8 +189,8 @@ class UserService extends Service
         $fast['attack_upper'] = $monster->attack_upper;
         $slow['attack_lower'] = $user->attack_lower + $user->extra_attack_lower;
         $slow['attack_upper'] = $user->attack_upper + $user->extra_attack_upper;
-        $fast['defense'] = $monster->defense;
-        $slow['defense'] = $user->defense + $user->extra_defence;
+        $fast['defence'] = $monster->defence;
+        $slow['defence'] = $user->defence + $user->extra_defence;
         $fast['name'] = $monster->name;
         $slow['name'] = '你';
 
