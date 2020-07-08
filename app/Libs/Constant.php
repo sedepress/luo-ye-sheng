@@ -18,13 +18,13 @@ class Constant
     const GET_EXP_LEVEL_ONE = 5;
     const GET_EXP_LEVEL_TWO = 10;
     const GET_EXP_LEVEL_THREE = 15;
-    const GET_EXP_LEVEL_FOUR = 25;
+    const GET_EXP_LEVEL_FOUR = 20;
     const GET_EXP_LEVEL_FIVE = 40;
     const GET_EXP_LEVEL_SIX = 70;
-    const GET_EXP_LEVEL_SEVEN = 100;
-    const GET_EXP_LEVEL_EIGHT = 130;
-    const GET_EXP_LEVEL_NINE = 160;
-    const GET_EXP_LEVEL_TEN = 250;
+    const GET_EXP_LEVEL_SEVEN = 110;
+    const GET_EXP_LEVEL_EIGHT = 160;
+    const GET_EXP_LEVEL_NINE = 220;
+    const GET_EXP_LEVEL_TEN = 300;
 
     public static $equipTypeMap = [
         self::EQUIP_TYPE_WEAPON  => '武器',
