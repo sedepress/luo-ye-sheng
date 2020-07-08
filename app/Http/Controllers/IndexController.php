@@ -130,7 +130,7 @@ class IndexController extends Controller
         }
         $user = $this->userService->getUserByOpenid($openid);
         if ($user->fatigue_value - 1 < 0) {
-            return "你今日疲劳已用完,如果没有领取疲劳,可以回复0然后回复4领取疲劳,或者到商店购买疲劳吧";
+            return '你今日疲劳已用完,如果没有领取疲劳,可以回复0然后回复4领取疲劳,或者到' . $this->userService->getShopLink($openid, '商店', 'user') . '购买疲劳吧';
         }
 
         list($battleResult, $battleStr, $fatigueStr, $bloodStr, $rewardStr) = $this->userService->battleResult($user, $ins);
