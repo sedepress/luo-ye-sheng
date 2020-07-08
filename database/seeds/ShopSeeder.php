@@ -95,12 +95,13 @@ class ShopSeeder extends Seeder
             ]);
         }
 
+        $price7 = [1, 2, 3, 4, 6, 12, 25, 50, 100, 200];
         for ($i = 1; $i < 11; $i++) {
             DB::table('shops')->insert([
                 'name'       => $i . '级矿石',
                 'type'       => 7,
                 'rating'     => $i,
-                'price'      => $price[$i - 1],
+                'price'      => $price7[$i - 1],
                 'created_at' => date('Y-m-d H:i:s', time()),
                 'updated_at' => date('Y-m-d H:i:s', time()),
             ]);
@@ -130,7 +131,7 @@ class ShopSeeder extends Seeder
                 'type'       => 8,
                 'lower'      => $lower7[$i - 6],
                 'upper'      => $lower7[$i - 6],
-                'price_type' => 2,
+                'price_type' => 1,
                 'rating'     => $i,
                 'price'      => $price7[$i - 6],
                 'created_at' => date('Y-m-d H:i:s', time()),
