@@ -16,12 +16,12 @@ class CreateMonstersTable extends Migration
         Schema::create('monsters', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->tinyInteger('attack_lower', false, true)->comment('攻击下限');
-            $table->smallInteger('attack_upper', false, true)->comment('攻击上限');
-            $table->tinyInteger('defense', false, true)->comment('防御');
-            $table->tinyInteger('speed', false, true)->comment('速度');
-            $table->smallInteger('blood_volume', false, true)->comment('血量');
-            $table->tinyInteger('exp', false, true)->comment('经验值');
+            $table->integer('attack_lower', false, true)->comment('攻击下限');
+            $table->integer('attack_upper', false, true)->comment('攻击上限');
+            $table->integer('defense', false, true)->comment('防御');
+            $table->integer('speed', false, true)->comment('速度');
+            $table->integer('blood_volume', false, true)->comment('血量');
+            $table->integer('exp', false, true)->comment('经验值');
             $table->timestamps();
         });
     }
