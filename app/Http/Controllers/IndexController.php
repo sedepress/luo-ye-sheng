@@ -105,7 +105,7 @@ class IndexController extends Controller
                                 return self::NO_FATIGUE_MENU;
                                 break;
                             case 5:
-                                return $this->userService->getShopLink($message['FromUserName'], '点击进入商店', 'shop') . "\n\n\n官方QQ群：1108302208";
+                                return $this->userService->getLink($message['FromUserName'], '点击进入商店', 'shop') . "\n\n\n官方QQ群：1108302208";
                                 break;
                             default:
                                 Redis::hSet($key, 'instruction', '');
@@ -130,7 +130,7 @@ class IndexController extends Controller
         }
         $user = $this->userService->getUserByOpenid($openid);
         if ($user->fatigue_value - 1 < 0) {
-            return '你今日疲劳已用完,如果没有领取疲劳,可以回复0然后回复4领取疲劳,或者到' . $this->userService->getShopLink($openid, '商店', 'user') . '购买疲劳吧';
+            return '你今日疲劳已用完,如果没有领取疲劳,可以回复0然后回复4领取疲劳,或者到' . $this->userService->getLink($openid, '商店', 'user') . '购买疲劳吧';
         }
 
         list($battleResult, $battleStr, $fatigueStr, $bloodStr, $rewardStr) = $this->userService->battleResult($user, $ins);

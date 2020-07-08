@@ -19,7 +19,7 @@ class UserService extends Service
     const BATTLE_FAILURE = "您战败了,佩戴装备或提升等级再来挑战吧\n";
     const LIMIT = 10;
 
-    public function getShopLink($openid, $str, $param)
+    public function getLink($openid, $str, $param)
     {
         return '<a href="' . config('app.url') . '/shop?token=' . encrypt($openid) . '#/' . $param . ''
             . '">' . $str . '</a>';
@@ -243,7 +243,7 @@ class UserService extends Service
         $user->current_gold += $reward['gold'];
 
         if ($this->judgeUpgrade($user->character_level, $user->current_character_exp) >= 0) {
-            $rewardStr .= ',可以升级了,去提升等级';
+            $rewardStr .= ',可以升级了,去' . $this->getLink($user->openid, '提升等级', 'user');
         }
         $rewardStr .= sprintf("\n金币增加了%d", $reward['gold']);
         $bloodStr = sprintf("\n您当前血量为%d", $blood['fast']);
@@ -458,20 +458,20 @@ class UserService extends Service
     {
         $user = $this->getUserByOpenid($openid);
         if (!$user->equip_hoe_id) {
-            return '请先装备至少' . $ins . '级锄头';
+            return '请先装备至少' . $ins . '级锄头,进入' . $this->getLink($openid, '我的装备', 'prop');
         }
 
         $hoe = UserProp::query()->where('id', $user->equip_hoe_id)->first();
         if (!$hoe->status) {
-            return '所装备的锄头已经耗尽,请更换新锄头';
+            return '所装备的锄头已经耗尽,请更换新锄头,进入' . $this->getLink($openid, '我的装备', 'prop');
         }
 
         if ($hoe->rating < $ins) {
-            return '所装备的锄头等级不足,该层需要至少' . $ins . '级锄头';
+            return '所装备的锄头等级不足,该层需要至少' . $ins . '级锄头,进入' . $this->getLink($openid, '我的装备', 'prop');
         }
 
         if ($hoe->lower < 1) {
-            return '所装备的锄头次数已经用尽,请更换新锄头';
+            return '所装备的锄头次数已经用尽,请更换新锄头,进入' . $this->getLink($openid, '我的装备', 'prop');
         }
 
         $randnum = mt_rand(0, 100);
@@ -497,7 +497,7 @@ class UserService extends Service
                 DB::commit();
 
                 if ($this->judgeUpgrade($user->mining_level, $user->current_mining_exp) >= 0) {
-                    $rewardStr .= ',可以升级了,去提升等级';
+                    $rewardStr .= ',可以升级了,去' . $this->getLink($openid, '提升等级', 'user');
                 }
             } catch (\PDOException $exception) {
                 DB::rollBack();
@@ -521,7 +521,7 @@ class UserService extends Service
             $user->equip_hoe_id = 0;
             $user->save();
             $userProp->status = false;
-            $str .= ',锄头次数已耗尽,快更换一个锄头吧';
+            $str .= ',锄头次数已耗尽,快更换一个锄头吧,进入' . $this->getLink($user->openid, '我的装备', 'prop');
         }
         $userProp->save();
 
@@ -532,20 +532,20 @@ class UserService extends Service
     {
         $user = $this->getUserByOpenid($openid);
         if (!$user->equip_forging_id) {
-            return '请先装备至少' . $ins . '级锻造炉';
+            return '请先装备至少' . $ins . '级锻造炉,进入' . $this->getLink($openid, '我的装备', 'prop');
         }
 
         $forging = UserProp::query()->where('id', $user->equip_forging_id)->first();
         if (!$forging->status) {
-            return '所装备的锻造炉已经耗尽,请更换新锻造炉';
+            return '所装备的锻造炉已经耗尽,请更换新锻造炉,进入' . $this->getLink($openid, '我的装备', 'prop');
         }
 
         if ($forging->rating < $ins) {
-            return '所装备的锻造炉等级不足,该炉需要至少' . $ins . '级锻造炉';
+            return '所装备的锻造炉等级不足,该炉需要至少' . $ins . '级锻造炉,进入' . $this->getLink($openid, '我的装备', 'prop');
         }
 
         if ($forging->lower < 1) {
-            return '所装备的锻造炉次数已经用尽,请更换新锻造炉';
+            return '所装备的锻造炉次数已经用尽,请更换新锻造炉,进入' . $this->getLink($openid, '我的装备', 'prop');
         }
 
         $ore = UserProp::query()->where('user_id', $user->id)->where('type', Constant::EQUIP_TYPE_ORE)
@@ -612,7 +612,7 @@ class UserService extends Service
                 DB::commit();
 
                 if ($this->judgeUpgrade($user->forging_level, $user->current_forging_exp) >= 0) {
-                    $rewardStr .= ',可以升级了,去提升等级';
+                    $rewardStr .= ',可以升级了,去' . $this->getLink($openid, '提升等级', 'user');
                 }
             } catch (\PDOException $exception) {
                 DB::rollBack();
@@ -642,7 +642,7 @@ class UserService extends Service
             $user->equip_forging_id = 0;
             $user->save();
             $userProp->status = false;
-            $str .= ',锻造炉次数已耗尽,快更换一个锻造炉吧';
+            $str .= ',锻造炉次数已耗尽,快更换一个锻造炉吧,进入' . $this->getLink($user->openid, '我的装备', 'prop');
         }
         $userProp->save();
 
@@ -671,7 +671,7 @@ class UserService extends Service
             $user->equip_drup_id = 0;
 
             $str = "\n您的红罗羹补充了" . $drup->lower . '点血量';
-            $str .= "\n您的红罗羹已经用尽";
+            $str .= "\n您的红罗羹已经用尽,进入" . $this->getLink($user->openid, '我的装备', 'prop');
 
             $drup->status = false;
             $drup->lower = 0;
