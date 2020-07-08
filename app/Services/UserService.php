@@ -19,6 +19,12 @@ class UserService extends Service
     const BATTLE_FAILURE = "您战败了,佩戴装备或提升等级再来挑战吧\n";
     const LIMIT = 10;
 
+    public function getShopLink($openid, $str, $param)
+    {
+        return '<a href="' . config('app.url') . '/shop?token=' . encrypt($openid) . '#/' . $param . ''
+            . '">' . $str . '</a>';
+    }
+
     public function getUserByOpenid($openid)
     {
         return User::query()->where('openid', $openid)->first();
@@ -134,7 +140,7 @@ class UserService extends Service
         $battleStr = '';
         $round = 1;
         do {
-            $fast_a_res = mt_rand($fast['attack_lower'], $fast['attack_upper']) - $slow['defense'] * 2;
+            $fast_a_res = mt_rand($fast['attack_lower'], $fast['attack_upper']) - $slow['defense'];
             $slow['blood'] -= $fast_a_res > 0 ? $fast_a_res : 0;
             $battleStr .= sprintf("第%d回合,%s对%s造成%d点伤害", $round, $fast['name'], $slow['name'], $fast_a_res);
             if ($slow['blood'] <= 0) {
@@ -144,7 +150,7 @@ class UserService extends Service
                 break;
             }
 
-            $slow_a_res = mt_rand($slow['attack_lower'], $slow['attack_upper']) - $fast['defense'] * 2;
+            $slow_a_res = mt_rand($slow['attack_lower'], $slow['attack_upper']) - $fast['defense'];
             $fast['blood'] -= $slow_a_res > 0 ? $slow_a_res : 0;
             $battleStr .= sprintf(",%s对%s造成%d点伤害", $slow['name'], $fast['name'], $slow_a_res);
             if ($fast['blood'] <= 0) {
@@ -257,7 +263,8 @@ class UserService extends Service
         if ($page == 1) {
             $total = $user->props()->where('status', true)->count();
         }
-        $data = $user->props()->offset($offset)->where('status', true)->limit(self::LIMIT)->orderByRaw('rating desc,id desc')->get();
+        $data = $user->props()->offset($offset)->where('status',
+            true)->limit(self::LIMIT)->orderByRaw('rating desc,id desc')->get();
         $data->each->append('prop_desc');
 
         return [$data->toArray(), $total];

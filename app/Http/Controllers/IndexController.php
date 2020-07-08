@@ -105,8 +105,7 @@ class IndexController extends Controller
                                 return self::NO_FATIGUE_MENU;
                                 break;
                             case 5:
-                                return '<a href="' . config('app.url') . '/shop?token=' . encrypt($message['FromUserName']) . '#/shop'
-                                    . '">点击进入商店</a>' . "\n\n\n官方QQ群：1108302208";
+                                return $this->userService->getShopLink($message['FromUserName'], '点击进入商店', 'shop') . "\n\n\n官方QQ群：1108302208";
                                 break;
                             default:
                                 Redis::hSet($key, 'instruction', '');
