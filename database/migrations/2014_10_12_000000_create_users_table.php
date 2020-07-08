@@ -32,8 +32,8 @@ class CreateUsersTable extends Migration
             $table->integer('attack_lower', false, true)->default(5)->comment('攻击上限');
             $table->integer('attack_upper', false, true)->default(5)->comment('攻击下限');
             $table->integer('intelligence', false, true)->default(5)->comment('魔法');
-            $table->integer('defence', false, true)->default(2)->comment('防御');
-            $table->integer('speed', false, true)->default(5)->comment('速度');
+            $table->integer('defence', false, true)->default(5)->comment('防御');
+            $table->integer('speed', false, true)->default(3)->comment('速度');
             $table->integer('extra_attack_lower', false, true)->default(0)->comment('附加下限攻击');
             $table->integer('extra_attack_upper', false, true)->default(0)->comment('附加上限攻击');
             $table->integer('extra_intelligence', false, true)->default(0)->comment('附加魔法');
