@@ -461,20 +461,20 @@ class UserService extends Service
     {
         $user = $this->getUserByOpenid($openid);
         if (!$user->equip_hoe_id) {
-            return '请先装备至少' . $ins . '级锄头,进入' . $this->getLink($openid, '我的装备', 'prop');
+            return '请先装备至少' . $ins . '级锄头,进入' . $this->getLink($user->openid, '我的装备', 'user/prop');
         }
 
         $hoe = UserProp::query()->where('id', $user->equip_hoe_id)->first();
         if (!$hoe->status) {
-            return '所装备的锄头已经耗尽,请更换新锄头,进入' . $this->getLink($openid, '我的装备', 'prop');
+            return '所装备的锄头已经耗尽,请更换新锄头,进入' . $this->getLink($user->openid, '我的装备', 'user/prop');
         }
 
         if ($hoe->rating < $ins) {
-            return '所装备的锄头等级不足,该层需要至少' . $ins . '级锄头,进入' . $this->getLink($openid, '我的装备', 'prop');
+            return '所装备的锄头等级不足,该层需要至少' . $ins . '级锄头,进入' . $this->getLink($user->openid, '我的装备', 'user/prop');
         }
 
         if ($hoe->lower < 1) {
-            return '所装备的锄头次数已经用尽,请更换新锄头,进入' . $this->getLink($openid, '我的装备', 'prop');
+            return '所装备的锄头次数已经用尽,请更换新锄头,进入' . $this->getLink($user->openid, '我的装备', 'user/prop');
         }
 
         $fatigueStr = sprintf("\n疲劳值减少1,当前%d", $user->fatigue_value - 1);
@@ -537,20 +537,20 @@ class UserService extends Service
     {
         $user = $this->getUserByOpenid($openid);
         if (!$user->equip_forging_id) {
-            return '请先装备至少' . $ins . '级锻造炉,进入' . $this->getLink($openid, '我的装备', 'prop');
+            return '请先装备至少' . $ins . '级锻造炉,进入' . $this->getLink($user->openid, '我的装备', 'user/prop');
         }
 
         $forging = UserProp::query()->where('id', $user->equip_forging_id)->first();
         if (!$forging->status) {
-            return '所装备的锻造炉已经耗尽,请更换新锻造炉,进入' . $this->getLink($openid, '我的装备', 'prop');
+            return '所装备的锻造炉已经耗尽,请更换新锻造炉,进入' . $this->getLink($user->openid, '我的装备', 'user/prop');
         }
 
         if ($forging->rating < $ins) {
-            return '所装备的锻造炉等级不足,该炉需要至少' . $ins . '级锻造炉,进入' . $this->getLink($openid, '我的装备', 'prop');
+            return '所装备的锻造炉等级不足,该炉需要至少' . $ins . '级锻造炉,进入' . $this->getLink($user->openid, '我的装备', 'user/prop');
         }
 
         if ($forging->lower < 1) {
-            return '所装备的锻造炉次数已经用尽,请更换新锻造炉,进入' . $this->getLink($openid, '我的装备', 'prop');
+            return '所装备的锻造炉次数已经用尽,请更换新锻造炉,进入' . $this->getLink($user->openid, '我的装备', 'user/prop');
         }
 
         $ore = UserProp::query()->where('user_id', $user->id)->where('type', Constant::EQUIP_TYPE_ORE)
