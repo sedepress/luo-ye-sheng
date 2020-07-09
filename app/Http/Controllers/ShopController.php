@@ -91,7 +91,7 @@ class ShopController extends Controller
         return response()->json([
             'code'  => 0,
             'data'  => [],
-            'msg'   => '您的余额不足',
+            'msg'   => '您的人力值或金币不足',
         ]);
     }
 }
