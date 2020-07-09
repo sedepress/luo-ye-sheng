@@ -2148,6 +2148,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 
@@ -2173,6 +2174,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__
       type: 0,
       rating: 0,
       order: '',
+      price_type: 0,
       typeMap: [{
         text: '全部装备',
         value: 0
@@ -2235,6 +2237,16 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__
         text: '十级',
         value: 10
       }],
+      priceTypeMap: [{
+        text: '价格类型',
+        value: 0
+      }, {
+        text: '人力值',
+        value: 1
+      }, {
+        text: '金币',
+        value: 2
+      }],
       orderMap: [{
         text: '排序',
         value: ''
@@ -2257,6 +2269,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vant__WEBPACK_IMPORTED_MODULE_1__
           type: this.type,
           rating: this.rating,
           order: this.order,
+          price_type: this.price_type,
           token: this.$root.token
         }
       }).then(function (response) {
@@ -72313,6 +72326,18 @@ var render = function() {
                 _vm.order = $$v
               },
               expression: "order"
+            }
+          }),
+          _vm._v(" "),
+          _c("van-dropdown-item", {
+            attrs: { options: _vm.priceTypeMap },
+            on: { change: _vm.onChange },
+            model: {
+              value: _vm.price_type,
+              callback: function($$v) {
+                _vm.price_type = $$v
+              },
+              expression: "price_type"
             }
           })
         ],

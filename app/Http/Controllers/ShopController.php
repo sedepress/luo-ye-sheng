@@ -25,7 +25,7 @@ class ShopController extends Controller
 
     public function list(Request $request)
     {
-        $data = $request->only(['page', 'type', 'rating', 'order', 'token']);
+        $data = $request->only(['page', 'type', 'rating', 'order', 'price_type', 'token']);
         $query = (new Shop)->newQuery();
         try {
             decrypt($data['token']);
@@ -43,6 +43,10 @@ class ShopController extends Controller
 
         if ($data['order']) {
             $query->orderByRaw($data['order'] . ',id');
+        }
+
+        if ($data['price_type']) {
+            $query->where('price_type', $data['price_type']);
         }
 
         $offset = ($data['page'] - 1) * 10;

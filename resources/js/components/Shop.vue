@@ -4,6 +4,7 @@
             <van-dropdown-item v-model="type" :options="typeMap" @change="onChange"></van-dropdown-item>
             <van-dropdown-item v-model="rating" :options="ratingMap" @change="onChange"></van-dropdown-item>
             <van-dropdown-item v-model="order" :options="orderMap" @change="onChange"></van-dropdown-item>
+            <van-dropdown-item v-model="price_type" :options="priceTypeMap" @change="onChange"></van-dropdown-item>
         </van-dropdown-menu>
         <van-list
             v-model="loading"
@@ -47,6 +48,7 @@
                 type: 0,
                 rating: 0,
                 order: '',
+                price_type: 0,
                 typeMap: [
                     { text: '全部装备', value: 0 },
                     { text: '武器', value: 1 },
@@ -71,6 +73,11 @@
                     { text: '九级', value: 9 },
                     { text: '十级', value: 10 },
                 ],
+                priceTypeMap: [
+                    { text: '价格类型', value: 0 },
+                    { text: '人力值', value: 1 },
+                    { text: '金币', value: 2 },
+                ],
                 orderMap: [
                     { text: '排序', value: '' },
                     { text: '价格升序', value: 'price asc' },
@@ -87,6 +94,7 @@
                             type: this.type,
                             rating: this.rating,
                             order: this.order,
+                            price_type: this.price_type,
                             token: this.$root.token,
                         }
                     })
