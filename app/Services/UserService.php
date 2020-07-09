@@ -199,14 +199,15 @@ class UserService extends Service
 
     public function judgeBattleResult(User $user, int $type, bool $resultType, $blood, $reward)
     {
-        $fatigueStr = sprintf("疲劳值减少1,当前%d", $user->fatigue_value - 1);
+//        $fatigueStr = sprintf("疲劳值减少1,当前%d", $user->fatigue_value - 1);
+        $fatigueStr = '';
         $rewardStr = '';
 
         if ($type == 1) {
             $user->current_blood_volume = $blood['slow'];
 
             if ($resultType) {
-                $bloodStr = "\n您当前血量为0";
+                $bloodStr = "您当前血量为0";
                 $res = [2, self::BATTLE_FAILURE, $fatigueStr, $bloodStr, $rewardStr];
             } else {
                 $res = $this->battleVictory($user, $reward, $blood, $fatigueStr);
@@ -217,7 +218,7 @@ class UserService extends Service
             if ($resultType) {
                 $res = $this->battleVictory($user, $reward, $blood, $fatigueStr);
             } else {
-                $bloodStr = "\n您当前血量为0";
+                $bloodStr = "您当前血量为0";
                 $res = [2, self::BATTLE_FAILURE, $fatigueStr, $bloodStr, $rewardStr];
             }
         }
@@ -226,9 +227,11 @@ class UserService extends Service
             list($curBlood, $s) = $this->suppleBlood($user);
             $bloodStr = sprintf("\n您当前血量为%d", $curBlood);
             $res[3] = $s . $bloodStr;
+        } else {
+            $res[3] = "进入" . $this->getLink($user->openid, '商店', 'shop') . "购买药品\n" . $bloodStr;
         }
 
-        $user->fatigue_value -= 1;
+//        $user->fatigue_value -= 1;
         $user->save();
 
         return $res;
@@ -474,6 +477,7 @@ class UserService extends Service
             return '所装备的锄头次数已经用尽,请更换新锄头,进入' . $this->getLink($openid, '我的装备', 'prop');
         }
 
+        $fatigueStr = sprintf("\n疲劳值减少1,当前%d", $user->fatigue_value - 1);
         $randnum = mt_rand(0, 100);
         $need = 100 - 5 * $ins + ($hoe->rating - $ins) * 5;
         if ($randnum < $need) {
@@ -492,12 +496,13 @@ class UserService extends Service
 
                 $user->current_mining_exp += Constant::$getExpLevelMap[$ins];
                 $user->history_mining_exp += Constant::$getExpLevelMap[$ins];
+                $user->fatigue_value -= 1;
                 $user->save();
 
                 DB::commit();
 
                 if ($this->judgeUpgrade($user->mining_level, $user->current_mining_exp) >= 0) {
-                    $rewardStr .= ',可以升级了,去' . $this->getLink($openid, '提升等级', 'user');
+                    $rewardStr .= "\n可以升级了,去" . $this->getLink($openid, '提升等级', 'user');
                 }
             } catch (\PDOException $exception) {
                 DB::rollBack();
@@ -506,11 +511,11 @@ class UserService extends Service
                 return '系统异常,请重试';
             }
 
-            return "真幸运,挖到了{$name}" . $str . $rewardStr;
+            return "真幸运,挖到了{$name}" . $str . $rewardStr . $fatigueStr;
         }
         $str = $this->decHoeTimes($hoe, $user);
 
-        return "糟糕,什么也没挖到,再试试吧不要灰心" . $str;
+        return "糟糕,什么也没挖到,再试试吧不要灰心" . $str . $fatigueStr;
     }
 
     public function decHoeTimes(UserProp $userProp, User $user)
@@ -521,7 +526,7 @@ class UserService extends Service
             $user->equip_hoe_id = 0;
             $user->save();
             $userProp->status = false;
-            $str .= ',锄头次数已耗尽,快更换一个锄头吧,进入' . $this->getLink($user->openid, '我的装备', 'prop');
+            $str .= ',锄头次数已耗尽,快更换一个锄头吧,进入' . $this->getLink($user->openid, '我的装备', 'user/prop');
         }
         $userProp->save();
 
@@ -554,6 +559,7 @@ class UserService extends Service
             return '背包中没有对应等级的矿石';
         }
 
+        $fatigueStr = sprintf("\n疲劳值减少1,当前%d", $user->fatigue_value - 1);
         $randnum = mt_rand(0, 100);
         $need = 100 - 5 * $ins + ($forging->rating - $ins) * 5;
         if ($randnum < $need) {
@@ -606,13 +612,14 @@ class UserService extends Service
 
                 $user->current_forging_exp += Constant::$getExpLevelMap[$ins];
                 $user->history_forging_exp += Constant::$getExpLevelMap[$ins];
+                $user->fatigue_value -= 1;
                 $user->save();
 
                 $str = $this->decForgingTimes($forging, $user);
                 DB::commit();
 
                 if ($this->judgeUpgrade($user->forging_level, $user->current_forging_exp) >= 0) {
-                    $rewardStr .= ',可以升级了,去' . $this->getLink($openid, '提升等级', 'user');
+                    $rewardStr .= "\n可以升级了,去" . $this->getLink($openid, '提升等级', 'user');
                 }
             } catch (\PDOException $exception) {
                 DB::rollBack();
@@ -627,11 +634,11 @@ class UserService extends Service
                 $desc .= $lower;
             }
 
-            return "恭喜你获得了{$name} {$desc}" . $str . $rewardStr;
+            return "恭喜你获得了{$name} {$desc}" . $str . $rewardStr . $fatigueStr;
         }
         $str = $this->decForgingTimes($forging, $user);
 
-        return "糟糕,锻造失败了,再试试吧不要灰心" . $str;
+        return "糟糕,锻造失败了,再试试吧不要灰心" . $str . $fatigueStr;
     }
 
     public function decForgingTimes(UserProp $userProp, User $user)
@@ -642,7 +649,7 @@ class UserService extends Service
             $user->equip_forging_id = 0;
             $user->save();
             $userProp->status = false;
-            $str .= ',锻造炉次数已耗尽,快更换一个锻造炉吧,进入' . $this->getLink($user->openid, '我的装备', 'prop');
+            $str .= ',锻造炉次数已耗尽,快更换一个锻造炉吧,进入' . $this->getLink($user->openid, '我的装备', 'user/prop');
         }
         $userProp->save();
 
@@ -671,7 +678,7 @@ class UserService extends Service
             $user->equip_drup_id = 0;
 
             $str = "\n您的红罗羹补充了" . $drup->lower . '点血量';
-            $str .= "\n您的红罗羹已经用尽,进入" . $this->getLink($user->openid, '我的装备', 'prop');
+            $str .= "\n您的红罗羹已经用尽,进入" . $this->getLink($user->openid, '我的装备', 'user/prop');
 
             $drup->status = false;
             $drup->lower = 0;
