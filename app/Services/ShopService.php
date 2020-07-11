@@ -37,7 +37,7 @@ class ShopService extends Service
                 }
             } else {
                 $money = $user->current_gold;
-                if ($money > $shop->price) {
+                if ($money >= $shop->price) {
                     User::query()->where('id', $user->id)->where('current_gold', $money)->update([
                         'current_gold' => $money - $shop->price,
                     ]);
