@@ -21,7 +21,7 @@ class ShopService extends Service
         try {
             if ($shop->price_type == 1) {
                 $money = $user->manpower;
-                if ($money > $shop->price) {
+                if ($money >= $shop->price) {
                     User::query()->where('id', $user->id)->where('manpower', $money)->update([
                         'manpower' => $money - $shop->price,
                     ]);
